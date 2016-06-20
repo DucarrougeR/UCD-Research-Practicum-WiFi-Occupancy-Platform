@@ -1,0 +1,24 @@
+# IntelliJ project files
+.idea
+*.iml
+out
+gen
+
+# Eclipse project files
+.project
+.pydevproject
+.settings
+
+# pycache and python compiled
+__pychache__
+*.pyc
+*/*.pyc
+
+# virtual environments
+research-practicum
+venv-research-practicum3
+
+static/css
+node_modules
+config
+config.zip
