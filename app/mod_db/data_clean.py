@@ -159,4 +159,4 @@ def gt_clean(gtf, gt_raw, gt_clean):
 
 unzip("data/csi wifilogs.zip") 
 merge_logs("data/csi wifilogs", "data/cleaned/logs_clean.csv")
-gt_clean("data/CSI Occupancy report/CSI-Table 1.csv", "data/cleaned/gt_raw.csv", "data/cleaned/gt_clean.csv")
+gt_clean("data/CSI Occupancy report/CSI-Table 1.csv", "data/gt_raw.csv", "data/cleaned/gt_clean.csv")
