@@ -35,7 +35,7 @@ class Class(db.Model):
 
 class Building(db.Model):
     __tablename__ = 'building'
-    room = db.Column(db.String(6), primary_key=True, nullable=False)
+    room = db.Column(db.String(6), primary_key=True, nullable=False, unique=True)
     campus = db.Column(db.String(6))
     building = db.Column(db.String(6))
     capacity = db.Column(db.Integer)

@@ -16,5 +16,14 @@ class AppTest(unittest.TestCase):
         os.close(self.db_fd)
         os.unlink(theApp.app.config['DATABASE'])
 
+    def test_empty_db(self):
+        rv = self.app.get('/')
+        assert b'No entries here so far' in rv.data
+
 if __name__ == "__main__":
     unittest.main()
+
+'''
+Sources for Flask Testing
+http://flask.pocoo.org/docs/0.11/testing/
+'''
