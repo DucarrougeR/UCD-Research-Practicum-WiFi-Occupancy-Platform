@@ -22,7 +22,12 @@ static/css
 node_modules
 config
 config.py
+bower_components
 config.zip
 
 # virtual environments
 tripod-platform
+
+# development databases
+app.db
+

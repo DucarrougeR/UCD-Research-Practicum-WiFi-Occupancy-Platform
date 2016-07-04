@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="occupancyApp">
+<head>
+    <meta charset="UTF-8">
+    <title>Occupancy Data</title>
+    <script src="{{ url_for('static', filename='app/bower_components/angular/angular.js') }}"></script>
+    <script src="{{ url_for('static', filename='app/bower_components/angular-route/angular-route.js') }}"></script>
+    <script src="{{ url_for('static', filename='app/occupancy.js') }}"></script>
+    <script src="{{ url_for('static', filename='app/config.js') }}"></script>
+    <script src="{{ url_for('static', filename='app/directives/homepage.js') }}"></script>
+</head>
+<body>
+
+    <div ng-controller="primaryController">
+        <div greeting></div>
+    </div>
+
+</body>
+</html>
