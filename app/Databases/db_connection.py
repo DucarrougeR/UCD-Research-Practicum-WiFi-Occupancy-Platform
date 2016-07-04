@@ -1,6 +1,6 @@
 #Romain Ducarrouge
-from flask import Flask
-from sqlalchemy import *
+# from flask import Flask
+# from sqlalchemy import *
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Integer, ForeignKey, String, Column
 from flask_sqlalchemy import SQLAlchemy
