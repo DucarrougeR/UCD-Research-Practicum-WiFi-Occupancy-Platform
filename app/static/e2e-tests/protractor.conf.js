@@ -2,6 +2,7 @@
 exports.config = {
 
   allScriptsTimeout: 11000,
+  directConnect: true,
 
   specs: [
     '*.js'
@@ -11,7 +12,7 @@ exports.config = {
     'browserName': 'chrome'
   },
 
-  baseUrl: 'http://localhost:8000/',
+  baseUrl: 'http://localhost:5000/',
 
   framework: 'jasmine',
 

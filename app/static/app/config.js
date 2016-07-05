@@ -2,8 +2,8 @@
 
 angular.
   module('occupancyApp').
-  config(['$locationProvider' ,'$routeProvider',
-    function config($locationProvider, $routeProvider) {
+  config(['$locationProvider' ,'$routeProvider', 'ChartJsProvider',
+    function config($locationProvider, $routeProvider, ChartJsProvider) {
       $locationProvider.hashPrefix('!');
 
       $routeProvider.
@@ -14,5 +14,15 @@ angular.
           template: '<phone-detail></phone-detail>'
         }).
         otherwise('/');
+
+      // Configure all charts
+      ChartJsProvider.setOptions({
+        colours: ['#FF5252', '#FF8A80'],
+        responsive: false
+      });
+      // Configure all line charts
+      ChartJsProvider.setOptions('Line', {
+        datasetFill: false
+      });
     }
   ]);

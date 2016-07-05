@@ -1,0 +1,19 @@
+.container {
+	@include container(80em);
+	padding:1em;
+}
+
+.column {
+	@media screen and (min-width:30em){
+		@for $i from 1 through 12 {
+		  &-mid-#{$i} {
+		  	@include span($i of 12);
+		  }
+		}
+	}
+    
+    
+    &:last-of-type{
+		margin-right:0;
+    }
+}

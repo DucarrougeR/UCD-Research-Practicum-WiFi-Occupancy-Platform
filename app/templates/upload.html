@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="occupancyApp">
+<head>
+    <meta charset="UTF-8">
+    <title>Occupancy Data</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='node_modules/angular-datepicker/dist/index.css') }}">
+    <script src="{{ url_for('static', filename='app/bower_components/angular/angular.js') }}"></script>
+    <script src="{{ url_for('static', filename='app/bower_components/angular-route/angular-route.js') }}"></script>
+    <script src="{{ url_for('static', filename='app/occupancy.js') }}"></script>
+    <script src="{{ url_for('static', filename='app/config.js') }}"></script>
+    <script src="{{ url_for('static', filename='node_modules/chart.js/dist/Chart.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='node_modules/angular-chart.js/dist/angular-chart.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='node_modules/angular-datepicker/dist/index.js') }}"></script>
+    <script src="{{ url_for('static', filename='app/directives/homepage.js') }}"></script>
+</head>
+<body>
+   
+    <div class="full-height">
+        <div class="container full-height">
+            <nav class="column column-mid-2 full-height sidebar">
+                <ul class="nav-list nav-list--main">
+                    <li><a href="">item</a></li>
+                    <li><a href="">item</a></li>
+                    <li><a href="">item</a></li>
+                    <li><a href="">item</a></li>
+                    <li><a href="">item</a></li>
+                </ul>
+            </nav>
+            <div class="column column-mid-10">
+
+                <div class="container">
+                  <div class="upload-banner">
+                    
+                  </div>
+                  <form class="type-form">
+                      <h2>Type</h2>
+                      <label class="control radio">
+                        <input id="radio1" name="radio" type="radio">
+                        <span class="control-indicator"></span>
+                        Logs
+                      </label>
+                      <label class="control radio">
+                        <input id="radio2" name="radio" type="radio">
+                        <span class="control-indicator"></span>
+                        Timetable
+                      </label>
+                      <label class="control radio">
+                        <input id="radio2" name="radio" type="radio">
+                        <span class="control-indicator"></span>
+                        Ground truth
+                      </label>
+                  </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+

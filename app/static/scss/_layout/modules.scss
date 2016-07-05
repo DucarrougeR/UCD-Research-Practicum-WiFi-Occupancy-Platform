@@ -1,0 +1,39 @@
+.nav-list {
+	list-style:none;
+	margin:0;
+	padding:0;
+	padding-top:1em;
+	padding-right:1em;
+	li {
+		border-top:1px solid rgba($color-text, 0.25);
+		a {
+			color:$color-text;
+			display:block;
+			text-align:right;
+			&:hover {
+				background-color:rgba(0,0,0,0.05);
+			}
+		}
+
+		&:last-of-type {
+			border-bottom:1px solid rgba($color-text, 0.25);
+		}
+	}
+	
+}
+
+.nav-list--horizontal {
+	li {
+		display:inline-block;
+	}
+}
+
+.nav-list--main {
+	li a {
+		padding:0.75em 1em;
+	}
+}
+
+.sidebar {
+	border-right:1px solid rgba($color-text,0.25);
+}

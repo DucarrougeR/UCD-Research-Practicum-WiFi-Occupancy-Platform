@@ -11,7 +11,9 @@ module.exports = function(config) {
       '**/*.module.js',
       '*!(.module|.spec).js',
       '!(bower_components)/**/*!(.module|.spec).js',
-      '**/*.spec.js'
+      '**/*.spec.js',
+      'components/**/*.js',
+      'view*/**/*.js'
     ],
 
     autoWatch: true,
@@ -19,6 +21,7 @@ module.exports = function(config) {
     frameworks: ['jasmine'],
 
     browsers: ['Chrome', 'Firefox'],
+
 
     plugins: [
       'karma-chrome-launcher',
@@ -31,6 +34,5 @@ module.exports = function(config) {
       outputFile: 'test_out/unit.xml',
       suite: 'unit'
     }
-
   });
 };
