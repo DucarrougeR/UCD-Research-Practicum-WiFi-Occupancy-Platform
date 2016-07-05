@@ -2,7 +2,7 @@ import unittest, sys, os, tempfile
 from app.mod_db.QueryBuilder import QueryBuilder
 
 class DataTests(unittest.TestCase):
-    """ Data cleaning and formatting """    
+    ''' Data cleaning and formatting '''
     # Manually tests the correctness of some rows in the master log data.
     def test_log_data_correctness(self):
         self.assertEqual(foo, bar)
@@ -16,7 +16,7 @@ class DataTests(unittest.TestCase):
         pass
 
 class DataBaseTests(unittest.TestCase):
-    """ Database """
+    ''' Database '''
     def SetUp(selfself):
         self.db_fd, theApp.app.config['DATABASE'] = tempfile.msktemp()
         theApp.app.config['TESTING'] = True
@@ -25,10 +25,12 @@ class DataBaseTests(unittest.TestCase):
             theApp.init_db()
 
     def tearDown(self):
+	# Test if disconnection is successfull
         os.close(self.db_fd)
         os.unlink(theApp.app.config['DATABASE'])
 
     def test_empty_db(self):
+	# Test if db is empty
         rv = self.app.get('/')
         assert b'No entries here so far' in rv.data
 

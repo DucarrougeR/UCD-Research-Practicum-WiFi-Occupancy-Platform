@@ -2,9 +2,9 @@ import pandas as pd
 import csv
 
 # FORMATTING LOGS FILE
-df = pd.read_csv("logs_clean.csv")
+df = pd.read_csv("data/clean/logs_clean.csv")
 #Split first column into 3 columns of data (Campus, Building, Room)
-New1 = Logs['room'].str.partition('>')
+New1 = df['room'].str.partition('>')
 New1.columns = ['campus', 'building', 'room']
 
 New2 = New1['room'].str.partition('>')
@@ -18,75 +18,62 @@ df = df.drop(df.columns[[0]], axis=1)
 dataframes = [New1, df]
 result = pd.concat(dataframes, axis=1)
 
-# # Working on splitting the time fields for database
-# time = result['time']
-# t2 = result['time'].str.partition(' ')
-# t2.columns = ['day', 'space', 'rest']
-# t3 = t2['rest'].str.partition(' ')
-# t3.columns = ['month', 'space', 'rest']
-# t4 = t3['rest'].str.partition(' ')
-# t4.columns = ['date', 'space', 'rest']
-# t5 = t4['rest'].str.partition(' ')
-# t5.columns = ['time', 'space', 'rest']
-# t6 = t5['rest'].str.partition(' ')
-# t6.columns = ['gmt', 'space', 'year']
-#
-# dfTime = [t2['day'], t3['month'], t4['date'], t5['time'], t6['year']]
-# newTime = pd.concat(dfTime, axis=1)
-# Data = [result['campus'],result['building'],result['room'], newTime, result['assocated'], result['authenticated']]
-# dataFinal = pd.concat(Data, axis=1)
+''' Stripping the whitespace in data for future Queries '''
+result['campus'] = result['campus'].str.strip()
+result['building'] = result['building'].str.strip()
+result['room'] = result['room'].str.strip()
+
+#Normalizing the room data field
+result['room'] = result['room'].map(lambda x: x.replace('-', ''))
+
+df_quarter = result.time.str.contains("... ... .. ...(13|14|15|16|17)... ......... ....", regex=True, na=False)
+result = result[df_quarter]
+
+''' Normalizing the Time data field for merging dataframe later on '''
+#remove trailing string part
+result['time'] = result['time'].map(lambda x: x.replace(' GMT+00:00 2015', ''))
+#remove info about minutes and seconds
+result['time'] = result['time'].map(lambda x: x[:-5])
+#replace the minutes and seconds to identical format as other dataframes
+result['time'] = result['time'].map(lambda x: x + '00:00')
 
 #Renaming column to fix header
-dataFinal = dataFinal.rename(columns = {'assocated':'associated'})
-# dataFinal.head()
+result.to_csv("data/clean/formattedLogs.csv")
+
+# result.head()
+
 ##########################################################################
 
 # FORMATTING GROUND TRUTH FILE
-df2 = pd.read_csv("gt_clean.csv")
+df2 = pd.read_csv("data/clean/gt_clean.csv")
+df2['occupancyCount'] = df2['occupancy'].map(lambda x: x.replace('%', ''))
 
-# t2 = df2['time'].str.partition(' ')
-# t2.columns = ['day', 'space', 'rest']
-# t3 = t2['rest'].str.partition(' ')
-# t3.columns = ['month', 'space', 'rest']
-# t4 = t3['rest'].str.partition(' ')
-# t4.columns = ['date', 'space', 'rest']
-# t5 = t4['rest'].str.partition(' ')
-# t5.columns = ['time', 'space', 'year']
-#
-# dfTime = [t2['day'], t3['month'], t4['date'], t5['time']]
-# newTime = pd.concat(dfTime, axis=1)
-# # newTime.head()
-#
-# frame = [df2['room'],df2['capacity'], df2['occupancy'], newTime]
-# finalFrame = pd.concat(frame, axis=1)
-#finalFrame.head()
+# Converting last column to numeric to perfomr math operation
+df2[['occupancyCount']] = df2[['occupancyCount']].apply(pd.to_numeric)
 
-finalFrame.to_csv("formattedGroundTruthData.csv")
+# Adding actual count value for room
+df2['occupancyCount'] = df2['occupancyCount'] * df2['capacity'] /100
+
+df2.to_csv("data/clean/formattedGroundTruthData.csv")
+#df2.head()
+  
+    
+    
 ##########################################################################
 
 # FORMATTING TIME TABLE FILE
-df3 = pd.read_csv("timetable_clean.csv")
-
-# d2 = df3['time'].str.partition(' ')
-# d2.columns = ['day', 'space', 'rest']
-# d3 = d2['rest'].str.partition(' ')
-# d3.columns = ['month', 'space', 'rest']
-# d4 = d3['rest'].str.partition(' ')
-# d4.columns = ['date', 'space', 'rest']
-# d5 = d4['rest'].str.partition(' ')
-# d5.columns = ['time', 'space', 'year']
-#
-# dfConcat = [d2['day'], d3['month'], d4['date'], d5['time']]
-# Update = pd.concat(dfConcat, axis=1)
-#
-# NewFrame = [Update, df3['room'], df3['module'], df3['size']]
-# Finish = pd.concat(NewFrame, axis=1)
+df3 = pd.read_csv("data/clean/timetable_clean.csv")
 
 #Formatting 'None' value to NULL for future SQL queries
-Finish['module'].replace('None', "NULL", inplace=True)
-Finish['size'].replace('None', "NULL", inplace=True)
-Finish['size'].replace('N/A', 'NULL', inplace=True)
+df3['module'].replace('None', "NULL", inplace=True)
+df3['size'].replace('None', "NULL", inplace=True)
+df3['size'].replace('N/A', 'NULL', inplace=True)
 
-# Finish.head()
+df3['room'] = df3['room'].map(lambda x: x.replace('.', ''))
 
-Finish.to_csv("formattedTimeTable.csv", index=False)
+df3.to_csv("data/clean/formattedTimeTable.csv", index=False)
+
+
+##########################################################################
+
+print('Data successfully cleaned')
