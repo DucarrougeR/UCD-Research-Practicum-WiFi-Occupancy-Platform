@@ -1,9 +1,7 @@
-import unittest, sys
+import unittest, sys, os, tempfile
 
 class DataTests(unittest.TestCase):
-    """
-    Data cleaning and formatting.
-    """    
+    """ Data cleaning and formatting """    
     # Manually tests the correctness of some rows in the master log data.
     def test_log_data_correctness(self):
         self.assertEqual(foo, bar)
@@ -17,10 +15,21 @@ class DataTests(unittest.TestCase):
         pass
 
 class DataBaseTests(unittest.TestCase):
-    """
-    Database
-    """
-    pass
+    """ Database """
+    def SetUp(selfself):
+        self.db_fd, theApp.app.config['DATABASE'] = tempfile.msktemp()
+        theApp.app.config['TESTING'] = True
+        self.app = theApp.app.test_client()
+        with theApp.app.app_context():
+            theApp.init_db()
+
+    def tearDown(self):
+        os.close(self.db_fd)
+        os.unlink(theApp.app.config['DATABASE'])
+
+    def test_empty_db(self):
+        rv = self.app.get('/')
+        assert b'No entries here so far' in rv.data
 
 
 if __name__ == "__main__":
