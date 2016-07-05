@@ -50,8 +50,7 @@ def merge_logs(path, outf):
     fout.write(headings)
 
     # Loops through every CSV file in every folder in the data directory. 
-    direc = "data/CSI WiFiLogs"
-    for root, dirs, files in os.walk(direc):
+    for root, dirs, files in os.walk(path):
         for name in files:
             with open((os.path.join(root, name)), encoding = "ISO-8859-1") as fin:
                 # Finds the string "Key" and reads the remainder of the file to the outfile.
@@ -237,14 +236,12 @@ def timetable_clean(xlsx, outf):
                         if get_column_letter(x) + str(y) in sheet.merged_cells:
                             outlist[listno] += str(cell.value) + "," + str(sheet.cell(row=y, column=x+1).value) + "\n"
                             listno += 1
-                        
 
     # Writes each row of the outfile list to the outfile. 
     for i in range(0, len(outlist)):
         fout.write(outlist[i])    
     
-
-unzip("data/raw/csi wifilogs.zip") 
-merge_logs("data/raw/csi wifilogs", "data/clean/logs_clean.csv")
+unzip("data/raw/CSI WiFiLogs.zip") 
+merge_logs("data/raw/CSI WiFiLogs", "data/clean/logs_clean.csv")
 gt_clean("data/raw/CSI Occupancy report/CSI-Table 1.csv", "data/raw/gt_raw.csv", "data/clean/gt_clean.csv")
 timetable_clean("data/raw/timetables/B0.02 B0.03 B0.04 Timetable.xlsx", "data/clean/timetable_clean.csv")
