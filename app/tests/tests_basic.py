@@ -34,6 +34,8 @@ class DataBaseTests(unittest.TestCase):
 	# # Test if db is empty
      #    rv = self.app.get('/')
      #    assert b'No entries here so far' in rv.data
+    def always_fail(self):
+        assert 1 == 2
 
     def query_select_test(self):
         query = QueryBuilder().select('sample').get_query()
