@@ -4,7 +4,7 @@ from flask import Blueprint, request, render_template, \
                   flash, g, session, redirect, url_for
 from app.app_forms.forms import SignupForm, LoginForm
 from flask_sqlalchemy import SQLAlchemy
-from models import User
+from .models import User
 from flask_login import login_user, logout_user, LoginManager, login_required, user_logged_out, user_logged_in
 from app import app
 
@@ -44,7 +44,7 @@ def signup():
 @mod_auth.route('/login', methods=['GET', 'POST'])
 def login():
     if user_logged_in:
-        print "logged in"
+        print("logged in")
 
     form = LoginForm()
 
@@ -54,7 +54,7 @@ def login():
         else:
             user = User.query.filter_by(email=form.email.data.lower()).first()
             if user.check_password(form.password.data):
-                print user.id
+                print(user.id)
                 login_user(user, remember=True)
                 return redirect(url_for('mod_auth.hello'))
 

@@ -25,7 +25,7 @@ bower_components
 config.zip
 
 # virtual environments
-tripod-platform
+tripod-platform3
 
 # development databases
 app.db
