@@ -1,6 +1,6 @@
 #Romain Ducarrouge
-# from flask import Flask
-# from sqlalchemy import 
+from flask import Flask
+from theApp import app 
 
 def init_db():
 	db = get_db()
