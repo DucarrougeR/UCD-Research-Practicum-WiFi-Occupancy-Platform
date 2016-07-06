@@ -3,7 +3,7 @@ from flask import Flask, render_template, send_from_directory, url_for
 from flask_login import LoginManager
 
 # Import SQLAlchemy
-#from flask_sqlalchemy import SQLAlchemy
+from flask_sqlalchemy import SQLAlchemy
 # Define the WSGI application object
 app = Flask(__name__, template_folder='templates')
 
@@ -12,7 +12,7 @@ app.config.from_object('config')
 
 # Define the database object which is imported
 # by modules and controllers
-#db = SQLAlchemy(app)
+db = SQLAlchemy(app)
 login_manager = LoginManager()
 
 @app.route('/')
