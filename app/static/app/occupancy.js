@@ -3,11 +3,13 @@
 var occupancyApp = angular.module('occupancyApp', [
   'ngRoute',
   'datePicker',
-  'chart.js'
+  'chart.js',
+  'ui.bootstrap'
 ]);
 
 occupancyApp.controller('primaryController', function($scope) {
     $scope.greeting = 'Hello';
+    
 });
 
 occupancyApp.controller("lineCtrl", ['$scope', '$timeout', function ($scope, $timeout) {
@@ -20,6 +22,8 @@ occupancyApp.controller("lineCtrl", ['$scope', '$timeout', function ($scope, $ti
   $scope.onClick = function (points, evt) {
     console.log(points, evt);
   };
+
+
 
   // Simulate async data update
   // $timeout(function () {

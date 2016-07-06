@@ -3,17 +3,132 @@
 <head>
     <meta charset="UTF-8">
     <title>Occupancy Data</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='node_modules/angular-datepicker/dist/index.css') }}">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
     <script src="{{ url_for('static', filename='app/bower_components/angular/angular.js') }}"></script>
     <script src="{{ url_for('static', filename='app/bower_components/angular-route/angular-route.js') }}"></script>
+    <script src="{{ url_for('static', filename='node_modules/angular-ui-bootstrap/dist/ui-bootstrap-tpls.js') }}"></script>
     <script src="{{ url_for('static', filename='app/occupancy.js') }}"></script>
     <script src="{{ url_for('static', filename='app/config.js') }}"></script>
-    <script src="{{ url_for('static', filename='app/directives/homepage.js') }}"></script>
+    <script src="{{ url_for('static', filename='node_modules/chart.js/dist/Chart.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='node_modules/angular-chart.js/dist/angular-chart.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='node_modules/angular-datepicker/dist/index.js') }}"></script>
+    <!-- <script src="{{ url_for('static', filename='node_modules/angular-datepicker/dist/index.js') }}"></script> -->
+    
 </head>
 <body>
+   
+    <div class="full-height">
+        <div class="container full-height row">
+            <nav class="column col-md-2 full-height sidebar">
+                <ul class="nav-list nav-list--main">
+                    <li><a href="">item</a></li>
+                    <li><a href="">item</a></li>
+                    <li><a href="">item</a></li>
+                    <li><a href="">item</a></li>
+                    <li><a href="">item</a></li>
+                </ul>
+            </nav>
+            <div class="column column-mid-10">
 
-    <div ng-controller="primaryController">
-        <div greeting></div>
+                <div class="container row">
+                  <form class="form-inline">
+                    <label class="col-md-5">
+                      Room: 
+                      <select aria-label="Select a room">
+                        <option selected>B001</option>
+                        <option value="1">B002</option>
+                        <option value="2">B003</option>
+                        <option value="3">B004</option>
+                      </select>
+                    </label>
+                    <div class="col-md-6 column">
+                        Date: <input date-time format="yyyy-MM-dd" ng-model="room.Date" min-view="date" max-view="year">
+                    </div>
+                    {% raw %}
+                    <div class="row">
+      <div class="col-md-6">
+        <p class="input-group">
+          <input type="text" class="form-control" uib-datepicker-popup="{{format}}" ng-model="dt" is-open="popup1.opened" datepicker-options="dateOptions" ng-required="true" close-text="Close" alt-input-formats="altInputFormats" />
+          <span class="input-group-btn">
+            <button type="button" class="btn btn-default" ng-click="open1()"><i class="glyphicon glyphicon-calendar"></i></button>
+          </span>
+        </p>
+      </div>
+
+      <div class="col-md-6">
+        <p class="input-group">
+          <input type="text" class="form-control" uib-datepicker-popup ng-model="dt" is-open="popup2.opened" datepicker-options="dateOptions" ng-required="true" close-text="Close" />
+          <span class="input-group-btn">
+            <button type="button" class="btn btn-default" ng-click="open2()"><i class="glyphicon glyphicon-calendar"></i></button>
+          </span>
+        </p>
+      </div>
+    </div>
+    
+    <div class="row">
+      <div class="col-md-6">
+        <label>Format: <span class="muted-text">(manual alternate <em>{{altInputFormats[0]}}</em>)</span></label> <select class="form-control" ng-model="format" ng-options="f for f in formats"><option></option></select>
+      </div>
+    </div>
+    {% endraw %}
+                    <input type="submit">
+                  </form>
+                </div>
+                <hr>
+                <div class="container text-heading row">
+                    <h2>Occupancy:</h2>
+                    <div class="col-md-6 text-center">25%</div>
+                    <div class="col-md-6 text-center">30%</div>
+                </div>
+                <div class="chart container row" ng-controller="lineCtrl">
+                    <h2>Occupancy over time</h2>
+                    <canvas id="line" class="chart chart-line" chart-data="data" chart-labels="labels" 
+                      chart-legend="true" chart-series="series" chart-click="onClick" width="500px" height="300px" style="margin:auto"></canvas> 
+                </div>
+            </div>
+        </div>
     </div>
 
 </body>
-</html>
+<!--</html>-->
+<!--<head>-->
+  <!--<meta charset="utf-8">-->
+  <!--<meta http-equiv="X-UA-Compatible" content="IE=edge">-->
+  <!--<title>My AngularJS App</title>-->
+  <!--<meta name="description" content="">-->
+  <!--<meta name="viewport" content="width=device-width, initial-scale=1">-->
+  <!--<link rel="stylesheet" href="bower_components/html5-boilerplate/dist/css/normalize.css">-->
+  <!--<link rel="stylesheet" href="bower_components/html5-boilerplate/dist/css/main.css">-->
+  <!--<link rel="stylesheet" href="app.css">-->
+  <!--<script src="bower_components/html5-boilerplate/dist/js/vendor/modernizr-2.8.3.min.js"></script>-->
+<!--</head>-->
+<!--<body>-->
+  <!--<ul class="menu">-->
+    <!--<li><a href="#!/view1">view1</a></li>-->
+    <!--<li><a href="#!/view2">view2</a></li>-->
+  <!--</ul>-->
+
+  <!--&lt;!&ndash;[if lt IE 7]>-->
+      <!--<p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>-->
+  <!--<![endif]&ndash;&gt;-->
+
+  <!--<div ng-view></div>-->
+
+  <!--<div>Angular seed app: v<span app-version></span></div>-->
+
+  <!--&lt;!&ndash; In production use:-->
+  <!--<script src="//ajax.googleapis.com/ajax/libs/angularjs/x.x.x/angular.min.js"></script>-->
+  <!--&ndash;&gt;-->
+  <!--<script src="bower_components/angular/angular.js"></script>-->
+  <!--<script src="bower_components/angular-route/angular-route.js"></script>-->
+  <!--<script src="app.js"></script>-->
+  <!--<script src="view1/view1.js"></script>-->
+  <!--<script src="view2/view2.js"></script>-->
+  <!--<script src="components/version/version.js"></script>-->
+  <!--<script src="components/version/version-directive.js"></script>-->
+  <!--<script src="components/version/interpolate-filter.js"></script>-->
+<!--</body>-->
+<!--</html>-->
+<!--&gt;>>>>>> 2bd9720733ff289c7c4be284115af17d674c92e5-->
