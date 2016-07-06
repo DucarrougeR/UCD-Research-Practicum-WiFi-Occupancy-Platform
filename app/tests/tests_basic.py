@@ -18,22 +18,22 @@ from app.mod_db import theApp
 
 class DataBaseTests(unittest.TestCase):
     ''' Database '''
-    def SetUp(self):
-        self.db_fd, theApp.app.config['DATABASE'] = tempfile.msktemp()
-        theApp.app.config['TESTING'] = True
-        self.app = theApp.app.test_client()
-        with theApp.app.app_context():
-            theApp.init_db()
-
-    def tearDown(self):
-	# Test if disconnection is successfull
-        os.close(self.db_fd)
-        os.unlink(theApp.app.config['DATABASE'])
-
-    def test_empty_db(self):
-	# Test if db is empty
-        rv = self.app.get('/')
-        assert b'No entries here so far' in rv.data
+    # def SetUp(self):
+     #    self.db_fd, theApp.app.config['DATABASE'] = tempfile.msktemp()
+     #    theApp.app.config['TESTING'] = True
+     #    self.app = theApp.app.test_client()
+     #    with theApp.app.app_context():
+     #        theApp.init_db()
+    #
+    # def tearDown(self):
+	# # Test if disconnection is successfull
+     #    os.close(self.db_fd)
+     #    os.unlink(theApp.app.config['DATABASE'])
+    #
+    # def test_empty_db(self):
+	# # Test if db is empty
+     #    rv = self.app.get('/')
+     #    assert b'No entries here so far' in rv.data
 
     def query_select_test(self):
         query = QueryBuilder().select('sample').get_query()
