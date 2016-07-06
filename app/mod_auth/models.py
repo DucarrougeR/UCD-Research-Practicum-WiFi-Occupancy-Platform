@@ -20,8 +20,8 @@ class User(db.Model):
         self.password = generate_password_hash(password_plain)
 
     def check_password(self, password_plain):
-        print password_plain
-        print self.password
+        print(password_plain)
+        print(self.password)
         return check_password_hash(self.password, password_plain)
 
     def is_authenticated(self):
@@ -34,8 +34,8 @@ class User(db.Model):
         return False
 
     def get_id(self):
-        print self.id
-        return unicode(self.id)
+        print(self.id)
+        return self.id
 
 
 class Email:
