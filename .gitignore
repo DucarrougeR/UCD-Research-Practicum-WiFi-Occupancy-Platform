@@ -21,7 +21,6 @@ venv-research-practicum3
 static/css
 node_modules
 config
-config.py
 bower_components
 config.zip
 
