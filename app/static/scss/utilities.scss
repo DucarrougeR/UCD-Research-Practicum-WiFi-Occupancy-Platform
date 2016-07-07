@@ -5,3 +5,18 @@
 .text-center {
 	text-align:center;
 }
+
+.u-pull-left {
+	float:left;
+}
+
+.u-pull-right {
+	float:right;
+}
+
+/* http://stackoverflow.com/questions/8554043/what-is-clearfix */
+.u-clearfix:after {
+  content: "";
+  display: table;
+  clear: both;
+}

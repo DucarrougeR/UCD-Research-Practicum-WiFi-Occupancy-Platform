@@ -9,6 +9,10 @@
 		  &-mid-#{$i} {
 		  	@include span($i of 12);
 		  }
+
+		  &-mid-offset-#{$i} {
+		  	@include push($i of 12);
+		  }
 		}
 	}
     
