@@ -2,21 +2,23 @@
 from flask import Flask, render_template, send_from_directory, url_for
 from flask_login import LoginManager
 
-# Import SQLAlchemy
-from flask_sqlalchemy import SQLAlchemy
 # Define the WSGI application object
 app = Flask(__name__, template_folder='templates')
 
 # Configurations
 app.config.from_object('config')
 
+from app.mod_db import *
+
 # Define the database object which is imported
 # by modules and controllers
-db = SQLAlchemy(app)
+
 login_manager = LoginManager()
 
 @app.route('/')
 def index():
+    building = Building.query.filter_by(room="B002").first()
+    print(building.capacity)
     return render_template("index.html")
 
 # development use
