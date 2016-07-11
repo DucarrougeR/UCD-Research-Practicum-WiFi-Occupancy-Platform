@@ -21,12 +21,11 @@ venv-research-practicum3
 static/css
 node_modules
 config
-config.py
 bower_components
 config.zip
 
 # virtual environments
-tripod-platform
+tripod-platform3
 
 # development databases
 app.db

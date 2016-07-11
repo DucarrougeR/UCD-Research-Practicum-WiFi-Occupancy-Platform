@@ -1,0 +1,7 @@
+Flask
+Jinja2
+Werkzeug
+Flask_login
+nose
+flask_sqlalchemy
+flask_wtf

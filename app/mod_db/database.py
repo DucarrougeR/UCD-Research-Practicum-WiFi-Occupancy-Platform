@@ -14,3 +14,4 @@ df_timetable = pd.read_csv("data/clean/timetable_clean.csv")
 # Drop classes with no module code. 
 bad = ["Career opportunities talks", "Booked by School of CS (no other data available"]
 df_timetable = df_timetable[df_timetable.module != 0]
+

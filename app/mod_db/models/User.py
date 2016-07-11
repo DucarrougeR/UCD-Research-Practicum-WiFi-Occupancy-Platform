@@ -1,9 +1,6 @@
 # Luke Kearney
-from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
-
-db = SQLAlchemy()
-
+from app.mod_db import db
 
 class User(db.Model):
     __tablename__ = 'user'
@@ -36,8 +33,3 @@ class User(db.Model):
     def get_id(self):
         print(self.id)
         return self.id
-
-
-class Email:
-    def is_valid_extension(self, email):
-        return True

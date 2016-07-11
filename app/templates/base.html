@@ -1,10 +1,46 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" ng-app="occupancyApp">
 <head>
     <meta charset="UTF-8">
-    <title></title>
+    <title>Occupancy Data</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='node_modules/angular-datepicker/dist/index.css') }}">
+    
+    <script src="{{ url_for('static', filename='app/bower_components/angular/angular.js') }}"></script>
+    <script src="{{ url_for('static', filename='app/bower_components/angular-route/angular-route.js') }}"></script>
+    <script src="{{ url_for('static', filename='app/occupancy.js') }}"></script>
+    <script src="{{ url_for('static', filename='app/config.js') }}"></script>
+    <script src="{{ url_for('static', filename='node_modules/chart.js/dist/Chart.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='node_modules/angular-chart.js/dist/angular-chart.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='node_modules/pikaday/pikaday.js') }}"></script>
+    <script src="{{ url_for('static', filename='node_modules/pikaday-angular/pikaday-angular.js') }}"></script>
 </head>
 <body>
-    {% block content %}{% endblock %}
+	<div class="full-height">
+		
+		<div class="top-bar u-clearfix ">
+			<div class="logo u-pull-left">
+				
+			</div>
+			<div class="logged-status u-pull-right">
+				Hello John Doe
+			</div>
+		</div>
+		
+        <div class="container full-height row">
+            <nav class="column column-mid-2 full-height sidebar sidebar--fixed">
+                <ul class="nav-list nav-list--main">
+                    <li><a href="">item</a></li>
+                    <li><a href="">item</a></li>
+                    <li><a href="">item</a></li>
+                    <li><a href="">item</a></li>
+                    <li><a href="">item</a></li>
+                </ul>
+            </nav>
+            <div class="column column-mid-10 column-mid-offset-2 main-content">
+                {% block content %}{% endblock %}
+            </div>
+        </div>
+    </div>
 </body>
 </html>
