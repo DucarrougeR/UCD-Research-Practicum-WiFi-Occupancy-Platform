@@ -1,5 +1,5 @@
 import unittest, sys, os, tempfile
-from app.mod_db.QueryBuilder import QueryBuilder
+#from app.mod_db.QueryBuilder import QueryBuilder
 
 class DataTests(unittest.TestCase):
     ''' Data cleaning and formatting '''
