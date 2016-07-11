@@ -29,21 +29,18 @@ df1['room'] = df1['room'].str.strip()
 #Normalizing the room data field
 df1['room'] = df1['room'].map(lambda x: x.replace('-', ''))
 
-df_quarter = df1.time.str.contains("... ... .. ...(13|14|15|16|17)... ......... ....", regex=True, na=False)
-df1 = df1[df_quarter]
+# df_quarter = df1.time.str.contains("... ... .. ...(13|14|15|16|17)... ......... ....", regex=True, na=False)
+# df1 = df1[df_quarter]
 
 ''' Normalizing the Time data field for merging dataframe later on '''
 #remove trailing string part
 df1['time'] = df1['time'].map(lambda x: x.replace(' GMT+00:00 2015', ''))
-#remove info about minutes and seconds
-df1['time'] = df1['time'].map(lambda x: x[:-5])
-#replace the minutes and seconds to identical format as other dataframes
-df1['time'] = df1['time'].map(lambda x: x + '00:00')
+
 
 df1.to_csv("data/clean/formattedLogs.csv")
 print('Logs data has been cleaned')
 
-# ##########################################################################
+##########################################################################
 
 # FORMATTING GROUND TRUTH FILE
 df2 = pd.read_csv("data/clean/gt_clean.csv")
@@ -56,10 +53,10 @@ df2[['occupancyCount']] = df2[['occupancyCount']].apply(pd.to_numeric)
 df2['occupancyCount'] = df2['occupancyCount'] * df2['capacity'] /100
 
 df2.to_csv("data/clean/formattedGroundTruthData.csv")
-# df2.head()
+#df2.head()
 print('Ground Truth Data has been cleaned')
-    
-# ##########################################################################
+
+##########################################################################
 
 # FORMATTING TIME TABLE FILE
 df3 = pd.read_csv("data/clean/timetable_clean.csv")
@@ -88,37 +85,49 @@ DF.drop('Unnamed: 0_y', axis=1, inplace=True)
 d3 = pd.read_csv("data/clean/formattedTimeTable.csv")
 # d3.head()
 DFinal =  pd.merge(DF, d3, left_on=["room",'time'], right_on=["room", "time"], how='outer', left_index=False, right_index=False)
+
 # DFinal.head(50)
 
 
 ##########################################################################
 ''' Creating Dataframe to match DB schema's tables '''
 
-Building_DB = DFinal[['room','building','campus','capacity']]
-# Drop Nan values from dataframe
-Building_DB = Building_DB.dropna(axis=0, how='any')
+Rooms_DB = DFinal[['room','building','campus','capacity']]
+
 # Remove duplicates in dataframe
-Building_DB = Building_DB.drop_duplicates(subset='room', keep='first')
+Rooms_DB = Rooms_DB.drop_duplicates(subset='room', keep='first')
 
-# Building_DB.head()
+Rooms_DB.loc[Rooms_DB.room == "B002", 'capacity'] = 90
+Rooms_DB.loc[Rooms_DB.room == "B003", 'capacity'] = 90
+Rooms_DB.loc[Rooms_DB.room == "B004", 'capacity'] = 160
 
-Data_DB = DFinal[['room', 'time', 'associated', 'authenticated', 'occupancy', 'occupancyCount']]
-# Data_DB.head()
+Rooms_DB.loc[Rooms_DB.room == "B1.06", 'building'] = "Computer Science"
+Rooms_DB.loc[Rooms_DB.room == "B1.06", 'campus'] = "Belfield"
 
-Class_DB = DFinal[['room', 'time', 'module', 'size']]
+Rooms_DB.loc[Rooms_DB.room == "B1.08", 'building'] = "Computer Science"
+Rooms_DB.loc[Rooms_DB.room == "B1.08", 'campus'] = "Belfield"
 
-# ''' No need to change the 'NaN' values 
+Rooms_DB.columns = ["room_number", "room_building", "room_campus", "room_capacity"]
+# Rooms_DB.head()
+
+Counts_DB = DFinal[['room', 'time', 'module', 'associated', 'authenticated', 'occupancy', 'occupancyCount']]
+Counts_DB.columns = ['counts_room_number', 'counts_time', 'counts_module_code', 'counts_associated', 'counts_authenticated', 'counts_truth_percent', 'counts_truth']
+# Counts_DB.head()
+
+Classes_DB = DFinal[['room', 'time', 'module', 'size']]
+Classes_DB.columns = ['classes_module_code', 'classes_time', 'classes_room_number', 'classes_size']
+# ''' No need to change the 'NaN' values
 # to_sql supports writing NaN values (will be written as NULL) '''
-# Class_DB.head()
+# Classes_DB.head()
 
 ##########################################################################
-#''' Writting dataframe to sql files '''
+''' Writting dataframe to sql files '''
 
 con = sqlite3.connect('database.db')
 cur= con.cursor()
 
-Building_DB.to_sql('building', con,  flavor='sqlite', if_exists='replace', index=False, chunksize=None)
-Data_DB.to_sql('data', con,  flavor='sqlite', if_exists='replace', index=False, chunksize=None)
-Class_DB.to_sql('class', con, flavor='sqlite', if_exists='replace', index=False, chunksize=None)
+Rooms_DB.to_sql('rooms', con,  flavor='sqlite', if_exists='replace', index=False, chunksize=None)
+Counts_DB.to_sql('counts', con,  flavor='sqlite', if_exists='replace', index=False, chunksize=None)
+Classes_DB.to_sql('classes', con, flavor='sqlite', if_exists='replace', index=False, chunksize=None)
 
 print('Tables created')
