@@ -23,7 +23,8 @@ class SignupForm(Form):
         if not Form.validate(self):
             return False
 
-        user = User.query.filter_by(email=self.email.data.lower()).first()
+        #user = User.query.filter_by(email=self.email.data.lower()).first()
+        user = User.select().where(User.email == self.email.data.lower())
         if user:
             self.email.errors.append("That email is already taken")
             return False
@@ -44,7 +45,9 @@ class LoginForm(Form):
         if not Form.validate(self):
             return False
 
-        user = User.query.filter_by(email=self.email.data.lower()).first()
+        user = User.select().where(User.email == self.email.data.lower()).get()
+
+        #user = User.query.filter_by(email=self.email.data.lower()).first()
         if user and user.check_password(self.password.data):
             return True
         else:

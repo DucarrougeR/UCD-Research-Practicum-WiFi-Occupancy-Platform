@@ -17,7 +17,7 @@ login_manager = LoginManager()
 
 @app.route('/')
 def index():
-    building = Building.query.filter_by(room="B002").first()
+    building = Building.query.filter_by(building="Computer Science").first()
     print(building.capacity)
     return render_template("index.html")
 

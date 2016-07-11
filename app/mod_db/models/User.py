@@ -1,17 +1,21 @@
 # Luke Kearney
 from werkzeug.security import generate_password_hash, check_password_hash
 from app.mod_db import db
+from peewee import *
+from .BaseModel import BaseModel
 
-class User(db.Model):
-    __tablename__ = 'user'
-    id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String(100))
-    password = db.Column(db.String(100))
+class User(BaseModel):
+    id = IntegerField(primary_key=True, null=True)
+    email = CharField()
+    password = CharField()
 
 
     def __init__(self, email, password_plain):
+        super(BaseModel,self).__init__()
+
         self.email = email.lower()
         self.set_password(password_plain)
+        self.save()
 
     def set_password(self, password_plain):
         self.password = generate_password_hash(password_plain)

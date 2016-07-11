@@ -9,3 +9,4 @@ CSRF_ENABLED = True
 CSRF_SESSION_KEY = 'secret'
 WTF_CSRF_ENABLED = True
 SECRET_KEY = 'secret'
+DATABSASE = 'database.db'

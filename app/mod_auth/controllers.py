@@ -28,11 +28,13 @@ def signup():
         if form.validate() == False:
             return render_template('auth/signup.html', form=form)
         else:
-            newuser = User(form.email.data, form.password.data)
-            db.session.add(newuser)
-            db.session.commit()
+            user = User(form.email.data, form.password.data)
+            # newuser.create(email=form.email.date)
+            #user = User.create(email=form.email.data, password=form.password.data)
+            # db.session.add(newuser)
+            # db.session.commit()
 
-            session['email'] = newuser.email
+            #session['email'] = user.email
 
             return "[1] Create a new user [2] sign in the user [3] redirect to the user's profile"
 
@@ -59,8 +61,9 @@ def login():
 
     elif request.method == 'GET':
         # check if the user session already exists
-        if 'email' in session:
-            return session['email']
+        # if 'email' in session:
+        #     return session['email']
+        pass
 
     return render_template('auth/login.html', form=form)
 
