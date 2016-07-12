@@ -2,7 +2,7 @@ import os
 import sqlite3
 from flask import Flask, request, session, g, redirect, url_for, abort, \
      render_template, flash
-	 
+
 # Create the application
 app = Flask(__name__, static_url_path='')
 app.config.from_object(__name__)
@@ -22,40 +22,34 @@ def connect_db():
     return rv
 
 def get_db():
-    # Opens database connection 
+    # Opens database connection
     if not hasattr(g, 'sqlite_db'):
         g.sqlite_db = connect_db()
     return g.sqlite_db
-
 
 @app.teardown_appcontext
 def close_db(error):
     # Closes the database after request
     if hasattr(g, 'sqlite_db'):
         g.sqlite_db.close()
-	
+
 def init_db():
-	db = get_db()
-	with app.open_resource("schema.sql", more='r') as f:
-		db.cursor().executescript(f.read())
-	db.commit()
+    db = get_db()
+    with app.open_resource("schema.sql", more='r') as f:
+        db.cursor().executescript(f.read())
+    db.commit()
 
 @app.cli.command('initdb')
 def initdb_command():
-	# initialize database
-	init_db()
-	print ("Database initialized")
+    # initialize database
+    init_db()
+    print ("Database initialized")
 
-
-	
 if __name__ == '__main__':
     #init_db()
     app.run()
 	
-	
-	
-	
-	
+
 '''sources
 engine creation: http://docs.sqlalchemy.org/en/latest/core/engines.html
 video for SQLAlchemy https://www.youtube.com/watch?v=f_-ApViOv20
