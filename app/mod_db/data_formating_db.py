@@ -131,3 +131,37 @@ Counts_DB.to_sql('counts', con,  flavor='sqlite', if_exists='replace', index=Fal
 Classes_DB.to_sql('classes', con, flavor='sqlite', if_exists='replace', index=False, chunksize=None)
 
 print('Tables created')
+
+
+""" 
+Duplicates each ground truth observation to the entire hour in which it takes place. 
+NB: O(n^2) over the entire database. Proceed with caution!  
+
+"""
+con = sqlite3.connect("database.db")
+
+# Gets the rows containing ground truth observations. 
+df = pd.read_sql_query("SELECT * FROM counts", con)
+df_gt = df[pd.notnull(df["counts_truth"])]
+
+# Iterates over the rows containing ground truth observations. 
+for row in df_gt.itertuples():
+    gt_dayhr, gt_mn, gt_sc = row[2].split(":")
+    gt_value = row[7]
+    gt_pc_value = row[6]
+    gt_room = row[1]
+    
+    # Iterates over the original dataframe.
+    for i, row in df.iterrows():
+        # Reads the room and time values. 
+        lg_room = row["counts_room_number"]
+        lg_dayhr, lg_mn, lg_sc = row["counts_time"].split(":")
+        
+        # Writes corresponding ground truth to log files by the hour. 
+        if lg_dayhr == gt_dayhr and lg_room == gt_room:
+            df.set_value(i, "counts_truth_percent", gt_pc_value)
+            df.set_value(i, "counts_truth", gt_value)
+
+df.to_sql("counts", con, if_exists="replace", index="False", chunksize=None)
+
+
