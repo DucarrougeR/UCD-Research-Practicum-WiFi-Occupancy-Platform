@@ -1,20 +1,28 @@
-import unittest, sys, os, tempfile
+import unittest, sys, os, tempfile, sqlite3
 from app.mod_db.QueryBuilder import QueryBuilder
 from app.mod_db import theApp
+import pandas as pd
 
-# class DataTests(unittest.TestCase):
-#     ''' Data cleaning and formatting '''
-#     # Manually tests the correctness of some rows in the master log data.
-#     def test_log_data_correctness(self):
-#         self.assertEqual(foo, bar)
-#
-#     # Manually tests the correctness of some rows in the ground truth data.
-#     def test_ground_truth_data_correctness(self):
-#         pass
-#
-#     # Manually tests the correctness of some rows in the timetable data.
-#     def test_timetable_data_correctness(self):
-#         pass
+class DataIntegrityTests(unittest.TestCase):
+    # Creates a SQL connection to our SQLite database.
+    con = sqlite3.connect("../mod_db/database.db")
+
+    df = pd.read_sql_query("SELECT * from counts", con)
+
+    # Manually tests the correctness of some rows in the log and ground truth data.
+    def test_counts_integrity(self):
+        df = pd.read_sql_query("SELECT * from counts WHERE counts_time =='Fri Nov 13 12:25:21' AND counts_room_number == 'B003'", con)    
+        self.assertEqual(df["counts_assocated"], 27.0)
+        self.assertEqual(df["counts_truth"], 22.5)
+        
+        df = pd.read_sql_query("SELECT * from counts WHERE counts_time =='Tue Nov 03 11:50:25' AND counts_room_number == 'B003'", con)    
+        self.assertEqual(df["counts_assocated"], 71.0)
+        self.assertEqual(df["counts_truth"], 67.5)
+
+    # Manually tests the correctness of some rows in the timetable data.
+    def test_timetable_integrity(self):
+        df = pd.read_sql_query("SELECT * from classes WHERE classes_time =='Tue Nov 03 14:00:00' AND classes_room =='B004'", con)  
+        pass
 
 class DataBaseTests(unittest.TestCase):
     ''' Database '''
