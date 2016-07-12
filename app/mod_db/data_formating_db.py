@@ -3,6 +3,7 @@
 import pandas as pd
 import csv
 import sqlite3
+import config
 
 # FORMATTING LOGS FILE
 df = pd.read_csv("data/clean/logs_clean.csv")
@@ -123,7 +124,7 @@ Classes_DB.columns = ['classes_module_code', 'classes_time', 'classes_room_numbe
 ##########################################################################
 ''' Writting dataframe to sql files '''
 
-con = sqlite3.connect('database.db')
+con = sqlite3.connect(config.DATABASE)
 cur= con.cursor()
 
 Rooms_DB.to_sql('rooms', con,  flavor='sqlite', if_exists='replace', index=False, chunksize=None)

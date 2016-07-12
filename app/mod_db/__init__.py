@@ -5,7 +5,7 @@ import config
 # creates a SQLAlchemy instance using the app config (see app/__init__.py)
 #db = SQLAlchemy(app)
 
-db = SqliteDatabase(config.DATABSASE)
+db = SqliteDatabase(config.DATABASE)
 
 # imports the models
 from .models import User
