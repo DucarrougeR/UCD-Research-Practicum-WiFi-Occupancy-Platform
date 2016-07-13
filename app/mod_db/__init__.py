@@ -8,7 +8,8 @@ import config
 db = SqliteDatabase(config.DATABASE)
 
 # imports the models
-from .models import User
+from .models import *
+
 
 db.connect()
 

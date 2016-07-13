@@ -18,15 +18,15 @@ from .BaseModel import BaseModel
 
 class Rooms(BaseModel):
 
-    rooms_rooms_number = CharField(null=False, primary_key=True)
-    rooms_build = CharField(null=False)
-    rooms_campus = CharField(null=False)
-    rooms_capacity = IntegerField()
+    room_number = CharField(null=False, primary_key=True)
+    room_building = CharField(null=False)
+    room_campus = CharField(null=False)
+    room_capacity = IntegerField()
 
-    def __init__(self, room, building, campus, capacity):
+    def __init__(self):
         super(BaseModel, self).__init__()
-        self.rooms_rooms_number = room
-        self.rooms_build = building
-        self.rooms_campus = campus
-        self.rooms_capacity = capacity
+        # self.rooms_rooms_number = room
+        # self.rooms_build = building
+        # self.rooms_campus = campus
+        # self.rooms_capacity = capacity
 
