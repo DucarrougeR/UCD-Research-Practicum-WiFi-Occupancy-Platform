@@ -24,7 +24,18 @@ def hello():
 def occupancy_data(room, time=None):
     data = Counts.select().where(Counts.counts_room_number == room)
     print(len(data))
-    # for d in data:
-    #     print(d)
+    join_cond = (Rooms.room_number == Counts.counts_room_number)
+    results = Rooms.select(Rooms, Counts).join(Counts, on=join_cond).where(
+        (Rooms.room_number == room) & (Counts.counts_time ** "%Nov 02%")).naive()
 
-    return jsonify("hello")
+    results_list = []
+
+    for result in results:
+        print(result.counts_time)
+        fields = Counts._meta.sorted_field_names + Rooms._meta.sorted_field_names
+        results_dict = {}
+        for field in fields:
+            results_dict[field] = getattr(result, field)
+        results_list.append(results_dict)
+
+    return jsonify({"results" : results_list})
