@@ -1,1 +1,27 @@
-{{ greeting }}
+<div class="container content-container row">
+    <form class="form-inline" ng-submit="submit()">
+        <label class="column-mid-5 column">
+            Room:
+            <select aria-label="Select a room" ng-model="formData.room">
+                <option value="B001" selected>B001</option>
+                <option value="B002">B002</option>
+                <option value="B003">B003</option>
+                <option value="B004">B004</option>
+            </select>
+            
+        </label>
+        <div class="column-mid-6 column">
+            Date:
+            <input pikaday="example.myPickerObject" format="DD/MM/YYYY" ng-model="formData.date">
+        </div>
+        <input type="submit">
+    </form>
+</div>
+<div class="container content-container row">
+    <h2>Occupancy:</h2>
+    <div class="column-mid-6 column text-center text-heading">25%</div>
+    <div class="column-mid-6 column text-center text-heading">30%</div>
+</div>
+<div class="chart container content-container row">
+    <canvas id="line" class="chart chart-line" chart-data="data" chart-labels="labels" chart-legend="true" chart-series="series" chart-click="onClick" style="margin:auto;height:200px"></canvas>
+</div>

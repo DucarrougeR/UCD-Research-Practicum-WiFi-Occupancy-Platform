@@ -1,5 +1,4 @@
 class QueryBuilder:
-
     def __init__(self):
         self._action = 'SELECT'
         self._joins = []
@@ -9,11 +8,11 @@ class QueryBuilder:
         self._wheres = []
         self._or_wheres = []
         self._operators = ['=',
-         '<',
-         '>',
-         '<=',
-         '>=',
-         '!=']
+                           '<',
+                           '>',
+                           '<=',
+                           '>=',
+                           '!=']
         self._params_count = 0
         self._limit = None
         self._query = ''
@@ -29,14 +28,14 @@ class QueryBuilder:
             return True
         return False
 
-    def select(self, table, fields = []):
+    def select(self, table, fields=[]):
         if len(fields) > 0:
             self._action_fields = fields
         self._action = 'SELECT'
         self._table = table
         return self
 
-    def insert(self, table, fields = [], values = []):
+    def insert(self, table, fields=[], values=[]):
         pass
 
     def update(self):
@@ -45,13 +44,13 @@ class QueryBuilder:
     def delete(self):
         pass
 
-    def where(self, column = '', op = '', value = ''):
+    def where(self, column='', op='', value=''):
         if not self._valid_operator(op):
             raise ValueError('Operator given is not valid')
         self._wheres.append([column, op, str(value)])
         return self
 
-    def or_where(self, column = '', op = '', value = ''):
+    def or_where(self, column='', op='', value=''):
         if not self._valid_operator(op):
             raise ValueError('Operator given is not valid')
         self._or_wheres.append([column, op, str(value)])
@@ -63,9 +62,9 @@ class QueryBuilder:
         if not self._valid_operator(op):
             raise ValueError(op + ' is not a valid operator')
         self._joins.append([table,
-         table_val_1,
-         op,
-         table_val_2])
+                            table_val_1,
+                            op,
+                            table_val_2])
         return self
 
     def query(self):
