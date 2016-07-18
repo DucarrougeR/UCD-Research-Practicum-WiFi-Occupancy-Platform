@@ -15,10 +15,10 @@ from .BaseModel import BaseModel
 #         self.size = size
 
 class Classes(BaseModel):
-    classes_module_code = CharField(null=False, primary_key=True)
+    classes_module_code = CharField(null=False)
     classes_size = CharField(null=False)
     classes_room_number = CharField(null=False)
-    classes_time = IntegerField(primary_key=True)
+    classes_time = IntegerField(null=False)
 
     def __init__(self, room, time, module, size):
         super(BaseModel, self).__init__()
@@ -26,4 +26,7 @@ class Classes(BaseModel):
         self.classes_time = time
         self.classes_module_code = module
         self.classes_size = size
+
+    class Meta:
+        primary_key = CompositeKey('classes_module_code', 'classes_time')
 

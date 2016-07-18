@@ -19,19 +19,22 @@ from .BaseModel import BaseModel
 #         self.occupancyCount = occupancy_count
 
 class Counts(BaseModel):
-    counts_room_number = CharField(null=False, primary_key=True)
-    counts_time = DateTimeField(primary_key=True)
-    counts_module_code = DateTimeField(primary_key=True)
+    counts_room_number = CharField(null=False)
+    counts_time = DateTimeField(null=False)
+    counts_module_code = DateTimeField(null=False)
     counts_associated = IntegerField()
     counts_authenticated = IntegerField()
     counts_truth_percent = CharField()
     counts_truth = IntegerField()
 
-    def __init__(self, room, time, associated, authenticated, occupancy, occupancy_count):
+    def __init__(self):
         super(BaseModel, self).__init__()
-        self.room = room
-        self.time = time
-        self.associated = associated
-        self.authenticated = authenticated
-        self.occupancy = occupancy
-        self.occupancyCount = occupancy_count
+        # self.room = room
+        # self.time = time
+        # self.associated = associated
+        # self.authenticated = authenticated
+        # self.occupancy = occupancy
+        # self.occupancyCount = occupancy_count
+
+    class Meta:
+        primary_key = CompositeKey('counts_room_number', 'counts_time')

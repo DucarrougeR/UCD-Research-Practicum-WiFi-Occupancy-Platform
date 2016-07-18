@@ -17,13 +17,16 @@ login_manager = LoginManager()
 
 @app.route('/')
 def index():
-    building = Building.query.filter_by(building="Computer Science").first()
-    print(building.capacity)
+    join_cond = (Rooms.room_number == Counts.counts_room_number)
+    building = Rooms.select(Rooms, Counts).join(Counts, on=join_cond).where((Rooms.room_number=="B002") & (Counts.counts_time ** "%Nov 02%")).naive()
+    print(building.sql())
+    for item in building:
+        print(item.counts_time)
     return render_template("index.html")
 
 # development use
 @app.route('/static/<path:path>')
-def send_js(path):
+def send_static(path):
     print(path)
     return send_from_directory(url_for("static"), path)
 

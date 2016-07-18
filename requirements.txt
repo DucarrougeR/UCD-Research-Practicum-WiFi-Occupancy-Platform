@@ -5,3 +5,5 @@ Flask_login
 nose
 flask_sqlalchemy
 flask_wtf
+pandas
+peewee
