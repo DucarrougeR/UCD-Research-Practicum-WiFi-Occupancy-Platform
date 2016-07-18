@@ -3,6 +3,8 @@ from app.mod_db.QueryBuilder import QueryBuilder
 from app.mod_db import theApp
 import pandas as pd
 import config
+import app.mod_api.controllers
+import app.mod_api.models
 
 class DataIntegrityTests(unittest.TestCase):
     # Creates a SQL connection to our SQLite database.
@@ -13,19 +15,18 @@ class DataIntegrityTests(unittest.TestCase):
 
     # Manually tests the correctness of some rows in the log and ground truth data.
     def test_counts_integrity(self):
-<<<<<<< HEAD
-        df = pd.read_sql_query("SELECT * from counts WHERE counts_time =='Fri Nov 13 12:25:21' AND counts_room_number == 'B003'", con)    
-        self.assertEqual(df["counts_associated"], 27.0)
-        self.assertEqual(df["counts_truth"], 22.5)
-        
-        df = pd.read_sql_query("SELECT * from counts WHERE counts_time =='Tue Nov 03 11:50:25' AND counts_room_number == 'B003'", con)    
-        self.assertEqual(df["counts_associated"], 71.0)
-        self.assertEqual(df["counts_truth"], 67.5)
+        # df = pd.read_sql_query("SELECT * from counts WHERE counts_time =='Fri Nov 13 12:25:21' AND counts_room_number == 'B003'", con)
+        # self.assertEqual(df["counts_associated"], 27.0)
+        # self.assertEqual(df["counts_truth"], 22.5)
+        #
+        # df = pd.read_sql_query("SELECT * from counts WHERE counts_time =='Tue Nov 03 11:50:25' AND counts_room_number == 'B003'", con)
+        # self.assertEqual(df["counts_associated"], 71.0)
+        # self.assertEqual(df["counts_truth"], 67.5)
+        pass
 
     # Manually tests the correctness of some rows in the timetable data.
     def test_timetable_integrity(self):
-        #df = pd.read_sql_query("SELECT * from classes WHERE classes_time =='Tue Nov 03 14:00:00' AND classes_room =='B004'", con)  
-=======
+        #df = pd.read_sql_query("SELECT * from classes WHERE classes_time =='Tue Nov 03 14:00:00' AND classes_room =='B004'", con)
 
         # df = pd.read_sql_query("SELECT * from counts WHERE counts_time =='Fri Nov 13 12:25:21' AND counts_room_number == 'B003'", self.con)
         #
@@ -43,8 +44,35 @@ class DataIntegrityTests(unittest.TestCase):
         #
         #
         # df = pd.read_sql_query("SELECT * from classes WHERE classes_time =='Tue Nov 03 14:00:00' AND classes_room_number =='B004'", con)
->>>>>>> c9a36134b7a4bce7318a8fd57f5644cee7ee259e
         pass
+
+    # def test_timetable_integrity(self):
+    #     # con = sqlite3.connect(config.DATABASE)
+    #     #
+    #     #
+    #     # df = pd.read_sql_query("SELECT * from classes WHERE classes_time =='Tue Nov 03 14:00:00' AND classes_room_number =='B004'", con)
+    #     pass
+
+class APITests(unittest.TestCase):
+    def valid_date_test(self):
+        failed = app.mod_api.models.is_valid_date("XYZ Jul 04 2016") and app.mod_api.models.is_valid_date("Mon ABC 04 2016") \
+                 and app.mod_api.models.is_valid_date("Mon Aug 32 2016")
+        success = app.mod_api.models.is_valid_date("Mon Jul 04 2016")
+        assert failed == False and success == True
+
+    def parse_date_test(self):
+        assert len(app.mod_api.models.parse_date("Mon Jul 04 2016")) == 4
+
+class APITests(unittest.TestCase):
+    def valid_date_test(self):
+        failed = app.mod_api.models.is_valid_date("XYZ Jul 04 2016") and app.mod_api.models.is_valid_date("Mon ABC 04 2016") \
+                 and app.mod_api.models.is_valid_date("Mon Aug 32 2016")
+        success = app.mod_api.models.is_valid_date("Mon Jul 04 2016")
+        assert failed == False and success == True
+
+    def parse_date_test(self):
+        assert len(app.mod_api.models.parse_date("Mon Jul 04 2016"))
+
 
 class DataBaseTests(unittest.TestCase):
     ''' Database '''

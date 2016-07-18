@@ -1,0 +1,11 @@
+<div class="container content-container row">
+    <div class="login-modal">
+        <form ng-submit="submit()">
+            <label>User <input type="text" ng-model="username" ng-keypress="submit()"></label>
+            <label><input type="password" ng-model="password" ng-keypress="submit()"></label>
+            <input type="submit">
+            Your username is: {{ username }}
+            Your password is: {{ password }}
+        </form>
+    </div>
+</div>

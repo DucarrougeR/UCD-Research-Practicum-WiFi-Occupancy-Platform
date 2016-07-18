@@ -16,14 +16,17 @@ def ols(df, lsplot_path, predplot_path):
     Fits a simple OLS model on ground-truth count and tests it on the data. 
     Arguments: dataframe, file path to save the least-squares plot, file path to
     save predictions plot. 
-    Returns a list containing the model R-squared, the overall model significance
-    and the explained variance score.     
+    Returns a list containing the model R-squared, the overall model significance,
+    the explained variance score and the time of query. 
     """
 
     print("""
-    LINEAR MODEL AT 00:15 TIME 
+    LINEAR MODEL 
     ___________________________________
     """)
+
+    # Stores the time for output.
+    query_time = df.counts_time.max()
 
     # Trains the model and prints the output. 
     lrm = sm.ols(formula="counts_truth ~  counts_associated", data=df).fit()
@@ -54,6 +57,7 @@ def ols(df, lsplot_path, predplot_path):
     y = df["counts_truth"]
     X = np.array(df["counts_associated"].reshape(-1, 1))
     lrm = LinearRegression()    
+
     lrm.fit(X, y)
 
     # Prints the model R-squared. 
@@ -85,7 +89,87 @@ def ols(df, lsplot_path, predplot_path):
     plt.yticks(())
     plt.savefig(predplot_path, fmt="png", dpi=100)
 
-    return [rsquared, model_p, vscore]
+    return [rsquared, model_p, vscore, query_time]
+
+def ols_authen(df, lsplot_path, predplot_path):
+    """
+    Fits a simple OLS model on ground-truth count 
+    using authenticated count and tests it on the data. 
+    Arguments: dataframe, file path to save the least-squares plot, file path to
+    save predictions plot. 
+    Returns a list containing the model R-squared, the overall model significance,
+    the explained variance score and the time of query. 
+    """
+
+    print("""
+    LINEAR MODEL 
+    ___________________________________
+    """)
+
+    # Stores the time for output.
+    query_time = df.counts_time.max()
+    
+    # Trains the model and prints the output. 
+    lrm = sm.ols(formula="counts_truth ~  counts_authenticated", data=df).fit()
+    print(lrm.summary())
+
+    # Separately prints the model R-squared, P-values, confidence intervals and overall model significance. . 
+    print("Model R-squared: ", lrm.rsquared)
+    print("P-values:\n", lrm.pvalues)
+    print("Confidence interval for model coefficients:\n", lrm.conf_int())    
+    model_p = lrm.f_pvalue
+    print("Overall model significance: ", model_p)
+
+    # Creates a dataframe with the minimum and maximum values of counts_associated.
+    df_minmax = pd.DataFrame({"counts_authenticated": [df.counts_associated.min(), df.counts_associated.max()]})
+
+    # Makes predictions for those values.
+    preds = lrm.predict(df_minmax)
+
+    # Plots the observed data.  
+    df.plot(kind="scatter", x="counts_authenticated", y="counts_truth")
+
+    # Plots the least-squares line. 
+    plt.plot(df_minmax, preds, c="red", linewidth=2)
+    plt.savefig(lsplot_path, fmt="png", dpi=100)
+
+    # Re-runs the regression using scikit-learn. 
+    print("\nSCIKIT")    
+    y = df["counts_truth"]
+    X = np.array(df["counts_authenticated"].reshape(-1, 1))
+    lrm = LinearRegression()    
+    lrm.fit(X, y)
+
+    # Prints the model R-squared. 
+    rsquared = lrm.score(X, y)
+    print("Model R-squared: ", rsquared)
+    
+    # Splits the dataset into 60% training and 40% testing. 
+    df_train, df_test = train_test_split(df, test_size = 0.4, random_state = 5)
+
+    # Trains model on the training set.
+    y_train = df_train["counts_truth"]
+    X_train = np.array(df_train["counts_authenticated"].reshape(-1, 1))    
+    lrm_train = LinearRegression()
+    lrm_train.fit(X_train, y_train)
+    
+    # Tests model on the test set. 
+    y_test = df_test["counts_truth"]
+    X_test = np.array(df_test["counts_authenticated"].reshape(-1, 1))    
+    # Prints mean-squared error (MSE).  
+    print("Residual sum of squares: %.2f" % np.mean((lrm_train.predict(X_test) - y_test) ** 2))
+    # Prints explained variance score (1 is perfect prediction). 
+    vscore = lrm_train.score(X_test, y_test)
+    print('Variance score (1 = perfect prediction): %.2f' % vscore)
+
+    # Plots outputs.
+    plt.scatter(X_test, y_test, color="black")
+    plt.plot(X_test, lrm_train.predict(X_test), color="blue", linewidth=3)
+    plt.xticks(())
+    plt.yticks(())
+    plt.savefig(predplot_path, fmt="png", dpi=100)
+
+    return [rsquared, model_p, vscore, query_time]
 
     
 def ols_bin(df, lsplot_path, predplot_path):
@@ -94,14 +178,17 @@ def ols_bin(df, lsplot_path, predplot_path):
     data, binning predictions to the nearest category. 
     Arguments: dataframe, file path to save the least-squares plot, file path to
     save predictions plot.     
-    Returns a list containing the model R-squared, the overall model significance
-    and the accuracy score.     
+    Returns a list containing the model R-squared, the overall model significance, 
+    the accuracy score and the query time. 
     """
 
     print("""
-    LINEAR MODEL AT 00:15 TIME, BINNING PREDICTIONS TO THE NEAREST CATEGORY
+    LINEAR MODEL, BINNING PREDICTIONS TO THE NEAREST CATEGORY
     ___________________________________
     """)
+
+    # Stores the time for output.
+    query_time = df.counts_time.max()    
 
     # Trains a linear model using the percentage count.
     lrm = sm.ols(formula="counts_truth_percent ~  counts_associated", data=df).fit()
@@ -171,20 +258,24 @@ def ols_bin(df, lsplot_path, predplot_path):
     plt.yticks(())
     plt.savefig(predplot_path, fmt="png", dpi=100)
 
-    return [rsquared, model_p, ascore]
+    return [rsquared, model_p, ascore, query_time]
     
 def logit(df, predplot_path):
     """
     Fits a logistic model on percentage ground truth and tests it on the data. 
     Arguments: dataframe, file path to save predictions plot.     
-    Returns a list containing the model pseudo R-squared and the accuracy score.     
+    Returns a list containing the model pseudo R-squared, the accuracy score
+    and the query time.     
     """
     
     print("""
-    LOGISTIC MODEL AT 00:15 TIME 
+    LOGISTIC MODEL 
     ___________________________________
     """)
 
+    # Stores the time for output.
+    query_time = df.counts_time.max()    
+    
     # Trains a logit model using the percentage count. Prints the coefficients and their significance levels. 
     y = df["counts_truth_percent"]
     X = df["counts_associated"]
@@ -234,7 +325,7 @@ def logit(df, predplot_path):
     plt.yticks(())
     plt.savefig(predplot_path, fmt="png", dpi=100)
 
-    return [pseudo_r, ascore]
+    return [pseudo_r, 0, ascore, query_time]
 
 def ordlogit(df):
     """
@@ -246,7 +337,7 @@ def ordlogit(df):
     import rpy2.robjects as ro
 
     print("""
-    ORDINAL LOGISTIC MODEL AT 00:15 TIME 
+    ORDINAL LOGISTIC MODEL 
     ___________________________________
     """)
 
@@ -291,4 +382,6 @@ def binary_model():
     Specifies a binary logistic model which aims simply to determine whether or not the room is occupied. 
     """
     pass
+
+
 
