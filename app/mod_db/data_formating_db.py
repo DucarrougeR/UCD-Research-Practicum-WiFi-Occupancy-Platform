@@ -113,6 +113,7 @@ Rooms_DB.loc[Rooms_DB.room == "B1.08", 'campus'] = "Belfield"
 Rooms_DB.loc[Rooms_DB.room == "B1.09", 'building'] = "Computer Science"
 Rooms_DB.loc[Rooms_DB.room == "B1.09", 'campus'] = "Belfield"
 
+Rooms_DB['room'].map(lambda x: x.replace('.', ''))
 Rooms_DB.columns = ["room_number", "room_building", "room_campus", "room_capacity"]
 # Rooms_DB.head()
 
@@ -121,12 +122,14 @@ Counts_DB = DFinal[['room', 'time', 'module', 'associated', 'authenticated',
 Counts_DB.columns = ['counts_room_number', 'counts_time', 'counts_module_code',
                      'counts_associated', 'counts_authenticated', 'counts_truth_percent',
                      'counts_truth']
+Counts_DB['counts_room_number'].map(lambda x: x.replace('.', ''))
 # Counts_DB.head()
 
 Classes_DB = DFinal[['room', 'time', 'module', 'size']]
+Classes_DB['room'].map(lambda x: x.replace('.', ''))
+Classes_DB['time'].map(lambda x: x[:-5])
+Classes_DB['time']+"00:00"
 
-Classes_DB['time'] = Classes_DB['time'].map(lambda x: x[:-5])
-Classes_DB['time'] = Classes_DB['time']+"00:00"
 
 Classes_DB.columns = ['classes_room_number', 'classes_time', 'classes_module_code', 'classes_size']
 # Classes_DB.drop_duplicates(subset=['classes_room_number','classes_time'], keep_last=True)
@@ -157,24 +160,24 @@ con = sqlite3.connect("database.db")
 df = pd.read_sql_query("SELECT * FROM counts", con)
 df_gt = df[pd.notnull(df["counts_truth"])]
 
-# Iterates over the rows containing ground truth observations.
-# for row in df_gt.itertuples():
-#     gt_dayhr, gt_mn, gt_sc = row[2].split(":")
-#     gt_value = row[7]
-#     gt_pc_value = row[6]
-#     gt_room = row[1]
-#
-#     # Iterates over the original dataframe.
-#     for i, row in df.iterrows():
-#         # Reads the room and time values.
-#         lg_room = row["counts_room_number"]
-#         lg_dayhr, lg_mn, lg_sc = row["counts_time"].split(":")
-#
-#         # Writes corresponding ground truth to log files by the hour.
-#         if lg_dayhr == gt_dayhr and lg_room == gt_room:
-#             df.set_value(i, "counts_truth_percent", gt_pc_value)
-#             df.set_value(i, "counts_truth", gt_value)
-#
-# df.to_sql("counts", con, if_exists="replace", index="False", chunksize=None)
+# Iterates over the rows containing ground truth observations. (~8min)
+for row in df_gt.itertuples():
+    gt_dayhr, gt_mn, gt_sc = row[2].split(":")
+    gt_value = row[7]
+    gt_pc_value = row[6]
+    gt_room = row[1]
+
+    # Iterates over the original dataframe.
+    for i, row in df.iterrows():
+        # Reads the room and time values.
+        lg_room = row["counts_room_number"]
+        lg_dayhr, lg_mn, lg_sc = row["counts_time"].split(":")
+
+        # Writes corresponding ground truth to log files by the hour.
+        if lg_dayhr == gt_dayhr and lg_room == gt_room:
+            df.set_value(i, "counts_truth_percent", gt_pc_value)
+            df.set_value(i, "counts_truth", gt_value)
+
+df.to_sql("counts", con, if_exists="replace", index="False", chunksize=None)
 
 
