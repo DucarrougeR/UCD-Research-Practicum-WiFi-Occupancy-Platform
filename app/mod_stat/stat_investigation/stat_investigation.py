@@ -6,9 +6,14 @@ def fit_15():
     Fits models using log files at xx:15 for every hour (corresponding 
     to the time the ground truth data was collected) and tests them on the data. 
     """
+
+    print("""
+    RUNNING MODELS AT XX:15 TIME 
+    ___________________________________
+    """)
     
     # Creates a SQL connection to our SQLite database.
-    con = sqlite3.connect("../../mod_db/database.db")    
+    con = sqlite3.connect("../../../database.db")    
 
     # Reads the database at xx:15 for every hour (corresponding to the time the ground truth data was collected). 
     df = pd.read_sql_query("SELECT * from counts WHERE counts_time LIKE '%__:13:%' \
@@ -25,18 +30,34 @@ def fit_15():
     df_obs["counts_truth_percent"] = df_obs["counts_truth_percent"].map(lambda x: x.replace("%", ""))
     df_obs.replace(to_replace={"counts_truth_percent" : {'0': 0, '25': 25, '50': 50, '75': 75, '100':100}}, inplace = True)    
 
-    #ols(df_obs, "plots/ols15.png", "plots/predictions_ols15.png")
-    #ols_bin(df_obs, "plots/ols15_bin.png", "plots/predictions_ols15_bin.png")
-    #logit(df_obs, "plots/predictions_logit.png")
-    #ordlogit(df_obs)
+    # List to store outputs.
+    outputs = []
+    
+    # Fits the models. 
+    outputs.append(ols(df_obs, "plots/ols15.png", "plots/predictions_ols15.png"))
+    outputs.append(ols_bin(df_obs, "plots/ols15_bin.png", "plots/predictions_ols15_bin.png"))
+    outputs.append(logit(df_obs, "plots/predictions_logit.png"))
+    #outputs.append(ordlogit(df_obs))
+
+    best_model = outputs[0]
+    for i in range(0, len(outputs)):
+        if outputs[i][2] > best_model[2]:
+            best_model = outputs[i]
+
+    print("Most predictive model: ", best_model)
 
 def fit_15_outliers():
     """
     Drops rows with significant outliers and reruns the models. 
     """
 
+    print("""
+    RUNNING MODELS AT XX:15 TIME WITHOUT OUTLIERS
+    ___________________________________
+    """)
+
     # Creates a SQL connection to our SQLite database.
-    con = sqlite3.connect("../../mod_db/database.db")    
+    con = sqlite3.connect("../../../database.db")    
 
     # Reads the database at xx:15 for every hour (corresponding to the time the ground truth data was collected). 
     df = pd.read_sql_query("SELECT * from counts WHERE counts_time LIKE '%__:13:%' \
@@ -60,11 +81,21 @@ def fit_15_outliers():
     # Drops outlier rows.
     df_obs = df_obs[df_obs["counts_outliers"] == False]
     
-    # Fits the models. 
-    ols(df_obs, "plots/ols15_outliers.png", "plots/predictions_ols15_outliers.png")
-    ols_bin(df_obs, "plots/ols15_bin_outliers.png", "plots/predictions_ols15_bin_outliers.png")
-    logit(df_obs, "plots/predictions_logit_outliers.png")
-    ordlogit(df_obs)
+    # List to store outputs.
+    outputs = []
+
+    # Fits the models and stores the results in the list. 
+    outputs.append(ols(df_obs, "plots/ols15_outliers.png", "plots/predictions_ols15_outliers.png"))
+    outputs.append(ols_bin(df_obs, "plots/ols15_bin_outliers.png", "plots/predictions_ols15_bin_outliers.png"))
+    outputs.append(logit(df_obs, "plots/predictions_logit_outliers.png"))
+    #outputs.append(ordlogit(df_obs))
+
+    best_model = outputs[0]
+    for i in range(0, len(outputs)):
+        if outputs[i][2] > best_model[2]:
+            best_model = outputs[i]
+
+    print("Most predictive model: ", best_model)
 
     con.close()
 
@@ -73,7 +104,7 @@ def data_quality(df):
     Data quality; descriptive statistics, 
     """
     # Creates a SQL connection to our SQLite database.
-    con = sqlite3.connect("../../mod_db/database.db")    
+    con = sqlite3.connect("../../../database.db")    
 
     print("""
     DATA QUALITY 
@@ -100,15 +131,7 @@ def assoc_vs_authen():
     """
 
     # Creates a SQL connection to our SQLite database.
-    con = sqlite3.connect("../../mod_db/database.db")    
-
-    # Reads the database at xx:15 for every hour (corresponding to the time the ground truth data was collected). 
-    df = pd.read_sql_query("SELECT * from counts WHERE counts_time LIKE '%__:13:%' \
-            OR counts_time LIKE '%__:14:%' OR counts_time LIKE '%__:15:%' OR counts_time LIKE '%__:16:%'\
-            OR counts_time LIKE '%__:17:%'", con)
-    
-    # Creates a SQL connection to our SQLite database.
-    con = sqlite3.connect("../mod_db/database.db")    
+    con = sqlite3.connect("../../../database.db")    
 
     print("""
     COMPARING ASSOCIATED AND AUTHENTICATED COUNTS
@@ -140,6 +163,17 @@ def assoc_vs_authen():
     plt.ylabel("Truth count")
     plt.savefig("plots/associated-X-truth_scatter.png", fmt="png", dpi=100)
 
+    # Reads the database at xx:15 for every hour (corresponding to the time the ground truth data was collected). 
+    df = pd.read_sql_query("SELECT * from counts WHERE counts_time LIKE '%__:13:%' \
+            OR counts_time LIKE '%__:14:%' OR counts_time LIKE '%__:15:%' OR counts_time LIKE '%__:16:%'\
+            OR counts_time LIKE '%__:17:%'", con)
+
+    # Changes the counts_truth column to float. 
+    df["counts_truth"] = df["counts_truth"].astype("float64")
+
+    # Looks only at columns with ground truth observations. 
+    df_obs = df[pd.notnull(df["counts_truth"])]    
+
     # Compares ground_truth to counts_associated to find large outliers. 
     df_obs["counts_difference"] = abs(df_obs["counts_associated"] - df_obs["counts_truth"])    
     df_obs["counts_outliers"] = abs(df_obs["counts_difference"]) > 20 # Cutoff determined through trial and error
@@ -148,7 +182,14 @@ def assoc_vs_authen():
     df_obs = df_obs[df_obs["counts_outliers"] == False]    
 
     # Fits the linear model using associated count. 
-    ols(df_obs, "plots/ols15_associated.png", "plots/predictions_ols15_outliers.png")
+    assoc_ols = ols(df_obs, "plots/ols15_assoc.png", "plots/predictions_ols15_assoc.png")
+
+    # Refits the linear model using authenticated count. 
+    authen_ols = ols_authen(df_obs, "plots/ols15_authen.png", "plots/predictions_ols15_authen.png")
+
+    print("Associated count R-squared: ", assoc_ols[0])    
+    print("Authenticated count R-squared: ", authen_ols[0])
+
     
 def time_window():
     """
@@ -156,28 +197,97 @@ def time_window():
     """
 
     # Creates a SQL connection to our SQLite database.
-    con = sqlite3.connect("../../mod_db/database.db")    
+    con = sqlite3.connect("../../../database.db")    
 
     print("""
-    CHOOSING A TIME WINDOW
+    DETERMINING THE OPTIMAL TIME WINDOW
     ___________________________________
     """)
 
-    df = pd.read_sql_query("SELECT * from counts", con)
+    print("Running models in 5-minute windows")
+    
+    # Lists to store regression outputs.
+    outputs_ols, outputs_ols_bin, outputs_logit, outputs_ordlogit = [], [], [], []
+    
+    # List of times in an hour in five-minute intervals. 
+    times = []
+    for i in range(3, 58):
+        if i < 10:
+            times.append("0" + str(i))
+        else:
+            times.append(str(i))
+    
+    # For each five-minute window in the database. 
+    for i in range(0, len(times), 5):
+        print(times[i], times[i+1], times[i+2], times[i+3], times[i+4])
+        # Reads the database. 
+        query = "SELECT * from counts WHERE counts_time LIKE '%__:(" + str(times[i]) + ":%' \
+                OR counts_time LIKE '%__:" + str(times[i+1]) + ":%' OR counts_time LIKE '%__:" + str(times[i+2]) + ":%' \
+                OR counts_time LIKE '%__:" + str(times[i+3]) +":%'\
+                OR counts_time LIKE '%__:" + str(times[i+4]) + ":%'"
+        df = pd.read_sql_query(query, con)    
 
-    # Changes the counts_truth column to float. 
-    df["counts_truth"] = df["counts_truth"].astype("float64")
+        # Changes the counts_truth column to float. 
+        df["counts_truth"] = df["counts_truth"].astype("float64")
+
+        # Looks only at columns with ground truth observations. 
+        df_obs = df[pd.notnull(df["counts_truth"])]    
+
+        # Formats the counts_truth_percent column.
+        df_obs["counts_truth_percent"] = df_obs["counts_truth_percent"].map(lambda x: x.replace("%", ""))
+        df_obs.replace(to_replace={"counts_truth_percent" : {'0': 0, '25': 25, '50': 50, '75': 75, '100':100}}, inplace = True)    
+        
+        # Compares ground_truth to counts_associated to find large outliers. 
+        df_obs["counts_difference"] = abs(df_obs["counts_associated"] - df_obs["counts_truth"])    
+        df_obs["counts_outliers"] = abs(df_obs["counts_difference"]) > 20 # Cutoff determined through trial and error
+        
+        # Drops outlier rows.
+        df_obs = df_obs[df_obs["counts_outliers"] == False]
+
+        # Fits the models and stores the results in the relevant list. 
+        outputs_ols.append(ols(df_obs, "plots/ols_window_outliers.png", "plots/predictions_ols_window_utliers.png"))
+        outputs_ols_bin.append(ols_bin(df_obs, "plots/ols_window_bin_outliers.png", "plots/predictions_ols_window_bin_outliers.png"))
+        outputs_logit.append(logit(df_obs, "plots/predictions_logit_window_outliers.png"))
+        outputs_ordlogit.append(ordlogit(df_obs))
+        
+    # Loops over all the lists of outputs and finds the most predictive model. 
+    best_ols = outputs_ols[0]
+    best_ols_time = ""
+    for i in range(0, len(outputs_ols)):
+        if outputs_ols[i][2] > best_ols[2]:
+            best_ols = outputs_ols[i]
+    best_ols_bin = outputs_ols_bin[0]
+    for i in range(0, len(outputs_ols_bin)):
+        if outputs_ols_bin[i][2] > best_ols_bin[2]:
+            best_ols_bin = outputs_ols_bin[i]
+    best_logit = outputs_logit[0]
+    for i in range(0, len(outputs_logit)):
+        if outputs_logit[i][2] > best_logit[2]:
+            best_logit = outputs_logit[i]
+    """
+    best_ordlogit = outputs_ols[0]
+    for i in range(0, len(outputs_ordlogit)):
+        if outputs_ordlogit[i][2] > best_ordlogit[2]:
+            best_ordlogit = outputs_ordlogit[i]
+    """
+    
+    print("\nOUTPUT\n")
+    print("Most predictive OLS model: ", best_ols)
+    print("Most predictive OLS model (with bins): ", best_ols_bin)
+    print("Most predictive Logit model: ", best_logit)
+    #print("Most predictive Ordinal Logit model: ", best_ordlogit)    
 
     con.close()
-
 
 # Silences a pandas warning. 
 pd.options.mode.chained_assignment = None
 
+#fit_15()
+#fit_15_outliers()
 #data_quality()   
 #assoc_vs_authen()
 #time_window()
-#fit_15()
-#fit_15_outliers()
+
+
 
 
