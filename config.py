@@ -11,4 +11,4 @@ WTF_CSRF_ENABLED = True
 SECRET_KEY = 'secret'
 DATABASE = 'database.db'
 UPLOAD_FOLDER = 'app/static/uploads'
-ALLOWED_EXTENSIONS = set(['txt', 'zip'])
+ALLOWED_EXTENSIONS = set(['txt', 'zip', 'csv'])
