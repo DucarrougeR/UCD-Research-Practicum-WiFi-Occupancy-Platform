@@ -5,7 +5,7 @@
 	padding-top:1em;
 	padding-right:1em;
 	li {
-		border-top:1px solid rgba($color-text, 0.25);
+		//border-top:1px solid rgba($color-text, 0.25);
 		a {
 			color:$color-text;
 			display:block;
@@ -15,9 +15,9 @@
 			}
 		}
 
-		&:last-of-type {
-			border-bottom:1px solid rgba($color-text, 0.25);
-		}
+		// &:last-of-type {
+		// 	border-bottom:1px solid rgba($color-text, 0.25);
+		// }
 	}
 	
 }
@@ -70,6 +70,48 @@
 .drop-box {
 	width:100%;
 	padding:5em;
+	box-sizing:border-box;
 	text-align:center;
-	background-color: #F3F6F4;
+	background-color: $color-background-secondary;
+	border: 5px dashed rgba($color-text-accent, 0.25);
 }
+
+.bg-secondary {
+	background-color: $color-background-secondary;
+}
+
+.stats-list {
+	&--horizontal {
+		border-right:1px solid rgba($color-text, 0.25);
+		box-sizing:border-box;
+		&:last-of-type {
+			border-right: none;
+		}
+	}
+
+	&__values {
+		font-size:1.5em;
+		color:$color-text-accent;
+	}
+
+
+}
+
+.submit-button {
+	color: $color-text-accent;
+	border:none;
+	background-color: $color-background-secondary;
+	padding: 1em 0.7em;
+	margin-top:-1em;
+	box-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+}
+
+.login-modal {
+	margin:auto;
+	padding: 1em;
+	border:1px solid rgba($color-text, 0.25);
+	margin-top: 5em;
+	max-width: 300px;
+	text-align:center;
+}
+

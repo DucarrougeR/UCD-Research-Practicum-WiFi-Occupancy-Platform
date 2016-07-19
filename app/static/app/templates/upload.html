@@ -1,25 +1,16 @@
 <nav class="column column-mid-2 full-height sidebar sidebar--fixed">
     <ul class="nav-list nav-list--main">
-        <li><a ng-href="#/upload" target="_self">UPLOAD SHIT</a></li>
-        <li><a href="">item</a></li>
-        <li><a href="">item</a></li>
-        <li><a href="">item</a></li>
-        <li><a href="">item</a></li>
+        <li><a ng-href="#/dashboard" target="_self">Dashboard</a></li>
+        <li><a href="#/upload">Upload</a></li>
     </ul>
 </nav>
 <div class="column column-mid-10 column-mid-offset-2 main-content">
-    <h1>UPLOAD SHIT</h1>
-    <div ng-controller="uploadController">Username
-	    <input type="text" ng-model="username"><br/><br/>
-	    watching model:
-	    <!-- <button class="button" ngf-select ng-model="file" ngf-multiple="false" ng-hide>Select File</button>
-	    on file change multiple:
-	    <button class="button" ngf-select="upload($files)" ngf-multiple="true" ng-hide>Select File</button> -->
-	    Drop File:
+    <h1>UPLOAD</h1>
+    <div ng-controller="uploadController">
 	    <div ngf-drop ngf-select="upload($files)" ng-model="files" class="drop-box" 
 	        ngf-drag-over-class="'dragover'" ngf-multiple="true" ngf-allow-dir="true"
 	        accept="image/*,application/pdf, application/zip,.zip,zip" 
-	        ngf-pattern="'image/*,application/pdf,application/zip,.zip,zip'">Drop pdfs or images here or click to upload</div>
+	        ngf-pattern="'image/*,application/pdf,application/zip,.zip,zip'">Drop files here to upload</div>
 	    <div ngf-no-file-drop>File Drag/Drop is not supported for this browser</div>
 	    Files:
 	    <ul>

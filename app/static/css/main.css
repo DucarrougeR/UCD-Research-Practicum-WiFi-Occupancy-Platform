@@ -462,16 +462,12 @@ textarea {
   padding: 0;
   padding-top: 1em;
   padding-right: 1em; }
-  .nav-list li {
-    border-top: 1px solid rgba(60, 62, 59, 0.25); }
-    .nav-list li a {
-      color: #3C3E3B;
-      display: block;
-      text-align: right; }
-      .nav-list li a:hover {
-        background-color: rgba(0, 0, 0, 0.05); }
-    .nav-list li:last-of-type {
-      border-bottom: 1px solid rgba(60, 62, 59, 0.25); }
+  .nav-list li a {
+    color: #3C3E3B;
+    display: block;
+    text-align: right; }
+    .nav-list li a:hover {
+      background-color: rgba(0, 0, 0, 0.05); }
 
 .nav-list--horizontal li {
   display: inline-block; }
@@ -510,8 +506,39 @@ textarea {
 .drop-box {
   width: 100%;
   padding: 5em;
+  box-sizing: border-box;
   text-align: center;
+  background-color: #F3F6F4;
+  border: 5px dashed rgba(25, 156, 123, 0.25); }
+
+.bg-secondary {
   background-color: #F3F6F4; }
+
+.stats-list--horizontal {
+  border-right: 1px solid rgba(60, 62, 59, 0.25);
+  box-sizing: border-box; }
+  .stats-list--horizontal:last-of-type {
+    border-right: none; }
+
+.stats-list__values {
+  font-size: 1.5em;
+  color: #199C7B; }
+
+.submit-button {
+  color: #199C7B;
+  border: none;
+  background-color: #F3F6F4;
+  padding: 1em 0.7em;
+  margin-top: -1em;
+  box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5); }
+
+.login-modal {
+  margin: auto;
+  padding: 1em;
+  border: 1px solid rgba(60, 62, 59, 0.25);
+  margin-top: 5em;
+  max-width: 300px;
+  text-align: center; }
 
 /*
  * WTF, forms?

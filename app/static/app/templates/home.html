@@ -1,17 +1,14 @@
 <nav class="column column-mid-2 full-height sidebar sidebar--fixed">
     <ul class="nav-list nav-list--main">
-        <li><a ng-href="#/upload" target="_self">UPLOAD SHIT</a></li>
-        <li><a href="">item</a></li>
-        <li><a href="">item</a></li>
-        <li><a href="">item</a></li>
-        <li><a href="">item</a></li>
+        <li><a ng-href="#/dashboard" target="_self">Dashboard</a></li>
+        <li><a href="#/upload">Upload</a></li>
     </ul>
 </nav>
 <div class="column column-mid-10 column-mid-offset-2 main-content">
     <div class="container content-container row">
         <form class="form-inline" ng-submit="submit()">
             <label class="column-mid-5 column">
-                Room:
+                <span class="text-accent">Select Room </span><br>
                 <select aria-label="Select a room" ng-model="formData.room">
                     <option value="B001" selected>B001</option>
                     <option value="B002">B002</option>
@@ -21,16 +18,30 @@
                 
             </label>
             <div class="column-mid-6 column">
-                Date:
-                <input pikaday="example.myPickerObject" format="DD/MM/YYYY" ng-model="formData.date">
+                <span class="text-accent">Select a date </span><br>
+                <input pikaday="example.myPickerObject" format="DD/MM/YYYY" ng-model="formData.date" >
             </div>
-            <input type="submit">
+            <input type="submit" class="submit-button" value = "Get Data >">
         </form>
     </div>
-    <div class="container content-container row">
-        <h2>Occupancy:</h2>
-        <div class="column-mid-6 column text-center text-heading">25%</div>
-        <div class="column-mid-6 column text-center text-heading">30%</div>
+    <div class="container content-container row bg-secondary">
+
+        <div class="column-mid-3 column text-center stats-list stats-list--horizontal" ng-show="minValue >= 0">
+            Minimum <br>
+            <span class="stats-list__values"> {{ minValue }} </span>
+        </div>
+        <div class="column-mid-3 column text-center stats-list stats-list--horizontal" ng-show="maxValue >= 0">
+            Maximum <br>
+            <span class="stats-list__values"> {{ maxValue }} </span>
+        </div>
+        <div class="column-mid-3 column text-center stats-list stats-list--horizontal" ng-show="avgValue >= 0">
+            Average <br>
+            <span class="stats-list__values"> {{ avgValue }} </span>
+        </div>
+        <div class="column-mid-3 column text-center stats-list stats-list--horizontal" ng-show="totalValue >= 0">
+            Total Capacity <br>
+            <span class="stats-list__values"> {{ totalValue }} </span>
+        </div>
     </div>
     <div class="chart container content-container row">
         <canvas id="line" class="chart chart-line" chart-data="data" chart-labels="labels" chart-legend="true" chart-series="series" chart-click="onClick" style="margin:auto;height:200px"></canvas>

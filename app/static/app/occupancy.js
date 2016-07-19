@@ -42,20 +42,39 @@ occupancyApp.controller('dashboardController', ['$scope', '$http', 'chartData', 
 
           });
 
-          console.log(hours);
+          var min = hours[0][0].room_capacity;
+          var max = 0;
 
           // cycle through each hour
           var reducedData = hours.map(function(item) {
 
             // reduce the items to a single total value
             var reduced = item.reduce(function(total, i){
-              
+              if (i.counts_authenticated > max) {
+                max = i.counts_authenticated;
+              }
+
+              if (i.counts_authenticated < min) {
+                min = i.counts_authenticated;
+              }
+
               return (total + (i.counts_authenticated / 1))
             }, 0);
 
             // return the average
             return reduced / item.length
           });
+
+          var avg = reducedData.reduce(function(total, i) {
+            
+            return total + i;
+          }) / reducedData.length;
+
+          // bind the values
+          $scope.maxValue = max;
+          $scope.minValue = min;
+          $scope.avgValue = Math.round(avg * 1000) / 1000 ;
+          $scope.totalValue = hours[0][0].room_capacity;
           
           // set the chart data
           $scope.data = [reducedData];
