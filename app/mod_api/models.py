@@ -1,5 +1,6 @@
 # Luke Kearney
 import re
+import config
 
 def parse_date(date):
     date_re = re.compile("([A-Za-z]{3}) ([A-Za-z]{3}) (\d{2}) (\d{4})")
@@ -44,3 +45,8 @@ def is_valid_date(date):
         return False
 
     return True
+
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1] in config.ALLOWED_EXTENSIONS

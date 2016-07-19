@@ -3,7 +3,8 @@
 var occupancyApp = angular.module('occupancyApp', [
   'ngRoute',
   'pikaday',
-  'chart.js'
+  'chart.js',
+  'ngFileUpload'
 ]);
 
 occupancyApp.controller('dashboardController', ['$scope', '$http', 'chartData', function($scope, $http, chartData) {
@@ -106,8 +107,46 @@ occupancyApp.controller("lineCtrl", ['$scope', '$timeout', 'chartData', function
 }]);
 
 
-occupancyApp.controller("uploadController", ["$scope", function($scope) {
-  console.log("uploadController");
+occupancyApp.controller("uploadController", ['$scope', 'Upload', '$timeout', function ($scope, Upload, $timeout) {
+    $scope.$watch('files', function () {
+        $scope.upload($scope.files);
+    });
+    $scope.$watch('file', function () {
+        if ($scope.file != null) {
+            $scope.files = [$scope.file]; 
+        }
+    });
+    $scope.log = '';
+
+    $scope.upload = function (files) {
+        if (files && files.length) {
+            for (var i = 0; i < files.length; i++) {
+              var file = files[i];
+              if (!file.$error) {
+                Upload.upload({
+                    url: 'http://localhost:5000/api/data/upload',
+                    data: {
+                      username: $scope.username,
+                      file: file  
+                    }
+                }).then(function (resp) {
+                    $timeout(function() {
+                        $scope.log = 'file: ' +
+                        resp.config.data.file.name +
+                        ', Response: ' + JSON.stringify(resp.data) +
+                        '\n' + $scope.log;
+                    });
+                }, null, function (evt) {
+                    var progressPercentage = parseInt(100.0 *
+                        evt.loaded / evt.total);
+                    $scope.log = 'progress: ' + progressPercentage + 
+                      '% ' + evt.config.data.file.name + '\n' + 
+                      $scope.log;
+                });
+              }
+            }
+        }
+    };
 }]);
 
 occupancyApp.controller('loginController', ['$scope', '$location', function($scope, $location){

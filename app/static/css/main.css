@@ -507,6 +507,12 @@ textarea {
 .content-container {
   border-bottom: 1px solid rgba(60, 62, 59, 0.25); }
 
+.drop-box {
+  width: 100%;
+  padding: 5em;
+  text-align: center;
+  background-color: #F3F6F4; }
+
 /*
  * WTF, forms?
  * Released under MIT and copyright 2014 Mark Otto.
