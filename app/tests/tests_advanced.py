@@ -7,8 +7,6 @@ import app.mod_api.models
 from app import app as flask_app
 import json
 import json
-import urllib.request as ur
-import urllib.parse as par
 
 class FlaskAdvancedTests(unittest.TestCase):
     def check_room_route_api_test(self):
