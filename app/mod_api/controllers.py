@@ -26,28 +26,28 @@ def hello():
 @mod_api.route('/room/occupancy/<room>/')
 @mod_api.route('/room/occupancy/<room>/<time>')
 def occupancy_data(room, time=None):
-    #data = Counts.select().where(Counts.counts_room_number == room)
-    #print(len(data))
     if time:
         time = " ".join(time.split("%20"))
-        print(time)
+
         dateRe = re.compile("([A-Za-z]{3}) ([A-Za-z]{3}) (\d{2}) (\d{4})")
         if (is_valid_date(time)):
 
             date = parse_date(time)
-            print(date)
+
             # print("%"+ " ".join((date[0], date[1], date[2])) +"%")
             join_cond = (Rooms.room_number == Counts.counts_room_number)
             date_cond = "%" + date[1] + " " + date[2] + "%"
             results = Rooms.select(Rooms, Counts).join(Counts, on=join_cond).where(
                 (Rooms.room_number == room) & (Counts.counts_time ** date_cond)).naive()
-
+    else:
+        join_cond = (Rooms.room_number == Counts.counts_room_number)
+        results = Rooms.select(Rooms, Counts).join(Counts, on=join_cond).where(
+            (Rooms.room_number == room)).naive()
 
 
     results_list = []
 
     for result in results:
-        print(result.counts_time)
         # gets the fields of the result set
         fields = Counts._meta.sorted_field_names + Rooms._meta.sorted_field_names
         results_dict = {}
