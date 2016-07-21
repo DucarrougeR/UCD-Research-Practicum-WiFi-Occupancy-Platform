@@ -1,4 +1,4 @@
-from models import * 
+from .models import *
 import sqlite3
 
 def fit_15():

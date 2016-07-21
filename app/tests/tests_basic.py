@@ -1,5 +1,4 @@
 import unittest, sys, os, tempfile, sqlite3
-from app.mod_db.QueryBuilder import QueryBuilder
 from app.mod_db import theApp
 import pandas as pd
 import config
@@ -93,23 +92,6 @@ class DataBaseTests(unittest.TestCase):
      #    rv = self.app.get('/')
      #    assert b'No entries here so far' in rv.data
 
-
-    def query_select_test(self):
-        query = QueryBuilder().select('sample').get_query()
-        assert query == 'SELECT * FROM sample'
-
-    def query_select_test_with_params(self):
-        query = QueryBuilder().select('sample', ['id']).get_query()
-        assert query == 'SELECT id FROM sample'
-
-    def query_join_test(self):
-        query = QueryBuilder().select('sample').join('sample2', 'field1', '=', 'field2').get_query()
-        assert query == 'SELECT * FROM sample JOIN sample2 ON field1 = field2'
-
-    def query_where_test(self):
-        query = QueryBuilder().select('sample', ['id']).where('id', '=', 1234).get_query()
-
-        assert query == 'SELECT id FROM sample WHERE id = 1234'
 
 if __name__ == "__main__":
     unittest.main()

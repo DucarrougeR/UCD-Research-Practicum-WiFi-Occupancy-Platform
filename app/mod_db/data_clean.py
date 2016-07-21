@@ -6,6 +6,7 @@ to time. This can be changed at a later point.
 import zipfile, os, re, csv, openpyxl
 from openpyxl.utils import get_column_letter
 
+# no tests yet
 def unzip(zip_path, room_path=None):
     """ Fully unzips a zipped folder full of zip files. """
     if zipfile.is_zipfile(zip_path):
@@ -40,7 +41,7 @@ def unzip(zip_path, room_path=None):
     else:
         print(zip_path + " is not zip")
 
-
+# no tests yet
 def merge_logs(path, outf):
     """ Takes a directory containing folders full of log files and merges the data therein
     into a single CSV file. """
@@ -60,6 +61,7 @@ def merge_logs(path, outf):
 
     fout.close()
 
+# no tests yet
 def gt_clean(gtf, gt_raw, gt_clean):
     """ Takes a ground truth CSV file, strips it of unnecessary information and formats it correctly. """
     # Opens the first outfile.
@@ -162,6 +164,7 @@ def gt_clean(gtf, gt_raw, gt_clean):
 
     clean.close()
 
+# no tests
 def timetable_clean(xlsx, outf):
     """ Takes a raw timetable XLSX file, formats and cleans it and saves it to CSV."""
     # Opens the outfile and writes the column names.
