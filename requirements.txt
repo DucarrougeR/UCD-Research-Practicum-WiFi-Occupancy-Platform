@@ -7,3 +7,4 @@ flask_sqlalchemy
 flask_wtf
 pandas
 peewee
+flask_peewee

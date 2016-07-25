@@ -29,62 +29,62 @@ occupancyApp.controller('dashboardController', ['$scope', '$http', 'chartData', 
         $http.get(url).then(function successCallback(response) {
           
           var hours = [];
-
-          // separates results into unique hours
-          response.data.results.map(function(item, index) {
-            var subStr = item.counts_time.substring(11, 13) * 1
-            // if the hour has already been listed then push it onto the hours array at a specific index
-            if (hours[subStr]) {
-              hours[subStr].push(item);
-            } else {
-              hours[subStr] = [item];
-            }
-
-          });
-
-          var min = hours[0][0].room_capacity;
-          var max = 0;
-
-          // cycle through each hour
-          var reducedData = hours.map(function(item) {
-
-            // reduce the items to a single total value
-            var reduced = item.reduce(function(total, i){
-              if (i.counts_authenticated > max) {
-                max = i.counts_authenticated;
+          if (response.data.results.length > 0) {
+            // separates results into unique hours
+            response.data.results.map(function(item, index) {
+              var subStr = item.counts_time.substring(11, 13) * 1
+              // if the hour has already been listed then push it onto the hours array at a specific index
+              if (hours[subStr]) {
+                hours[subStr].push(item);
+              } else {
+                hours[subStr] = [item];
               }
 
-              if (i.counts_authenticated < min) {
-                min = i.counts_authenticated;
-              }
+            });
 
-              return (total + (i.counts_authenticated / 1))
-            }, 0);
+            var min = hours[0][0].room_capacity;
+            var max = 0;
 
-            // return the average
-            return reduced / item.length
-          });
+            // cycle through each hour
+            var reducedData = hours.map(function(item) {
 
-          var avg = reducedData.reduce(function(total, i) {
+              // reduce the items to a single total value
+              var reduced = item.reduce(function(total, i){
+                if (i.counts_authenticated > max) {
+                  max = i.counts_authenticated;
+                }
+
+                if (i.counts_authenticated < min) {
+                  min = i.counts_authenticated;
+                }
+
+                return (total + (i.counts_authenticated / 1))
+              }, 0);
+
+              // return the average
+              return reduced / item.length
+            });
+
+            var avg = reducedData.reduce(function(total, i) {
+              
+              return total + i;
+            }) / reducedData.length;
+
+            // bind the values
+            $scope.maxValue = max;
+            $scope.minValue = min;
+            $scope.avgValue = Math.round(avg * 1000) / 1000 ;
+            $scope.totalValue = hours[0][0].room_capacity;
             
-            return total + i;
-          }) / reducedData.length;
+            // set the chart data
+            $scope.data = [reducedData];
+            $scope.series = ['% occupied'];
 
-          // bind the values
-          $scope.maxValue = max;
-          $scope.minValue = min;
-          $scope.avgValue = Math.round(avg * 1000) / 1000 ;
-          $scope.totalValue = hours[0][0].room_capacity;
-          
-          // set the chart data
-          $scope.data = [reducedData];
-          $scope.series = ['% occupied'];
-
-          // build the labels
-          $scope.labels = reducedData.map(function(item, index) {
-            return "Hour " + index;
-          });
-          
+            // build the labels
+            $scope.labels = reducedData.map(function(item, index) {
+              return "Hour " + index;
+            });
+          }
           
           $scope.options = {
             responsive: true
