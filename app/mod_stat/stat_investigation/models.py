@@ -174,8 +174,9 @@ def ols_authen(df, lsplot_path, predplot_path):
     
 def ols_bin(df, lsplot_path, predplot_path):
     """
-    Fits a simple OLS model on percentage ground truth and tests it on the 
-    data, binning predictions to the nearest category. 
+    Fits a simple OLS (linear probability) model on percentage 
+    ground truth and tests it on the data, binning predictions to the 
+    nearest category. 
     Arguments: dataframe, file path to save the least-squares plot, file path to
     save predictions plot.     
     Returns a list containing the model R-squared, the overall model significance, 
@@ -229,7 +230,7 @@ def ols_bin(df, lsplot_path, predplot_path):
     df_train, df_test = train_test_split(df, test_size = 0.4, random_state = 5)
 
     # Trains model on the training set.
-    y_train = df_train["counts_truth"]
+    y_train = df_train["counts_truth_percent"]
     X_train = np.array(df_train["counts_associated"].reshape(-1, 1))    
     lrm_train = LinearRegression()
     lrm_train.fit(X_train, y_train)
@@ -244,8 +245,7 @@ def ols_bin(df, lsplot_path, predplot_path):
     # Predicts y values and rounds them to the nearest 25. 
     predicted = lrm_train.predict(X_test)    
     for i in range(len(predicted)):
-        predicted[i] = int(25 * round(float(predicted[i])/25))
-    predicted = predicted.astype(int)
+        predicted[i] = int(round(predicted[i] / 25.0) * 25)
 
     # Prints accuracy score (1 is perfect prediction).     
     ascore = metrics.accuracy_score(y_test, predicted)
@@ -331,6 +331,8 @@ def ordlogit(df):
     """
     Fits a proportional odds (ordinal) logistic model using R. 
     Arguments: dataframe. 
+    Returns a list containing the model chi-square test, accuracy score and
+    the query time. 
     """
 
     from rpy2.robjects.packages import importr
@@ -341,10 +343,12 @@ def ordlogit(df):
     ___________________________________
     """)
 
+    # Stores the time for output.
+    query_time = df.counts_time.max()        
+
     # Loads R packages. 
     base = importr('base')
-    mass = importr('MASS')
-    caTools = importr('caTools')
+    rms = importr('rms')
     
     # Converts df to an R dataframe. 
     from rpy2.robjects import pandas2ri
@@ -352,36 +356,63 @@ def ordlogit(df):
     ro.globalenv["rdf"] = pandas2ri.py2ri(df) 
 
     # Makes R recognise counts_truth_percent as a factor. 
-    ro.r("""rdf$counts_truth_percent <- as.factor(rdf$counts_truth_percent)""")
+    ro.r("""rdf$counts_truth_percent <- as.factor(rdf$counts_truth_percent)""")    
 
     # Fits an ordinal logistic regression in R. 
-    formula = "counts_truth_percent ~ counts_associated"    
-    ordlog = mass.polr(formula, data=base.as_symbol("rdf"))
-    ro.globalenv["ordlog"] = ordlog
-    print(base.summary(ordlog))
+    ro.r("fit <- lrm(counts_truth_percent ~ counts_associated, data=rdf, x=TRUE, y=TRUE)")
+    print(ro.r("fit"))
 
-    # Performs a Chi-Square goodness-of-fit test.
-    ordlog_chisq = ro.r("1-pchisq(deviance(ordlog),df.residual(ordlog))")
-    print("Chi-square (want P > 0.05):", ordlog_chisq[0])
+    print(ro.r("validate(fit, method='cross')"))
 
+    ascore = 0
+
+    return [0, 0, ascore, query_time]
+
+def binarylogit(df):
     """
-    # Takes a sample of dataframe rows and splits it into a training and test set. 
-    ro.r("bound <- floor((nrow(rdf)/4)*3)")
-    ro.r("rdf <- rdf[sample(nrow(rdf)), ]")
-    ro.r("rdf.train <- rdf[1:bound, ]")
-    ro.r("rdf.test <- rdf[(bound+1):nrow(rdf), ]")
-
-    # Takes a sample of dataframe rows and splits it into a training and test set. 
-    ro.r("sample = sample.split(rdf$anycolumn, SplitRatio = .4)")
-    ro.r("train = subset(data, sample == TRUE)")
-    ro.r("test = subset(data, sample == FALSE)")
+    Specifies a binary logistic model which aims simply to determine whether or 
+    not the room is occupied. 
     """
 
-def binary_model():
-    """
-    Specifies a binary logistic model which aims simply to determine whether or not the room is occupied. 
-    """
-    pass
+    print("""
+    BINARY LOGISTIC MODEL 
+    ___________________________________
+    """)
 
+    # Stores the time for output.
+    query_time = df.counts_time.max()    
 
+    # Trains a logit model. Prints the coefficients and their significance levels. 
+    y = df["counts_truth_is_occupied"]
+    X = np.array(df["counts_associated"].reshape(-1, 1))
+    log = sm.Logit(y, X).fit()
+    print(log.summary())
 
+    log = LogisticRegression()
+    log.fit(X, y)
+
+    pseudo_r = log.score(X, y)
+    print("Model score: ", pseudo_r)
+
+    # Splits the dataset into 60% training and 40% testing. 
+    df_train, df_test = train_test_split(df, test_size = 0.4, random_state = 5)
+
+    # Trains model on the training set.
+    y_train = df_train["counts_truth_is_occupied"]
+    X_train = np.array(df_train["counts_associated"].reshape(-1, 1))    
+    log_train = LogisticRegression()    
+    log_train.fit(X_train, y_train)
+    
+    # Tests model on the test set. 
+    y_test = df_test["counts_truth_is_occupied"]
+    X_test = np.array(df_test["counts_associated"].reshape(-1, 1))  
+    predicted = log_train.predict(X_test)
+    probs = log_train.predict_proba(X_test)
+    
+    # Prints accuracy score, confusion matrix, classification report and MSE. 
+    ascore = metrics.accuracy_score(y_test, predicted)
+    print("Accuracy score (1 = perfect prediction) ", ascore)
+    print("Confusion matrix:\n", metrics.confusion_matrix(y_test, predicted))
+    print("Residual sum of squares: %.2f" % np.mean((log_train.predict(X_test) - y_test) ** 2))    
+
+    return [pseudo_r, 0, ascore, query_time]
