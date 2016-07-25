@@ -1,0 +1,23 @@
+<nav class="column column-mid-2 full-height sidebar sidebar--fixed">
+    <ul class="nav-list nav-list--main">
+        <li><a ng-href="#/dashboard" target="_self">Dashboard</a></li>
+        <li><a href="#/upload">Upload</a></li>
+    </ul>
+</nav>
+<div class="column column-mid-10 column-mid-offset-2 main-content">
+    <h1>UPLOAD</h1>
+    <div ng-controller="uploadController">
+	    <div ngf-drop ngf-select="upload($files)" ng-model="files" class="drop-box" 
+	        ngf-drag-over-class="'dragover'" ngf-multiple="true" ngf-allow-dir="true"
+	        accept="image/*,application/pdf, application/zip,.zip,zip,.csv,csv" 
+	        ngf-pattern="'image/*,application/pdf,application/zip,.zip,zip,.csv,csv'">Drop files here to upload</div>
+	    <div ngf-no-file-drop>File Drag/Drop is not supported for this browser</div>
+	    Files:
+	    <ul>
+	        <li ng-repeat="f in files" style="font:smaller">{{f.name}} {{f.$error}} {{f.$errorParam}}</li>
+	    </ul>
+	    Upload Log:
+	    <pre>{{log}}</pre>
+	</div>
+</div>
+</div>

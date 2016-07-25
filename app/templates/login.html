@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="occupancyApp">
+<head>
+    <meta charset="UTF-8">
+    <title>Occupancy Data</title>
+    {% include "partials/linkedFiles.html" %}
+</head>
+<body>
+    <div class="full-height">
+        
+        <div class="top-bar u-clearfix ">
+            <div class="logo u-pull-left">
+                Ouranos
+            </div>
+            
+        </div>
+        
+        <div class="container full-height row">
+            <div ng-view>
+                <div class="main-content">
+                    <div class="container content-container row">
+                        <div class="login-modal">
+                            <form>
+                                <label>User <input type="text"></label>
+                                <label><input type="password"></label>
+                                <input type="submit">
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

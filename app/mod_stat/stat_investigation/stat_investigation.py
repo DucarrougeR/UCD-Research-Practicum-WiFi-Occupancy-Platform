@@ -1,7 +1,11 @@
+<<<<<<< HEAD
 """
 Determining the most predictive model specification. 
 """
 from models import * 
+=======
+from .models import *
+>>>>>>> c3b3f600fd6659cd3749efd4315e2f9b0fdde54c
 import sqlite3
 
 def fit_15():

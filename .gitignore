@@ -30,3 +30,6 @@ tripod-platform3
 # development databases
 app.db
 
+# uploaded file
+app/static/uploads/*
+

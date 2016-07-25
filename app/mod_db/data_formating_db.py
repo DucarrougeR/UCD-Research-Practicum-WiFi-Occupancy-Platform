@@ -88,7 +88,7 @@ d3 = pd.read_csv("data/clean/formattedTimeTable.csv")
 # d3.head()
 DFinal = pd.merge(DF, d3, left_on=["room", "time"], right_on=["room", "time"],
                   how="outer", left_index=False, right_index=False)
-
+DFinal.to_csv("data/clean/FullyMergedDataframe.csv")
 # DFinal.head(50)
 
 

@@ -22,7 +22,7 @@ def index():
     print(building.sql())
     for item in building:
         print(item.counts_time)
-    return render_template("index.html")
+    return render_template("login.html")
 
 # development use
 @app.route('/static/<path:path>')
