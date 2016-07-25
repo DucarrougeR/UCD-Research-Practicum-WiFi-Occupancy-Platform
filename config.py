@@ -9,6 +9,9 @@ CSRF_ENABLED = True
 CSRF_SESSION_KEY = 'secret'
 WTF_CSRF_ENABLED = True
 SECRET_KEY = 'secret'
-DATABASE = BASE_DIR + '/database.db'
+DATABASE = {
+    'name': BASE_DIR + '/database.db',
+    'engine': 'peewee.SqliteDatabase',
+}
 UPLOAD_FOLDER = BASE_DIR + '/app/static/uploads'
 ALLOWED_EXTENSIONS = set(['txt', 'zip', 'csv'])

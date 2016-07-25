@@ -9,7 +9,7 @@ from app import app as flask_app
 class DataIntegrityTests(unittest.TestCase):
     # Creates a SQL connection to our SQLite database.
     def setUp(self):
-        self.con = sqlite3.connect(config.DATABASE)
+        self.con = sqlite3.connect(config.DATABASE['name'])
 
     # Manually tests the correctness of some rows in the log and ground truth data.
     def test_counts_integrity(self):

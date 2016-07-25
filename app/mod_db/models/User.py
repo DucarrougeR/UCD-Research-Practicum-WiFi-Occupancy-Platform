@@ -3,6 +3,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from app.mod_db import db
 from peewee import *
 from .BaseModel import BaseModel
+from flask_peewee.auth import Auth
+from flask_peewee.db import Database
 
 class User(BaseModel):
     id = IntegerField(primary_key=True, null=True)

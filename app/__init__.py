@@ -42,3 +42,5 @@ from app.mod_api.controllers import mod_api as api_module
 # Register blueprint(s)
 app.register_blueprint(auth_module)
 app.register_blueprint(api_module)
+
+app.run(host='0.0.0.0', port=5000, debug=True)
