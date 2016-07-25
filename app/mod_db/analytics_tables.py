@@ -80,7 +80,7 @@ for column in Fixed_DF.columns:
     if (Fixed_DF[column].isnull().all()):
         print("Contains only NaN values: " + column)
     else:
-        print("Not full of NaN values: " + column)
+        pass
 
 # Sorting the dataframe chronologically, by day, then by hour
 Fixed_DF.sort(['date','hour'], axis=0, ascending=[True, True], inplace=False,
@@ -153,4 +153,4 @@ XP_Med.to_sql('Med_table', connect, flavor='sqlite', if_exists='replace',
 # print("Need to Work on last 2 tables")
 # print('Min Table data is as follows \n --------------------------------------------------')
 
-Fixed_DF.head(10)
+print("Finished")

@@ -175,7 +175,7 @@ Counts_DB = Counts_DB.drop("Unnamed: 0", axis=1).drop("capacity", axis=1).drop("
 Counts_DB = Counts_DB.drop("hour", axis=1).drop("date", axis=1).drop("capacity_y", axis=1)
 Counts_DB = Counts_DB.drop('time', axis=1)
 
-Counts_DB.columns = ['counts_room_number', 'counts_truth', 'counts_truth_percent',
+Counts_DB.columns = ['counts_room_number', 'counts_truth_percent', 'counts_truth',
        "counts_module_code", "counts_time", "counts_associated", "counts_authenticated"]
 # Counts_DB.head()
 
@@ -195,7 +195,7 @@ Classes_DB.drop_duplicates(subset=['classes_room_number','classes_time'], keep='
 #########################################################################
 ''' Writting dataframe to sql files '''
 
-con = sqlite3.connect(config.DATABASE)
+con = sqlite3.connect(config.DATABASE['name'])
 cur = con.cursor()
 
 Rooms_DB.to_sql('rooms', con, flavor='sqlite', if_exists='replace', index=False, chunksize=None)
