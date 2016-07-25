@@ -2,6 +2,9 @@
 
 import sqlite3
 import pandas as pd
+import numpy as np
+from scipy.stats.mstats import mode
+
 
 DFinal = pd.read_csv("data/clean/FullyMergedDataframe.csv")
 
@@ -47,9 +50,10 @@ XP[['date']] = XP[['date']].apply(pd.to_numeric)
 occupancy_DF = XP[XP['occupancy'].notnull()]
 Ass_Auth_DF = XP[XP['associated'].notnull()]
 
-# Merging two dataframes based on three keys 'Room', 'Date', 'Hour'.
-Fixed_DF = pd.merge(occupancy_DF, Ass_Auth_DF, left_on=["room", "date", "hour"], right_on=["room", "date", "hour"],
-                  how="outer", left_index=False, right_index=False)
+# Merging two dataframes based on three keys 'Room', 'Date', 'Hour'
+Fixed_DF = pd.merge(occupancy_DF, Ass_Auth_DF, left_on=["room", "date", "hour"],
+                    right_on=["room", "date", "hour"], how="outer",
+                    left_index=False, right_index=False)
 
 # Drop duplicate columns following dataframes' merged
 Fixed_DF = Fixed_DF.drop("campus_x", 1).drop("building_x",1)
@@ -66,66 +70,87 @@ Fixed_DF.columns = ['room', 'time', 'capacity', 'occupancy', 'occupancyCount',
 Fixed_DF.capacity.fillna(Fixed_DF.capacity_y, inplace=True)
 Fixed_DF.time.fillna(Fixed_DF.time_0, inplace=True)
 
+Fixed_DF.to_csv('data/clean/DataForCountsTable.csv')
+
 # Drop redundant dataframe columns
 Fixed_DF = Fixed_DF.drop("capacity_y",1).drop("time_0",1)
 
 # Identify if columns only contain NaN value
 for column in Fixed_DF.columns:
     if (Fixed_DF[column].isnull().all()):
-        print("Column contains only NaN value")
+        print("Contains only NaN values: " + column)
     else:
-        pass
-print(Fixed_DF['occupancy'].isnull().all())
+        print("Not full of NaN values: " + column)
+
 # Sorting the dataframe chronologically, by day, then by hour
-Fixed_DF.sort(['date','hour'], axis=0, ascending=[True, True], inplace=False, kind='quicksort', na_position='last')
-
-# print(Fixed_DF.shape)
-Fixed_DF.head(250)
-
-# Fixed_DF.loc[Fixed_DF['room'] != "B004"]
+Fixed_DF.sort(['date','hour'], axis=0, ascending=[True, True], inplace=False,
+              kind='quicksort', na_position='last')
 
 Fixed_DF.to_sql('cleaned_analysis_table', connect, flavor='sqlite', if_exists='replace',
           index=False, chunksize=None)
 
-XP_Min = Fixed_DF.groupby([Fixed_DF['room'],Fixed_DF['date'], Fixed_DF['hour']]).min()
+
+XP_Min = Fixed_DF.groupby([Fixed_DF['date'], Fixed_DF['hour'], Fixed_DF['room']]).min()
 XP_Min.to_sql('Min_table', connect, flavor='sqlite', if_exists='replace',
               index=False, chunksize=None)
 # XP_Min.head()
 
-XP_Max = Fixed_DF.groupby([Fixed_DF['date'], Fixed_DF['hour']]).max()
+XP_Max = Fixed_DF.groupby([Fixed_DF['date'], Fixed_DF['hour'], Fixed_DF['room']]).max()
 XP_Max.to_sql('Max_table', connect, flavor='sqlite', if_exists='replace',
               index=False, chunksize=None)
-
 # XP_Max.head()
 
-##########################################################################
-'''MISSING DATA --- NEED TO ADD THE REMAINING INFO (day, hour...)'''
-XP_Mean = Fixed_DF.groupby([Fixed_DF['room'],Fixed_DF['date'], Fixed_DF['hour']]).mean()
+XP_Mean = Fixed_DF.groupby([Fixed_DF['date'], Fixed_DF['hour'], Fixed_DF['room']]).mean()
 XP_Mean.to_sql('Mean_table', connect, flavor='sqlite', if_exists='replace',
                index=False, chunksize=None)
 # XP_Mean.head()
 
-XP_Med = Fixed_DF.groupby([Fixed_DF['room'],Fixed_DF['date'], Fixed_DF['hour']]).median()
+XP_Med = Fixed_DF.groupby([Fixed_DF['date'], Fixed_DF['hour'], Fixed_DF['room']]).median()
 XP_Med.to_sql('Med_table', connect, flavor='sqlite', if_exists='replace',
               index=False, chunksize=None)
 # XP_Med.head()
 
-# XP_Mode = Fixed_DF.groupby([Fixed_DF['date'], Fixed_DF['hour']]).mode()
-# XP_Mode = Fixed_DF.groupby([Fixed_DF['date'], Fixed_DF['hour']]).agg(pd.Series.mode)
+
+# # XP_Mode = Fixed_DF.groupby([Fixed_DF['date'], Fixed_DF['hour'], Fixed_DF['room']])
+
+# XP_Mode = Fixed_DF
+
+# # Using NumPy to consider only numeric number and not count NaNsvalues
+# XP_Mode = XP_Mode[np.isfinite(XP_Mode['associated'])]
+
+# XP_Mode.groupby(lambda x: x.XP_Mode.date).agg(lambda x: stats.mode(x)[0][0])
+
+# Using NumPy to consider only numeric number and not count NaNsvalues
+# XP_Mode = XP_Mode[np.isfinite(XP_Mode['associated'])]
+
+# # Generate new Column with count of value occurrences (to use for mode)
+#### XP_Mode['count'] = XP_Mode['associated'].value_counts()
+
+# # Group by the 3 features, date, hour and room
+# XP_Mode = XP_Mode.groupby([Fixed_DF['date'], Fixed_DF['hour'], XP_Mode['room']]).max()
+
+
+
+# f = lambda x: mode(x, axis=1)[-1]
+# XP_Mode = XP_Mode.groupby([XP_Mode['date'], XP_Mode['hour'], XP_Mode['room']]).apply(f)
+
+# XP_Mode = XP_Mode.sort(columns='count', axis=1, ascending=False)
+
+# XP_Mode.iloc[XP_Mode.groupby([XP_Mode['date'], XP_Mode['room']]).apply(lambda x: x['count'].idxmax())]
 
 # XP_Mode.to_sql('Mode_table', connect, flavor='sqlite', if_exists='replace',
 #               index=False, chunksize=None)
 # XP_Mode.head()
 
-
 ##########################################################################
 
 # print("Tables saved")
 
-print("Min table size is: " + str(XP_Min.shape))
-print("Max table size is: " + str(XP_Max.shape))
-print("Mean table size is: " + str(XP_Mean.shape))
-print("Median table size is: " + str(XP_Med.shape))
+# print("Min table size is: " + str(XP_Min.shape))
+# print("Max table size is: " + str(XP_Max.shape))
+# print("Mean table size is: " + str(XP_Mean.shape))
+# print("Median table size is: " + str(XP_Med.shape))
 # print("Need to Work on last 2 tables")
-print('Min Table data is as follows \n --------------------------------------------------')
-print(XP_Min.head())
+# print('Min Table data is as follows \n --------------------------------------------------')
+
+Fixed_DF.head(10)
