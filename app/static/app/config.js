@@ -10,11 +10,11 @@ angular.
 
       $routeProvider.
         when('/', {
-          templateUrl: 'http://localhost:5000/static/app/templates/login.html',
+          templateUrl: '/static/app/templates/login.html',
           controller: 'loginController'
         }).
         when('/dashboard', {
-          templateUrl: 'http://localhost:5000/static/app/templates/home.html',
+          templateUrl: '/static/app/templates/home.html',
           controller: 'dashboardController'
         }).
         when('/login', {
@@ -24,7 +24,7 @@ angular.
           template: '<phone-detail></phone-detail>'
         }).
         when('/upload', {
-          templateUrl: 'http://localhost:5000/static/app/templates/upload.html',
+          templateUrl: '/static/app/templates/upload.html',
           controller: 'uploadController'
         }).
         otherwise('/');
