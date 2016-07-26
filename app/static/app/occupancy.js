@@ -24,7 +24,7 @@ occupancyApp.controller('dashboardController', ['$scope', '$http', 'chartData', 
 
       if ($scope.formData.room && $scope.formData.date) {
         // formatting the URL
-        var url = "http://localhost:5000/api/room/occupancy/"+ $scope.formData.room +"/" + $scope.formData.date.split(" ").join("%20");
+        var url = "/api/room/occupancy/"+ $scope.formData.room +"/" + $scope.formData.date.split(" ").join("%20");
         console.log("making request to " + url);
         $http.get(url).then(function successCallback(response) {
           
@@ -143,7 +143,7 @@ occupancyApp.controller("uploadController", ['$scope', 'Upload', '$timeout', fun
               var file = files[i];
               if (!file.$error) {
                 Upload.upload({
-                    url: 'http://localhost:5000/api/data/upload',
+                    url: '/api/data/upload',
                     data: {
                       username: $scope.username,
                       file: file  
