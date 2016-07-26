@@ -1,10 +1,10 @@
 import unittest, sys, os, tempfile, sqlite3
-from app.mod_db import theApp
 import pandas as pd
 import config
 import app.mod_api.controllers
 import app.mod_api.models
-from app import app as flask_app
+from app import app
+import pdb; pdb.set_trace()
 
 class DataIntegrityTests(unittest.TestCase):
     # Creates a SQL connection to our SQLite database.
