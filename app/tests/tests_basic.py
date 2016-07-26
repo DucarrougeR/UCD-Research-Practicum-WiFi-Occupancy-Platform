@@ -3,8 +3,8 @@ import pandas as pd
 import config
 import app.mod_api.controllers
 import app.mod_api.models
-from app import app
-import pdb; pdb.set_trace()
+import app
+# import pdb; pdb.set_trace()
 
 class DataIntegrityTests(unittest.TestCase):
     # Creates a SQL connection to our SQLite database.
@@ -49,8 +49,6 @@ class APITests(unittest.TestCase):
         assert len(app.mod_api.models.parse_date("Mon Jul 04 2016")) == 4
 
 
-# class FlaskRouteTests(unittest.TestCase):
-#
 
 class DataBaseTests(unittest.TestCase):
     ''' Database '''
