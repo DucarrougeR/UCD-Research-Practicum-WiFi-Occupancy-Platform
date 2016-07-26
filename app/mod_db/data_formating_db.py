@@ -47,14 +47,15 @@ print('Logs data has been cleaned')
 df2 = pd.read_csv("data/clean/gt_clean.csv")
 df2['occupancyCount'] = df2['occupancy'].map(lambda x: x.replace('%', ''))
 
-# Converting last column to numeric to perfomr math operation
+# Converting last column to numeric to perform math operation
 df2[['occupancyCount']] = df2[['occupancyCount']].apply(pd.to_numeric)
 
 # Adding actual count value for room
 df2['occupancyCount'] = df2['occupancyCount'] * df2['capacity'] / 100
+df2['occupancy'] = df2['occupancy'].map(lambda x: x.replace('%', ''))
 
 df2.to_csv("data/clean/formattedGroundTruthData.csv")
-#df2.head()
+# df2.head()
 print('Ground Truth Data has been cleaned')
 
 ##########################################################################
@@ -86,14 +87,63 @@ DF.drop('Unnamed: 0_y', axis=1, inplace=True)
 
 d3 = pd.read_csv("data/clean/formattedTimeTable.csv")
 # d3.head()
+
+
 DFinal = pd.merge(DF, d3, left_on=["room", "time"], right_on=["room", "time"],
                   how="outer", left_index=False, right_index=False)
-DFinal.to_csv("data/clean/FullyMergedDataframe.csv")
-# DFinal.head(50)
 
 
-##########################################################################
-''' Creating Dataframe to match DB schema's tables '''
+DFinal['room'] = DFinal['room'].map(lambda x: x.replace('.', ''))
+DFinal['room'] = DFinal['room'].map(lambda x: x.replace('-', ''))
+
+
+# Adding a column for hour and one for date
+C = (DFinal[['time']])
+C['time'] = C['time'].map(lambda x: x[10:-6])
+D = (DFinal[['time']])
+D['time'] = D['time'].map(lambda x: x[8:-8])
+
+DFinal['hour'] = C
+DFinal['date'] = D
+DFinal[['hour']] = DFinal[['hour']].apply(pd.to_numeric)
+DFinal[['date']] = DFinal[['date']].apply(pd.to_numeric)
+
+# Splitting XP dataframe into 2 separate df, one with no null data for occupancy,
+# other with no null values for associated
+DF_occupancy_Not_null = DFinal[DFinal['occupancy'].notnull()]
+DF_data_Not_null = DFinal[DFinal['associated'].notnull()]
+
+
+# DF_occupancy_null.head()
+# DF_data_null.head()
+
+# Merging two dataframes based on three keys 'Room', 'Date', 'Hour'
+dataframeFinal = pd.merge(DF_occupancy_Not_null, DF_data_Not_null, left_on=["room", "date", "hour"],
+                    right_on=["room", "date", "hour"], how="outer",
+                    left_index=False, right_index=False, copy=False)
+
+for column in dataframeFinal.columns:
+    if (dataframeFinal[column].isnull().all()):
+        print("Contains only NaN values: " + column + "  ==> was dropped from dataframe")
+        dataframeFinal = dataframeFinal.drop(column, axis=1)
+    else:
+        pass
+
+dataframeFinal.loc[dataframeFinal['campus_y'] != "Belfield", 'campus_y'] = 'Belfield'
+dataframeFinal.loc[dataframeFinal['building_y'] != "Computer Science", 'building_y'] = 'Computer Science'
+
+dataframeFinal.time_y.fillna(dataframeFinal.time_x, inplace=True)
+
+dataframeFinal = dataframeFinal.drop('time_x', axis=1)
+
+dataframeFinal.columns = ['room', 'capacity', 'occupancy', 'occupancyCount',
+       'module', 'size', 'hour', 'date', 'campus', 'building', 'time', 'associated',
+       'authenticated']
+
+dataframeFinal.sort(columns=["date","hour"], axis=0)
+
+# ##########################################################################
+# ''' Creating Dataframe to match DB schema's tables '''
 
 Rooms_DB = DFinal[['room', 'building', 'campus', 'capacity']]
 
@@ -113,36 +163,39 @@ Rooms_DB.loc[Rooms_DB.room == "B1.08", 'campus'] = "Belfield"
 Rooms_DB.loc[Rooms_DB.room == "B1.09", 'building'] = "Computer Science"
 Rooms_DB.loc[Rooms_DB.room == "B1.09", 'campus'] = "Belfield"
 
-Rooms_DB['room'].map(lambda x: x.replace('.', ''))
 Rooms_DB.columns = ["room_number", "room_building", "room_campus", "room_capacity"]
 # Rooms_DB.head()
 
-Counts_DB = DFinal[['room', 'time', 'module', 'associated', 'authenticated',
-                    'occupancy', 'occupancyCount']]
-Counts_DB.columns = ['counts_room_number', 'counts_time', 'counts_module_code',
-                     'counts_associated', 'counts_authenticated', 'counts_truth_percent',
-                     'counts_truth']
-Counts_DB['counts_room_number'].map(lambda x: x.replace('.', ''))
+
+Counts_DB = pd.read_csv('data/clean/DataForCountsTable.csv')
+
+Counts_DB.time_0.fillna(Counts_DB.time, inplace=True)
+# print(Counts_DB['counts_module_code'].isnull().all())
+Counts_DB = Counts_DB.drop("Unnamed: 0", axis=1).drop("capacity", axis=1).drop("size", axis=1)
+Counts_DB = Counts_DB.drop("hour", axis=1).drop("date", axis=1).drop("capacity_y", axis=1)
+Counts_DB = Counts_DB.drop('time', axis=1)
+
+Counts_DB.columns = ['counts_room_number', 'counts_truth_percent', 'counts_truth',
+       "counts_module_code", "counts_time", "counts_associated", "counts_authenticated"]
 # Counts_DB.head()
 
-Classes_DB = DFinal[['room', 'time', 'module', 'size']]
-Classes_DB['room'].map(lambda x: x.replace('.', ''))
-Classes_DB['time'].map(lambda x: x[:-5])
-Classes_DB['time']+"00:00"
 
+Classes_DB = DFinal[['room', 'time', 'module', 'size']]
+
+Classes_DB['time'] = Classes_DB['time'].map(lambda x: x[:-5])
+Classes_DB['time'] = Classes_DB['time']+"00:00"
 
 Classes_DB.columns = ['classes_room_number', 'classes_time', 'classes_module_code', 'classes_size']
-# Classes_DB.drop_duplicates(subset=['classes_room_number','classes_time'], keep_last=True)
-# Classes_DB.head()
-
 # ''' No need to change the 'NaN' values
 # to_sql supports writing NaN values (will be written as NULL) '''
+
+Classes_DB.drop_duplicates(subset=['classes_room_number','classes_time'], keep='last')
 # Classes_DB.head()
 
-##########################################################################
+#########################################################################
 ''' Writting dataframe to sql files '''
 
-con = sqlite3.connect(config.DATABASE)
+con = sqlite3.connect(config.DATABASE['name'])
 cur = con.cursor()
 
 Rooms_DB.to_sql('rooms', con, flavor='sqlite', if_exists='replace', index=False, chunksize=None)
@@ -150,34 +203,3 @@ Counts_DB.to_sql('counts', con, flavor='sqlite', if_exists='replace', index=Fals
 Classes_DB.to_sql('classes', con, flavor='sqlite', if_exists='replace', index=False, chunksize=None)
 
 print('Tables created')
-
-""" Duplicates each ground truth observation to the entire hour in which it takes place.
-NB: O(n^2) over the entire database. Proceed with caution! """
-
-con = sqlite3.connect("database.db")
-
-# Gets the rows containing ground truth observations.
-df = pd.read_sql_query("SELECT * FROM counts", con)
-df_gt = df[pd.notnull(df["counts_truth"])]
-
-# Iterates over the rows containing ground truth observations. (~8min)
-for row in df_gt.itertuples():
-    gt_dayhr, gt_mn, gt_sc = row[2].split(":")
-    gt_value = row[7]
-    gt_pc_value = row[6]
-    gt_room = row[1]
-
-    # Iterates over the original dataframe.
-    for i, row in df.iterrows():
-        # Reads the room and time values.
-        lg_room = row["counts_room_number"]
-        lg_dayhr, lg_mn, lg_sc = row["counts_time"].split(":")
-
-        # Writes corresponding ground truth to log files by the hour.
-        if lg_dayhr == gt_dayhr and lg_room == gt_room:
-            df.set_value(i, "counts_truth_percent", gt_pc_value)
-            df.set_value(i, "counts_truth", gt_value)
-
-df.to_sql("counts", con, if_exists="replace", index="False", chunksize=None)
-
-
