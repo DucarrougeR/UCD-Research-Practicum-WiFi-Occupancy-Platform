@@ -12,7 +12,6 @@ class BaseModel(Model):
             #     r[k] = str(getattr(self, k))
             # except:
             #     r[k] = json.dumps(getattr(self, k))
-        return "hllo"
 
     class Meta:
         database = db
