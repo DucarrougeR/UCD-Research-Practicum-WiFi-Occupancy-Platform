@@ -19,4 +19,4 @@ def predict_all():
     results = Counts.select(Counts).where((Counts.counts_associated == 16.0))
 
     for result in results:
-        print(result)
+        print(result.get_result())

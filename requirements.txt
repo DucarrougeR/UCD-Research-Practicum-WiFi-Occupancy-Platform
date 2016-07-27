@@ -8,3 +8,4 @@ peewee
 flask_peewee
 pandas
 statsmodels
+sklearn
