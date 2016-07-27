@@ -39,29 +39,28 @@ def hello():
 #     elif request.method == 'GET':
 #         return render_template('auth/signup.html', form=form)
 #
-#
-# @mod_auth.route('/login', methods=['GET', 'POST'])
-# def login():
-#     if user_logged_in:
-#         print("logged in")
-#
-#     form = LoginForm()
-#
-#     if request.method == 'POST':
-#         if form.validate() == False:
-#             return render_template('auth/login.html', form=form)
-#         else:
-#             user = User.query.filter_by(email=form.email.data.lower()).first()
-#             if user.check_password(form.password.data):
-#                 print(user.id)
-#                 login_user(user, remember=True)
-#                 return redirect(url_for('mod_auth.hello'))
-#
-#     elif request.method == 'GET':
-#         # check if the user session already exists
-#         # if 'email' in session:
-#         #     return session['email']
-#         pass
+@mod_auth.route('/login', methods=['GET', 'POST'])
+def login():
+    if user_logged_in:
+        print("logged in")
+
+    form = LoginForm()
+
+    if request.method == 'POST':
+        if form.validate() == False:
+            return render_template('auth/login.html', form=form)
+        else:
+            user = User.query.filter_by(email=form.email.data.lower()).first()
+            if user.check_password(form.password.data):
+                print(user.id)
+                login_user(user, remember=True)
+                return redirect(url_for('mod_auth.hello'))
+
+    elif request.method == 'GET':
+        # check if the user session already exists
+        # if 'email' in session:
+        #     return session['email']
+        pass
 #
 #     return render_template('auth/login.html', form=form)
 #

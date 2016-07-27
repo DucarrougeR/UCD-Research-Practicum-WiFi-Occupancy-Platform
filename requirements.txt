@@ -7,3 +7,5 @@ flask_wtf
 peewee
 flask_peewee
 pandas
+statsmodels
+sklearn

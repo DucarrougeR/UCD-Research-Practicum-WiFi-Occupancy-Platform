@@ -7,12 +7,20 @@ class BaseModel(Model):
     def __str__(self):
         r = {}
         for k in self._data.keys():
-            print(k)
+            r[k] = str(getattr(self, k))
             # try:
             #     r[k] = str(getattr(self, k))
             # except:
-            #     r[k] = json.dumps(getattr(self, k))
-        return "hllo"
+            #   r[k] = json.dumps(getattr(self, k))
+        return "dict: " + str(r)
+
+    def get_result(self):
+        results_dict = {}
+        for k in self._data.keys():
+            results_dict[k] = str(getattr(self, k))
+
+        return results_dict
+
 
     class Meta:
         database = db

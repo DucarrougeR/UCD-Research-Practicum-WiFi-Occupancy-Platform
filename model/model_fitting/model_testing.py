@@ -1,7 +1,7 @@
 """
 Determining the most predictive model specification. 
 """
-from models import *
+from model_fitting import *
 import sqlite3
 
 def fit_15():
@@ -16,7 +16,7 @@ def fit_15():
     """)
     
     # Creates a SQL connection to our SQLite database.
-    con = sqlite3.connect("../../../database.db")    
+    con = sqlite3.connect("../../database.db")    
 
     # Reads the database at xx:15 for every hour (corresponding to the time the ground truth data was collected). 
     df = pd.read_sql_query("SELECT * from counts WHERE counts_time LIKE '%__:13:%' \
@@ -60,7 +60,7 @@ def fit_15_outliers():
     """)
 
     # Creates a SQL connection to our SQLite database.
-    con = sqlite3.connect("../../../database.db")    
+    con = sqlite3.connect("../../database.db")    
 
     # Reads the database at xx:15 for every hour (corresponding to the time the ground truth data was collected). 
     df = pd.read_sql_query("SELECT * from counts WHERE counts_time LIKE '%__:13:%' \
@@ -108,7 +108,7 @@ def assoc_vs_authen():
     """
 
     # Creates a SQL connection to our SQLite database.
-    con = sqlite3.connect("../../../database.db")    
+    con = sqlite3.connect("../../database.db")    
 
     print("""
     COMPARING ASSOCIATED AND AUTHENTICATED COUNTS
@@ -174,7 +174,7 @@ def time_window():
     """
 
     # Creates a SQL connection to our SQLite database.
-    con = sqlite3.connect("../../../database.db")    
+    con = sqlite3.connect("../../database.db")    
 
     print("""
     DETERMINING THE OPTIMAL TIME WINDOW
@@ -262,7 +262,7 @@ def agg_count():
     """
 
     # Creates a SQL connection to our SQLite database.
-    con = sqlite3.connect("../../../database.db")    
+    con = sqlite3.connect("../../database.db")    
 
     print("""
     DETERMINING THE OPTIMAL AGGREGATED COUNT
@@ -349,7 +349,7 @@ def room_model():
     """)
 
     # Creates a SQL connection to our SQLite database.
-    con = sqlite3.connect("../../../database.db")        
+    con = sqlite3.connect("../../database.db")        
     
     # Reads list of rooms from the database. 
     rooms = pd.read_sql_query("SELECT DISTINCT counts_room_number FROM counts", con)
@@ -407,7 +407,7 @@ def module_model():
     """)
 
     # Creates a SQL connection to our SQLite database.
-    con = sqlite3.connect("../../../database.db")        
+    con = sqlite3.connect("../../database.db")        
 
     # Reads list of modules from the database. 
     modules = pd.read_sql_query("SELECT DISTINCT counts_module_code FROM counts", con)
@@ -468,7 +468,7 @@ def binary_model():
     """)
     
     # Creates a SQL connection to our SQLite database.
-    con = sqlite3.connect("../../../database.db")    
+    con = sqlite3.connect("../../database.db")    
 
     # Reads the database at xx:15 for every hour (corresponding to the time the ground truth data was collected). 
     df = pd.read_sql_query("SELECT * from counts WHERE counts_time LIKE '%__:13:%' \
