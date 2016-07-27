@@ -3,6 +3,7 @@
 import sqlite3
 import pandas as pd
 import config
+import numpy as np
 
 # FORMATTING LOGS FILE
 df = pd.read_csv("data/clean/logs_clean.csv")
@@ -177,6 +178,8 @@ Counts_DB = Counts_DB.drop('time', axis=1)
 
 Counts_DB.columns = ['counts_room_number', 'counts_truth_percent', 'counts_truth',
        "counts_module_code", "counts_time", "counts_associated", "counts_authenticated"]
+# adding an empty column for model predictions
+Counts_DB['counts_predicted'] = np.nan
 # Counts_DB.head()
 
 
