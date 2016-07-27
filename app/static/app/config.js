@@ -18,7 +18,7 @@ angular.
           controller: 'dashboardController'
         }).
         when('/login', {
-          template: '<phone-list></phone-list>'
+          templateUrl: '/static/app/templates/login.html'
         }).
         when('/signup', {
           template: '<phone-detail></phone-detail>'

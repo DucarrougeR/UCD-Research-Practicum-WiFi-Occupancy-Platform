@@ -27,8 +27,8 @@ class Counts(BaseModel):
     counts_truth_percent = CharField()
     counts_truth = IntegerField()
 
-    def __init__(self):
-        super(BaseModel, self).__init__()
+    def __init__(self, **kwargs):
+        super(BaseModel, self).__init__(**kwargs)
         # self.room = room
         # self.time = time
         # self.associated = associated

@@ -23,8 +23,8 @@ class Rooms(BaseModel):
     room_campus = CharField(null=False)
     room_capacity = IntegerField()
 
-    def __init__(self):
-        super(BaseModel, self).__init__()
+    def __init__(self, **kwargs):
+        super(BaseModel, self).__init__(**kwargs)
         # self.rooms_rooms_number = room
         # self.rooms_build = building
         # self.rooms_campus = campus

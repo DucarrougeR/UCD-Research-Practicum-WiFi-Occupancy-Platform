@@ -7,7 +7,7 @@ from flask_peewee.auth import Auth
 from flask_peewee.db import Database
 
 db = SqliteDatabase(config.DATABASE['name'])
-# auth_db = Database(app)
+auth_db = Database(app)
 # imports the models
 from .models import *
 
