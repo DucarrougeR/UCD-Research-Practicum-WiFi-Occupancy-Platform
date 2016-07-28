@@ -1,4 +1,3 @@
-from model import model
-from model import predict
+from app.mod_stat import * 
 
-predict.predict("model/test.csv")
+predict.predict("app/mod_stat/test.csv")
