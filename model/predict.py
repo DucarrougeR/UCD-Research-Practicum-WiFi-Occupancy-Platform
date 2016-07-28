@@ -4,6 +4,22 @@ import numpy as np
 from sklearn.externals import joblib
 from app.mod_db import *
 
+def predict(csv):
+    """
+    Generates new predictions from an uploaded CSV file and returns a pandas dataframe. 
+    """
+
+    # Loads the serialised analytic model. 
+    lrm = joblib.load("model/model.pkl")    
+
+    # Reads the CSV file. 
+    df = pd.read_csv(csv)
+    
+    # Generates predicted values in a new column.     
+    df["predicted"] = list(map(lambda x: int(lrm.predict(x)[0]), df["associated"]))
+    
+    return df
+
 def predict_all():
     """ 
     Populates all rows of the database with predicted occupancy counts 
@@ -12,7 +28,7 @@ def predict_all():
     predict() whenever a new file is uploaded. 
     """
     
-    # Loads the serialised model. 
+    # Loads the serialised analytic model. 
     lrm = joblib.load("model/model.pkl")
     
     # Queries each unique associated count value from the database.
@@ -28,10 +44,3 @@ def predict_all():
         # Updates every row of the database having that value with a corresponding predicted count. 
         query = Counts.update(counts_predicted=int(lrm.predict(int(count))[0])).where(Counts.counts_associated == count)
         query.execute()
-
-def predict(csv):
-    """
-    Generates new predictions from an uploaded CSV file and returns a pandas dataframe. 
-    """
-
-    #

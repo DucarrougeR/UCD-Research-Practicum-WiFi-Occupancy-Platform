@@ -1,4 +1,4 @@
 from model import model
 from model import predict
 
-predict.predict_all()
+predict.predict("model/test.csv")
