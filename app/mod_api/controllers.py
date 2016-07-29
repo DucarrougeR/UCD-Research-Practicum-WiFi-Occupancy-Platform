@@ -51,12 +51,12 @@ def occupancy_data(room, time=None):
         # gets the fields of the result set
         fields = Counts._meta.sorted_field_names + Rooms._meta.sorted_field_names
         results_dict = {}
+
         for field in fields:
             # creates a dictionary of each result
             results_dict[field] = getattr(result, field)
         results_list.append(results_dict)
 
-    #print(results_list)
     return jsonify({"results" : results_list})
 
 @mod_api.route('/data/upload', methods=['POST'])

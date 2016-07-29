@@ -7,25 +7,8 @@ from flask_peewee.auth import Auth
 from flask_peewee.db import Database
 
 class User(BaseModel):
-    id = IntegerField(primary_key=True, null=True)
-    email = CharField()
     password = CharField()
-
-
-    def __init__(self, email, password_plain):
-        super(BaseModel,self).__init__()
-
-        self.email = email.lower()
-        self.set_password(password_plain)
-        self.save()
-
-    def set_password(self, password_plain):
-        self.password = generate_password_hash(password_plain)
-
-    def check_password(self, password_plain):
-        print(password_plain)
-        print(self.password)
-        return check_password_hash(self.password, password_plain)
+    email = CharField()
 
     def is_authenticated(self):
         return True
@@ -37,5 +20,11 @@ class User(BaseModel):
         return False
 
     def get_id(self):
-        print(self.id)
         return self.id
+
+    def create_new(self, email, password):
+        User.create(email=email, password=generate_password_hash(password))
+
+    def authenticate_user(self, email, password):
+        user = User.select(User).where((User.email == email) & (User.password ** generate_password_hash(password))).get()
+        return user
