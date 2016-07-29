@@ -26,6 +26,7 @@ class Counts(BaseModel):
     counts_authenticated = IntegerField()
     counts_truth_percent = CharField()
     counts_truth = IntegerField()
+    counts_predicted = IntegerField()
 
     def __init__(self, **kwargs):
         super(BaseModel, self).__init__(**kwargs)

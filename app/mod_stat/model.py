@@ -5,16 +5,10 @@ import numpy as np
 from sklearn.linear_model import LinearRegression
 from sklearn.externals import joblib
 
-def model():
-    """
-    
-    """
-
 def train_ols():
     """
     Trains a simple OLS model on ground-truth count. 
-    Returns a list containing the model R-squared, the overall model significance,
-    the explained variance score and the time of query. 
+    Serialises the output to a pickle file. 
     """
 
     # Creates a SQL connection to our SQLite database.
@@ -49,11 +43,7 @@ def train_ols():
     lrm.fit(X, y)
 
     # Serialises the fitted regression to disk. 
-    joblib.dump(lrm, "model/model.pkl") 
-
-    
+    joblib.dump(lrm, "app/mod_stat/model.pkl") 
 
 # Silences a pandas warning. 
 pd.options.mode.chained_assignment = None
-
-train_ols()
