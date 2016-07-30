@@ -2,10 +2,10 @@ Flask
 Jinja2
 Werkzeug
 nose
-flask_sqlalchemy
 flask_wtf
 peewee
 flask_peewee
 pandas
 statsmodels
 sklearn
+flask_login
