@@ -3,20 +3,17 @@
 # Import flask dependencies
 from flask import Blueprint, request, render_template, \
                   flash, g, session, redirect, url_for, jsonify
-from app.app_forms.forms import SignupForm, LoginForm
-# from flask_login import login_user, logout_user, LoginManager, login_required, user_logged_out, user_logged_in
-from app import db, app
 from app.mod_db import *
-import re
 from .models import *
 import os
 from werkzeug.utils import secure_filename
+from app.mod_auth.controllers import login_manager
+from app.mod_db.models import User
+from flask_login import LoginManager, current_user, login_user, login_required, logout_user
+from app.values import strings
 
 
 mod_api = Blueprint('mod_api', __name__, url_prefix='/api')
-
-# login_manager.init_app(app)
-# login_manager.login_view = 'mod_auth.login'
 
 # Set the route and accepted methods
 @mod_api.route('/hello', methods=['GET', 'POST'])
@@ -78,3 +75,24 @@ def upload_file():
             # return redirect(url_for('uploaded_file',
             #                         filename=filename))
             return "uploaded"
+
+@mod_api.route('/auth.login', methods=['POST'])
+def login_user():
+    if request.method == 'POST':
+        email = request.form['email']
+        password = request.form['password']
+        user = User.authenticate_user(email, password)
+        if user:
+            login_user(user)
+            return jsonify(user)
+        else:
+            return jsonify({"error": strings.ERROR_LOGIN})
+
+@mod_api.route('/auth/register', methods=['POST'])
+def register_user():
+    pass
+
+@mod_api.route('/auth/loggedin', methods=['GET'])
+@login_required
+def logged_in_user():
+    return "hello"

@@ -1,6 +1,5 @@
 # Luke Kearney
 from werkzeug.security import generate_password_hash, check_password_hash
-from app.mod_db import db
 from peewee import *
 from .BaseModel import BaseModel
 
