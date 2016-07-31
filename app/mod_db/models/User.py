@@ -37,5 +37,5 @@ class User(BaseModel):
         return None
 
 User.create_table(fail_silently=True)
-user = User.authenticate_user("admin@admin.com", "password")
-print(user)
+# user = User.authenticate_user("admin@admin.com", "password")
+# print(user)

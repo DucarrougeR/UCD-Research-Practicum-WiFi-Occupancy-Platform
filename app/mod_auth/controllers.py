@@ -4,7 +4,7 @@ from flask import Blueprint, request, render_template, \
                   flash, g, session, redirect, url_for
 from app.app_forms.forms import SignupForm, LoginForm
 from app.mod_db.models import User
-from flask_login import LoginManager, current_user
+from flask_login import LoginManager, current_user, login_user, login_required
 from flask_peewee.auth import Auth
 from app import app
 
@@ -21,7 +21,8 @@ mod_auth = Blueprint('mod_auth', __name__, url_prefix='/auth')
 
 @login_manager.user_loader
 def load_user(user_id):
-    return User.get(user_id)
+    user = User.get(User.id == user_id)
+    print(user)
 
 # Set the route and accepted methods
 @mod_auth.route('/hello', methods=['GET', 'POST'])
@@ -37,14 +38,14 @@ def signup():
         if form.validate() == False:
             return render_template('auth/signup.html', form=form)
         else:
-            # user = User(form.email.data, form.password.data)
+            User.create_new(form.email.data, form.password.data)
 
             # newuser.create(email=form.email.date)
-            #user = User.create(email=form.email.data, password=form.password.data)
+            # user = User.create(email=form.email.data, password=form.password.data)
             # db.session.add(newuser)
             # db.session.commit()
-
-            #session['email'] = user.email
+            #
+            # #session['email'] = user.email
 
             return "[1] Create a new user [2] sign in the user [3] redirect to the user's profile"
 
@@ -59,12 +60,15 @@ def login():
         if form.validate() == False:
             return render_template('auth/login.html', form=form)
         else:
-            user = Auth.authenticate(form.email, form.password)
-            if current_user.is_authenticated:
-                # Auth.login_user(user)
-                # redirect as appropriate
-                return "logged in"
+            user = User.authenticate_user(form.email.data, form.password.data)
+            if User.authenticate_user(form.email.data, form.password.data):
+                if login_user(user):
+                    print(current_user)
+                    return "valid user"
+                else:
+                    return "error logging in"
             else:
+                flash("Please enter a valid username and password")
                 return render_template('auth/login.html', form=form)
 
     elif request.method == 'GET':
@@ -87,7 +91,7 @@ def login():
 # def load_user(id):
 #     return User.query.get(id)
 #
-# @mod_auth.route('/logcheck')
-# @login_required
-# def index():
-#     return "you're logged in"
+@mod_auth.route('/logcheck')
+def index():
+    print(current_user)
+    return "you're logged in"

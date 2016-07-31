@@ -45,10 +45,9 @@ class LoginForm(Form):
         if not Form.validate(self):
             return False
 
-        user = User.select().where(User.email == self.email.data.lower()).get()
+        user = User.authenticate_user(self.email.data.lower(), self.password.data)
 
-        #user = User.query.filter_by(email=self.email.data.lower()).first()
-        if user and user.check_password(self.password.data):
+        if user:
             return True
         else:
             self.email.errors.append("Invalid e-mail or password")
