@@ -26,7 +26,9 @@ class User(BaseModel):
 
     @staticmethod
     def create_new(email, password, group="user"):
-        User.create(email=email, password=generate_password_hash(password), group=group)
+        if User.create(email=email, password=generate_password_hash(password), group=group):
+            return True
+        return False
 
     @staticmethod
     def authenticate_user(email, password):

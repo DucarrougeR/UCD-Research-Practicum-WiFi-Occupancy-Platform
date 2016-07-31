@@ -1,5 +1,4 @@
 # Luke Kearney
-# Luke Kearney
 # Import flask dependencies
 from flask import Blueprint, request, render_template, \
                   flash, g, session, redirect, url_for, jsonify
@@ -7,7 +6,6 @@ from app.mod_db import *
 from .models import *
 import os
 from werkzeug.utils import secure_filename
-from app.mod_auth.controllers import login_manager
 from app.mod_db.models import User
 from flask_login import LoginManager, current_user, login_user, login_required, logout_user
 from app.values import strings
@@ -90,9 +88,18 @@ def login_user():
 
 @mod_api.route('/auth/register', methods=['POST'])
 def register_user():
-    pass
+    if request.method == 'POST':
+        email = request.form['email']
+        password = request.form['password']
+        if User.create_new(email, password):
+            return jsonify({"success": strings.SUCCESS_REGISTER_USER})
+        else:
+            return jsonify({"error": strings.ERROR_REGISTER_USER})
+
 
 @mod_api.route('/auth/loggedin', methods=['GET'])
-@login_required
 def logged_in_user():
-    return "hello"
+    if current_user.is_authenticated:
+        return jsonify({"loggedIn": True})
+    else:
+        return jsonify({"loggedIn": False})
