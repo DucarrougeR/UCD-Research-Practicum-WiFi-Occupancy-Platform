@@ -89,46 +89,52 @@ Fixed_DF.sort(['date','hour'], axis=0, ascending=[True, True], inplace=False,
 Fixed_DF.to_sql('cleaned_analysis_table', connect, flavor='sqlite', if_exists='replace',
           index=False, chunksize=None)
 
+'''  '''
 
 XP_Min = Fixed_DF.groupby([Fixed_DF['date'], Fixed_DF['hour'], Fixed_DF['room']]).min()
+#XP_Min = XP_Min.drop('room_2', axis=1)
+XP_Min['time'] = XP_Min['time'].map(lambda x: x[:-6])
 XP_Min.to_sql('Min_table', connect, flavor='sqlite', if_exists='replace',
-              index=False, chunksize=None)
+              index=True, chunksize=None)
 # XP_Min.head()
 
-XP_Max = Fixed_DF.groupby([Fixed_DF['date'], Fixed_DF['hour'], Fixed_DF['room']]).max()
+XP_Max = Fixed_DF.groupby([Fixed_DF['date'], Fixed_DF['hour'], Fixed_DF['room']])
+XP_Max = XP_Max.max()
+XP_Max['time'] = XP_Max['time'].map(lambda x: x[:-6])
 XP_Max.to_sql('Max_table', connect, flavor='sqlite', if_exists='replace',
-              index=False, chunksize=None)
+              index=True, chunksize=None)
 # XP_Max.head()
 
-XP_Mean = Fixed_DF.groupby([Fixed_DF['date'], Fixed_DF['hour'], Fixed_DF['room']]).mean()
+XP_Mean = Fixed_DF
+XP_Mean['time'] = XP_Mean['time'].map(lambda x: x[:-6])
+XP_Mean = XP_Mean.groupby([Fixed_DF['time'], Fixed_DF['room']]).mean()
+XP_Mean = XP_Mean.drop(['hour','date'], axis=1)
 XP_Mean.to_sql('Mean_table', connect, flavor='sqlite', if_exists='replace',
-               index=False, chunksize=None)
-# XP_Mean.head()
-
-XP_Med = Fixed_DF.groupby([Fixed_DF['date'], Fixed_DF['hour'], Fixed_DF['room']]).median()
+               index=True, chunksize=None)
+#XP_Mean.head()
+			   
+XP_Med = Fixed_DF
+XP_Med = XP_Med.groupby([Fixed_DF['time'], Fixed_DF['room']]).median()
+XP_Med = XP_Med.drop(['hour','date'], axis=1)
 XP_Med.to_sql('Med_table', connect, flavor='sqlite', if_exists='replace',
-              index=False, chunksize=None)
-# XP_Med.head()
+              index=True, chunksize=None)
+#XP_Med.head()
 
 
+''' Attempts to generate modal values table, unsuccessful (multpile hourly observations)
+>>>http://stackoverflow.com/questions/38594027/getting-the-maximum-mode-per-group-using-groupby/38594308?noredirect=1#comment64617825_38594308
 # # XP_Mode = Fixed_DF.groupby([Fixed_DF['date'], Fixed_DF['hour'], Fixed_DF['room']])
-
 # XP_Mode = Fixed_DF
-
-# # Using NumPy to consider only numeric number and not count NaNsvalues
+# # Using NumPy to consider only numeric number and not count NaN values
 # XP_Mode = XP_Mode[np.isfinite(XP_Mode['associated'])]
-
 # XP_Mode.groupby(lambda x: x.XP_Mode.date).agg(lambda x: stats.mode(x)[0][0])
 
 # Using NumPy to consider only numeric number and not count NaNsvalues
 # XP_Mode = XP_Mode[np.isfinite(XP_Mode['associated'])]
-
-# # Generate new Column with count of value occurrences (to use for mode)
-#### XP_Mode['count'] = XP_Mode['associated'].value_counts()
-
-# # Group by the 3 features, date, hour and room
+# Generate new Column with count of value occurrences (to use for mode)
+# XP_Mode['count'] = XP_Mode['associated'].value_counts()
+# Group by the 3 features, date, hour and room
 # XP_Mode = XP_Mode.groupby([Fixed_DF['date'], Fixed_DF['hour'], XP_Mode['room']]).max()
-
 
 
 # f = lambda x: mode(x, axis=1)[-1]
@@ -141,16 +147,5 @@ XP_Med.to_sql('Med_table', connect, flavor='sqlite', if_exists='replace',
 # XP_Mode.to_sql('Mode_table', connect, flavor='sqlite', if_exists='replace',
 #               index=False, chunksize=None)
 # XP_Mode.head()
-
-##########################################################################
-
-# print("Tables saved")
-
-# print("Min table size is: " + str(XP_Min.shape))
-# print("Max table size is: " + str(XP_Max.shape))
-# print("Mean table size is: " + str(XP_Mean.shape))
-# print("Median table size is: " + str(XP_Med.shape))
-# print("Need to Work on last 2 tables")
-# print('Min Table data is as follows \n --------------------------------------------------')
-
+'''
 print("Finished")
