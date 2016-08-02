@@ -9,6 +9,7 @@ from werkzeug.utils import secure_filename
 from app.mod_db.models import User
 from flask_login import LoginManager, current_user, login_user, login_required, logout_user
 from app.values import strings
+import json
 
 
 mod_api = Blueprint('mod_api', __name__, url_prefix='/api')
@@ -74,17 +75,28 @@ def upload_file():
             #                         filename=filename))
             return "uploaded"
 
-@mod_api.route('/auth.login', methods=['POST'])
-def login_user():
+@mod_api.route('/auth/login', methods=['POST'])
+def log_in_user():
     if request.method == 'POST':
-        email = request.form['email']
-        password = request.form['password']
+        # convert from JSON string to python
+        data = json.loads(request.data.decode())
+        email = data['email']
+        password = data['password']
+
+        # check if the user is valid
         user = User.authenticate_user(email, password)
         if user:
+            # log the user in using flask_login
             login_user(user)
-            return jsonify(user)
+            # convert the user object to standard, serializable, python
+            user = user.get_result()
+            permissions = Permissions.get_permission_for_user_group(user["group"]).get_result()
+            # converts string of permissions to standard python object
+            user["permissions"] = json.loads(permissions["rules"])
+
+            return jsonify(User.cleaned(user))
         else:
-            return jsonify({"error": strings.ERROR_LOGIN})
+            return jsonify({"error": strings.ERROR_LOGIN}), 404
 
 @mod_api.route('/auth/register', methods=['POST'])
 def register_user():
@@ -101,5 +113,20 @@ def register_user():
 def logged_in_user():
     if current_user.is_authenticated:
         return jsonify({"loggedIn": True})
+    else:
+        return jsonify({"loggedIn": False})
+
+@mod_api.route('/auth/current-user', methods=['GET'])
+def get_current_user():
+    if current_user.is_authenticated:
+        user = current_user.get_result()
+        permissions = Permissions.get_permission_for_user_group(user["group"]).get_result()
+        # converts string of permissions to standard python object
+        user = User.cleaned(user)
+        user["permissions"] = json.loads(permissions["rules"])
+        return jsonify({
+            "loggedIn": True,
+            "user": user
+        })
     else:
         return jsonify({"loggedIn": False})
