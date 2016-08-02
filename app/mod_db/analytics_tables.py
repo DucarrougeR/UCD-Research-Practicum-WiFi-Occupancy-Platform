@@ -78,7 +78,7 @@ Fixed_DF = Fixed_DF.drop("capacity_y",1).drop("time_0",1)
 # Identify if columns only contain NaN value
 for column in Fixed_DF.columns:
     if (Fixed_DF[column].isnull().all()):
-        print("Contains only NaN values: " + column)
+        print(column + ":\t Contains only NaN values" )
     else:
         pass
 
@@ -90,9 +90,7 @@ Fixed_DF.to_sql('cleaned_analysis_table', connect, flavor='sqlite', if_exists='r
           index=False, chunksize=None)
 
 ''' Generating a table per statistical function '''
-
 XP_Min = Fixed_DF.groupby([Fixed_DF['date'], Fixed_DF['hour'], Fixed_DF['room']]).min()
-#XP_Min = XP_Min.drop('room_2', axis=1)
 XP_Min['time'] = XP_Min['time'].map(lambda x: x[:-6])
 XP_Min.index.names = ['counts_date','counts_hour', 'counts_room']
 XP_Min.columns = ['counts_time', 'counts_capacity', 'counts_truth_percent',
@@ -109,7 +107,6 @@ XP_Max.index.names = ['counts_date','counts_hour', 'counts_room']
 XP_Max.columns = ['counts_time', 'counts_capacity', 'counts_truth_percent',
 		'counts_truth','counts_module_code', 'counts_size','counts_associated',
 		'counts_authenticated']
-
 XP_Max.to_sql('Max_table', connect, flavor='sqlite', if_exists='replace',
               index=True, index_label=None, chunksize=None)
 #XP_Max.head()
@@ -124,7 +121,7 @@ XP_Mean.columns = ['counts_capacity', 'counts_truth', 'counts_size',
 XP_Mean.to_sql('Mean_table', connect, flavor='sqlite', if_exists='replace',
                index=True, chunksize=None)
 #XP_Mean.head()
-			   
+
 XP_Med = Fixed_DF
 XP_Med = XP_Med.groupby([Fixed_DF['time'], Fixed_DF['room']]).median()
 XP_Med = XP_Med.drop(['hour','date'], axis=1)
@@ -137,8 +134,8 @@ XP_Med.to_sql('Med_table', connect, flavor='sqlite', if_exists='replace',
 
 
 '''
->>> Attempts to generate modal values table, 
->>> unsuccessful (multpile hourly observations)
+>>> Attempts to generate MODAL VALUES Table, 
+>>> unsuccessful (multiple hourly values with same number of observations)
 >>> http://stackoverflow.com/questions/38594027/getting-the-maximum-mode-per-group-using-groupby/38594308?noredirect=1#comment64617825_38594308
 
 # # XP_Mode = Fixed_DF.groupby([Fixed_DF['date'], Fixed_DF['hour'], Fixed_DF['room']])
@@ -154,14 +151,10 @@ XP_Med.to_sql('Med_table', connect, flavor='sqlite', if_exists='replace',
 # Group by the 3 features, date, hour and room
 # XP_Mode = XP_Mode.groupby([Fixed_DF['date'], Fixed_DF['hour'], XP_Mode['room']]).max()
 
-
 # f = lambda x: mode(x, axis=1)[-1]
 # XP_Mode = XP_Mode.groupby([XP_Mode['date'], XP_Mode['hour'], XP_Mode['room']]).apply(f)
-
 # XP_Mode = XP_Mode.sort(columns='count', axis=1, ascending=False)
-
 # XP_Mode.iloc[XP_Mode.groupby([XP_Mode['date'], XP_Mode['room']]).apply(lambda x: x['count'].idxmax())]
-
 # XP_Mode.to_sql('Mode_table', connect, flavor='sqlite', if_exists='replace',
 #               index=False, chunksize=None)
 # XP_Mode.head()
