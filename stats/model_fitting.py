@@ -1,5 +1,5 @@
 """
-Regression model specifications. 
+Model specifications. 
 """
 import sqlite3
 import pandas as pd
