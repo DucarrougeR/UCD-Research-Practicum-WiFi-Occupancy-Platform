@@ -9,7 +9,7 @@ from werkzeug.utils import secure_filename
 from app.mod_db.models import User
 from flask_login import LoginManager, current_user, login_user, login_required, logout_user
 from app.values import strings
-
+import sqlite3
 
 mod_api = Blueprint('mod_api', __name__, url_prefix='/api')
 
@@ -72,6 +72,32 @@ def upload_file():
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             # return redirect(url_for('uploaded_file',
             #                         filename=filename))
+
+            # If new file is a single CSV:
+            if file.filename.endswith(".csv"):
+                # Generates predictions for the file. 
+                df = mod_stat.predict.predict(file)
+
+                # Writes dataframe with predictions to database. 
+                df.columns = ["room", "counts_time", "counts_associated", "counts_authenticated", "counts_predicted"]
+                con = sqlite3.connect(config.DATABASE["name"])    
+                df.to_sql("counts", con, flavor="sqlite", if_exists="replace", index=False, chunksize=None)
+            # Else new file is a .zip filled with CSVs. 
+            elif file.filename.endswith(".zip"):
+                # Unzips all of the zips. 
+                mod_db.data_clean(app.config["UPLOAD_FOLDER"])
+
+                # Loops through every CSV file in every folder in the directory.
+                for root, dirs, files in os.walk(app.config["UPLOAD_FOLDER"]):
+                    for f in files:
+                        # Generates predictions for the file. 
+                        df = mod_stat.predict.predict(f)
+
+                        # Writes dataframe with predictions to database. 
+                        df.columns = ["room", "counts_time", "counts_associated", "counts_authenticated", "counts_predicted"]
+                        con = sqlite3.connect(config.DATABASE["name"])    
+                        df.to_sql("counts", con, flavor="sqlite", if_exists="replace", index=False, chunksize=None)
+
             return "uploaded"
 
 @mod_api.route('/auth.login', methods=['POST'])
