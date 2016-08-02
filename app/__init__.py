@@ -1,11 +1,14 @@
 # Import flask and template operators
 from flask import Flask, render_template, send_from_directory, url_for
+from flask_mail import *
 
 # Define the WSGI application object
 app = Flask(__name__, template_folder='templates')
 
 # Configurations
 app.config.from_object('config')
+
+mail = Mail(app)
 
 from app.mod_db import *
 

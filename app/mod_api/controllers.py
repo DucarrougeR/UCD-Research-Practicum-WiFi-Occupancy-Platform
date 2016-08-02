@@ -10,6 +10,8 @@ from app.mod_db.models import User
 from flask_login import LoginManager, current_user, login_user, login_required, logout_user
 from app.values import strings
 import json
+from flask_mail import Message
+from app import mail
 
 
 
@@ -102,12 +104,23 @@ def log_in_user():
 @mod_api.route('/auth/register', methods=['POST'])
 def register_user():
     if request.method == 'POST':
-        email = request.form['email']
-        password = request.form['password']
+        data = json.loads(request.data.decode())
+        email = data['email']
+        password = User.generate_password()
         if User.create_new(email, password):
-            return jsonify({"success": strings.SUCCESS_REGISTER_USER})
+            # notify the new user
+            try:
+                msg = Message("Hello",
+                              sender=config.DEFAULT_MAIL_SENDER,
+                              recipients=[email])
+                msg.html = "<h1>Hello, you've been signed up for our app</h1>Your password is: " + password
+                mail.send(msg)
+            except Exception:
+                print("error sending email")
+
+            return jsonify({"success": strings.SUCCESS_REGISTER_USER}), 200
         else:
-            return jsonify({"error": strings.ERROR_REGISTER_USER})
+            return jsonify({"error": strings.ERROR_REGISTER_USER}), 500
 
 
 @mod_api.route('/auth/loggedin', methods=['GET'])
@@ -125,9 +138,6 @@ def get_current_user():
         # converts string of permissions to standard python object
         user = User.cleaned(user)
         user["permissions"] = json.loads(permissions["rules"])
-        return jsonify({
-            "loggedIn": True,
-            "user": user
-        })
+        return jsonify(user)
     else:
-        return jsonify({"loggedIn": False})
+        return jsonify(None)

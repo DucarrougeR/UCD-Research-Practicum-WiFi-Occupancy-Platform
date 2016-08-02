@@ -2,7 +2,7 @@
     <ul class="nav-list nav-list--main">
         <li><a ng-href="/dashboard">Dashboard</a></li>
         <li><a href="/upload">Upload logs</a></li>
-        <li><a href="/add/user" ng-show="permission.addUser == true">Add a user</a></li>
+        <li><a href="/add/user" ng-show="hasPermission('add-user')">Add a user</a></li>
         <li><a href="/add/class">Add a class</a></li>
         <li><a href="/add/ground-truth">Add ground truth</a></li>
     </ul>

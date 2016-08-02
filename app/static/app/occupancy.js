@@ -7,30 +7,23 @@ var occupancyApp = angular.module('occupancyApp', [
   'ngFileUpload'
 ]);
 
-occupancyApp.controller('DashboardController', ['$scope', '$http', 'chartData', 'Authentication', 'Session' function($scope, $http, chartData, Authentication, Session) {
+occupancyApp.controller('DashboardController', ['$scope', '$http', 'chartData', 'Authentication', 'Session', function($scope, $http, chartData, Authentication, Session) {
     $scope.message = "Hello Admin";
-    // if there is no current user
-    console.log("auth 1");
-    console.log(Session.user);
-    if (!Authentication.user) {
-      Authentication.getLoggedInUser().then(function(data) {
-        $scope.permission = data.permissions;
-        console.log("auth 2");
-        console.log(Authentication.getCurrentUser());
-      });
-    }
-    $scope.submit = function() {
-      // Mon Jul 04 2016
-      // var dateRe = new RegExp("[A-Za-z]{3} [A-Za-z]{3} \d{2} \d{4}");
-      // var testRe = new RegExp("a");
-      // var testString = "able";
-      // console.log(testRe.test(testString));
-      // console.log(dateRe.test($scope.formData.date));
-      // if (dateRe.test($scope.date)) {
-      //   console.log("matches");
-      // }
-      
 
+    // make the hasPermission function available to templates
+    $scope.hasPermission = Authentication.hasPermission;
+    // if there is no current user
+    if (!Session.user) {
+      Authentication.getLoggedInUser().then(function(data) {
+        // Session service is shared between controllers to keep track of the current user
+        Session.user = data;
+      });
+    } else {
+      $scope.permissions.addUser = Session.user.permissions['add-user'];
+    }
+
+    // TODO: move this to a service or something
+    $scope.submit = function() {
       if ($scope.formData.room && $scope.formData.date) {
         // formatting the URL
         var url = "/api/room/occupancy/"+ $scope.formData.room +"/" + $scope.formData.date.split(" ").join("%20");
@@ -177,16 +170,25 @@ occupancyApp.controller("UploadController", ['$scope', 'Upload', '$timeout', fun
     };
 }]);
 
-occupancyApp.controller('AuthController', ['$scope', '$location', 'Authentication', function($scope, $location, Authentication){
+occupancyApp.controller('AuthController', ['$scope', '$location', 'Authentication', 'Session', function($scope, $location, Authentication, Session){
   $scope.error = "";
   $scope.submit = function() {
       var results = Authentication.loginUser($scope.email, $scope.password).then(function(data) {
         if (data.error) {
           $scope.error = data.error;
         } else {
+          console.log(data);
+          data['loggedIn'] = true;
+          Session.user = data;
           $location.path('/dashboard');
         }
       });
       
   }
+}]);
+
+occupancyApp.controller('RegisterController', ['$scope', 'Authentication', function($scope, Authentication){
+  $scope.submit = function() {
+      Authentication.registerUser($scope.email, $scope.permission);
+    }
 }]);

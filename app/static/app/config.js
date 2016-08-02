@@ -27,22 +27,26 @@ occupancyApp.config(['$locationProvider' ,'$routeProvider', '$logProvider', 'Cha
       when('/add/user', {
         templateUrl: '/static/app/templates/add-user.html',
         resolve:{
-          "check":function(Authenication,$location){   //function to be resolved, accessFac and $location Injected
-            if(Authenication.hasPermission("add-user")){    //check if the user has permission -- This happens before the page loads
-                
-            }else{
-              $location.path('/');                //redirect user to home if it does not have permission.
-              alert("You don't have access here");
-            }
+          "check":function(Authentication,$location){   //function to be resolved, accessFac and $location Injected
+            Authentication.hasPermission("add-user").then(function(data){
+              if (data) {
+                return true;
+              } else {
+                $location.path('/');                //redirect user to home if it does not have permission.
+                alert("You don't have access here");
+              }
+            });
+            
           }
-        }
+        },
+        controller: 'RegisterController'
       }).
       when('/add/ground-truth', {
-        templateUrl: '/static/app/templates/add-user.html',
+        templateUrl: '/static/app/templates/add-truth.html',
         resolve:{
-          "check":function(Authenication,$location){   //function to be resolved, accessFac and $location Injected
-            if(Authenication.hasPermission("add-truth")){    //check if the user has permission -- This happens before the page loads
-                
+          "check":function(Authentication,$location){   //function to be resolved, accessFac and $location Injected
+            if(Authentication.hasPermission("add-truth")){    //check if the user has permission -- This happens before the page loads
+                return true;
             }else{
               $location.path('/');                //redirect user to home if it does not have permission.
               alert("You don't have access here");
@@ -51,15 +55,18 @@ occupancyApp.config(['$locationProvider' ,'$routeProvider', '$logProvider', 'Cha
         }
       }).
       when('/add/class', {
-        templateUrl: '/static/app/templates/add-user.html',
+        templateUrl: '/static/app/templates/add-class.html',
         resolve:{
-          "check":function(Authenication,$location){   //function to be resolved, accessFac and $location Injected
-            if(Authenication.hasPermission("add-class")){    //check if the user has permission -- This happens before the page loads
-                
-            }else{
-              $location.path('/');                //redirect user to home if it does not have permission.
-              alert("You don't have access here");
-            }
+          "check":function(Authentication,$location){   //function to be resolved, accessFac and $location Injected
+            Authenication.hasPermission("add-class").then(function(data){
+              console.log(data);
+              if (data) {
+
+              } else {
+                console.log('no permission');
+              }
+            });
+            
           }
         }
       })

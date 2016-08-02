@@ -1,12 +1,7 @@
 occupancyApp.factory('Authentication', ['$http', 'Session', function($http, Session){
 	var currentUser;
 	return {
-		getCurrentUser: function() {
-			return currentUser;
-		},
 		getLoggedInUser: function() {
-			console.log("auth");
-			console.log(this);
 			return $http({
 				method: 'GET',
 				url: '/api/auth/current-user'
@@ -23,24 +18,24 @@ occupancyApp.factory('Authentication', ['$http', 'Session', function($http, Sess
 			});
 		},
 
-		registerUser: function (email, password) {
+		registerUser: function (email, permission) {
 			$http({
 				method: 'POST',
 				data: {
 					"email": email,
-					"password": password
+					"permission": permission
 				},
-				headers: {'Content-Type': 'application/x-www-form-urlencoded'},
 				url: '/api/auth/register'
 			}).then(function successCallback(response) {
 				// this callback will be called asynchronously
 				// when the response is available
-				user = response.data;
-				return JSON.parse(response);
+				return response;
+				// user = response.data;
+				// return JSON.parse(response);
 			}, function errorCallback(response) {
 				// called asynchronously if an error occurs
 				// or server returns response with an error status.
-				return JSON.parse(response);
+				return response;
 			});
 		},
 
@@ -61,9 +56,22 @@ occupancyApp.factory('Authentication', ['$http', 'Session', function($http, Sess
 		},
 
 		hasPermission: function(permission) {
-			// if (user) {
-
-			// }
+			// if the user has already been logged in
+			if (Session.user) {
+				// check their permissions
+				if (Session.user.permissions[permission]) {
+					return true;
+				}
+			} else {
+				// otherwise, get the current logged in user
+				return this.getLoggedInUser().then(function(data) {
+					
+					if (data.permissions[permission]) {
+						return true;
+					}
+				});
+			}
+			return false;
 		}
 	}
 }]);
