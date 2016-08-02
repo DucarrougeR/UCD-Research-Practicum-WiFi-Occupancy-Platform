@@ -1,16 +1,20 @@
-occupancyApp.factory('Authentication', ['$http', function($http){
-	var user = null;
+occupancyApp.factory('Authentication', ['$http', 'Session', function($http, Session){
+	var currentUser;
 	return {
-		
+		getCurrentUser: function() {
+			return currentUser;
+		},
 		getLoggedInUser: function() {
+			console.log("auth");
+			console.log(this);
 			return $http({
 				method: 'GET',
 				url: '/api/auth/current-user'
 			}).then(function successCallback(response) {
 				// this callback will be called asynchronously
 				// when the response is available
-				console.log(response);
-				user = response.data;
+				var user = this.currentUser = response.data;
+
 				return user;
 			}, function errorCallback(response) {
 				// called asynchronously if an error occurs
@@ -49,6 +53,7 @@ occupancyApp.factory('Authentication', ['$http', function($http){
 				},
 				url: '/api/auth/login'
 			}).then(function successCallback(response) {
+				this.user = response.data;
 				return response.data;
 			}, function errorCallback(response) {
 				return response.data;

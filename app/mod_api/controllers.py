@@ -12,6 +12,7 @@ from app.values import strings
 import json
 
 
+
 mod_api = Blueprint('mod_api', __name__, url_prefix='/api')
 
 # Set the route and accepted methods
