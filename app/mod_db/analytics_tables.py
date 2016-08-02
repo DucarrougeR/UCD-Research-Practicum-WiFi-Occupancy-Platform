@@ -121,8 +121,11 @@ XP_Med.to_sql('Med_table', connect, flavor='sqlite', if_exists='replace',
 #XP_Med.head()
 
 
-''' Attempts to generate modal values table, unsuccessful (multpile hourly observations)
->>>http://stackoverflow.com/questions/38594027/getting-the-maximum-mode-per-group-using-groupby/38594308?noredirect=1#comment64617825_38594308
+''' 
+>>> Attempts to generate modal values table, 
+>>> unsuccessful (multpile hourly observations)
+>>> http://stackoverflow.com/questions/38594027/getting-the-maximum-mode-per-group-using-groupby/38594308?noredirect=1#comment64617825_38594308
+
 # # XP_Mode = Fixed_DF.groupby([Fixed_DF['date'], Fixed_DF['hour'], Fixed_DF['room']])
 # XP_Mode = Fixed_DF
 # # Using NumPy to consider only numeric number and not count NaN values
