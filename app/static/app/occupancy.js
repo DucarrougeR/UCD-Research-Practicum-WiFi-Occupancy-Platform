@@ -7,9 +7,8 @@ var occupancyApp = angular.module('occupancyApp', [
   'ngFileUpload'
 ]);
 
-occupancyApp.controller('dashboardController', ['$scope', '$http', 'chartData', function($scope, $http, chartData) {
+occupancyApp.controller('DashboardController', ['$scope', '$http', 'chartData', 'Authentication', function($scope, $http, chartData, Authentication) {
     $scope.message = "Hello Admin";
-
     $scope.submit = function() {
       // Mon Jul 04 2016
       // var dateRe = new RegExp("[A-Za-z]{3} [A-Za-z]{3} \d{2} \d{4}");
@@ -126,7 +125,7 @@ occupancyApp.controller("lineCtrl", ['$scope', '$timeout', 'chartData', function
 }]);
 
 
-occupancyApp.controller("uploadController", ['$scope', 'Upload', '$timeout', function ($scope, Upload, $timeout) {
+occupancyApp.controller("UploadController", ['$scope', 'Upload', '$timeout', function ($scope, Upload, $timeout) {
     $scope.$watch('files', function () {
         $scope.upload($scope.files);
     });
@@ -168,13 +167,16 @@ occupancyApp.controller("uploadController", ['$scope', 'Upload', '$timeout', fun
     };
 }]);
 
-occupancyApp.controller('loginController', ['$scope', '$location', function($scope, $location){
-  $scope.message = "";
+occupancyApp.controller('AuthController', ['$scope', '$location', 'Authentication', function($scope, $location, Authentication){
+  $scope.error = "";
   $scope.submit = function() {
-      if ($scope.username == "admin") {
-        // successful login
-        console.log("success");
-        $location.path("/dashboard");
-      }
+      var results = Authentication.loginUser($scope.email, $scope.password).then(function(data) {
+        if (data.error) {
+          $scope.error = data.error;
+        } else {
+          $location.path('/dashboard');
+        }
+      });
+      
   }
 }]);

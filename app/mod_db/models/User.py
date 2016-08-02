@@ -32,10 +32,24 @@ class User(BaseModel):
 
     @staticmethod
     def authenticate_user(email, password):
-        user = User.select(User).where((User.email == email)).get()
-        if check_password_hash(user.password, password):
-            return user
+
+        user = User.select(User).where((User.email == email))
+        if user.count():
+            user = user.get()
+            if check_password_hash(user.password, password):
+                return user
+
         return None
+
+    @staticmethod
+    def cleaned(user):
+        if user['password']:
+            del user['password']
+
+        if user['id']:
+            del user['id']
+        return user
+
 
 User.create_table(fail_silently=True)
 # user = User.authenticate_user("admin@admin.com", "password")

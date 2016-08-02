@@ -1,0 +1,20 @@
+<nav class="column column-mid-2 full-height sidebar sidebar--fixed">
+    <ul class="nav-list nav-list--main">
+        <li><a ng-href="/dashboard">Dashboard</a></li>
+        <li><a href="/upload">Upload logs</a></li>
+        <li><a href="/add/user" ng-show="permission.addUser == true">Add a user</a></li>
+        <li><a href="/add/class" ng-show="permission.addClass == true">Add a class</a></li>
+        <li><a href="/add/ground-truth" ng-show="permission.addTruth == true">Add ground truth</a></li>
+    </ul>
+</nav>
+<div class="column column-mid-10 column-mid-offset-2 main-content">
+    <div class="container content-container row">
+        <form class="form-inline" ng-submit="submit()">
+            <label class="column-mid-5 column">
+                <span class="text-accent">User Email</span><br>
+                <input type="text" placeholder="user@example.com">
+            </label>
+            <input type="submit" class="submit-button" value = "Get Data >">
+        </form>
+    </div>
+</div>
