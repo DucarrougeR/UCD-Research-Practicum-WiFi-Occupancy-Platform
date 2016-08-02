@@ -7,8 +7,18 @@ var occupancyApp = angular.module('occupancyApp', [
   'ngFileUpload'
 ]);
 
-occupancyApp.controller('DashboardController', ['$scope', '$http', 'chartData', 'Authentication', function($scope, $http, chartData, Authentication) {
+occupancyApp.controller('DashboardController', ['$scope', '$http', 'chartData', 'Authentication', 'Session' function($scope, $http, chartData, Authentication, Session) {
     $scope.message = "Hello Admin";
+    // if there is no current user
+    console.log("auth 1");
+    console.log(Session.user);
+    if (!Authentication.user) {
+      Authentication.getLoggedInUser().then(function(data) {
+        $scope.permission = data.permissions;
+        console.log("auth 2");
+        console.log(Authentication.getCurrentUser());
+      });
+    }
     $scope.submit = function() {
       // Mon Jul 04 2016
       // var dateRe = new RegExp("[A-Za-z]{3} [A-Za-z]{3} \d{2} \d{4}");
