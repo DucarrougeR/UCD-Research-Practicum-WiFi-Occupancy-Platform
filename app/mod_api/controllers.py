@@ -14,6 +14,8 @@ from flask_mail import Message
 from app import mail
 from app.mod_stat import *
 import sqlite3
+from app.values import strings
+from app.mod_db import data_clean
 
 mod_api = Blueprint('mod_api', __name__, url_prefix='/api')
 
@@ -58,52 +60,65 @@ def occupancy_data(room, time=None):
 
     return jsonify({"results" : results_list})
 
-@mod_api.route('/data/upload', methods=['POST'])
-def upload_file():
-    if request.method == 'POST':
-        # check if the post request has the file part
-        if 'file' not in request.files:
-            flash('No file part')
-            return redirect(request.url)
-        file = request.files['file']
-        # if user does not select file, browser also
-        # submit a empty part without filename
-        if file.filename == '':
-            flash('No selected file')
-            return redirect(request.url)
-        if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            # return redirect(url_for('uploaded_file',
-            #                         filename=filename))
+@mod_api.route('/data/upload/<filetype>', methods=['POST'])
+def upload_file(filetype):
+    # check if user is logged in and has permission to use the route
+    if current_user.is_authenticated:
+        if request.method == 'POST':
+            # check if the filetype was defined
+            print(request.data.decode())
+            # #data = json.loads(request.data.decode())
+            if filetype and (filetype == "wifi" or filetype == "truth" or filetype == "timetable"):
+                if Permissions.permissions_for_filetype(current_user, filetype):
+                    # check if the post request has the file part
+                    if 'file' not in request.files:
+                        flash('No file part')
+                        return redirect(request.url)
+                    file = request.files['file']
+                    # if user does not select file, browser also
+                    # submit a empty part without filename
+                    if file.filename == '':
+                        flash('No selected file')
+                        return redirect(request.url)
+                    if file and allowed_file(file.filename):
+                        filename = secure_filename(file.filename)
+                        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                        # return redirect(url_for('uploaded_file',
+                        #                         filename=filename))
 
-            # If new file is a single CSV:
-            if file.filename.endswith(".csv"):
-                # Generates predictions for the file. 
-                print(file.filename)
-                df = predict.predict(file.filename)
+                        # If new file is a single CSV:
+                        if file.filename.endswith(".csv"):
+                            # Generates predictions for the file.
+                            print(file.filename)
+                            df = predict.predict(file.filename)
 
-                # Writes dataframe with predictions to database. 
-                df.columns = ["counts_room_number", "counts_time", "counts_associated", "counts_authenticated", "counts_predicted"]
-                con = sqlite3.connect(config.DATABASE["name"])    
-                df.to_sql("counts", con, flavor="sqlite", if_exists="append", index=False, chunksize=None)
-            # Else new file is a .zip filled with CSVs. 
-            elif file.filename.endswith(".zip"):
-                # Unzips all of the zips. 
-                data_clean(app.config["UPLOAD_FOLDER"])
+                            # Writes dataframe with predictions to database.
+                            df.columns = ["counts_room_number", "counts_time", "counts_associated", "counts_authenticated", "counts_predicted"]
+                            con = sqlite3.connect(config.DATABASE["name"])
+                            df.to_sql("counts", con, flavor="sqlite", if_exists="append", index=False, chunksize=None)
+                        # Else new file is a .zip filled with CSVs.
+                        elif file.filename.endswith(".zip"):
+                            # Unzips all of the zips.
+                            data_clean.unzip(app.config["UPLOAD_FOLDER"])
 
-                # Loops through every CSV file in every folder in the directory.
-                for root, dirs, files in os.walk(app.config["UPLOAD_FOLDER"]):
-                    for f in files:
-                        # Generates predictions for the file. 
-                        df = mod_stat.predict.predict(f)
+                            # Loops through every CSV file in every folder in the directory.
+                            for root, dirs, files in os.walk(app.config["UPLOAD_FOLDER"]):
+                                for f in files:
+                                    # Generates predictions for the file.
+                                    df = predict.predict(f)
+                                    if df:
+                                        # Writes dataframe with predictions to database.
+                                        df.columns = ["counts_room_number", "counts_time", "counts_associated", "counts_authenticated", "counts_predicted"]
+                                        con = sqlite3.connect(config.DATABASE["name"])
+                                        df.to_sql("counts", con, flavor="sqlite", if_exists="append", index=False, chunksize=None)
+                                    else:
+                                        return jsonify({"error": strings.ERROR_BAD_FILE}), 500
+                        return jsonify({"success": strings.SUCCESS_FILE_UPLOAD})
 
-                        # Writes dataframe with predictions to database. 
-                        df.columns = ["counts_room_number", "counts_time", "counts_associated", "counts_authenticated", "counts_predicted"]
-                        con = sqlite3.connect(config.DATABASE["name"])    
-                        df.to_sql("counts", con, flavor="sqlite", if_exists="append", index=False, chunksize=None)
-            
-            return "uploaded"
+                else:
+                    return jsonify({"error": strings.ERROR_NO_PERMISSION}), 403
+    else:
+        return jsonify({"error": strings.ERROR_NOT_LOGGED_IN})
 
 @mod_api.route('/auth/login', methods=['POST'])
 def log_in_user():

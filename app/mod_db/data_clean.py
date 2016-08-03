@@ -244,7 +244,7 @@ def timetable_clean(xlsx, outf):
     for i in range(0, len(outlist)):
         fout.write(outlist[i])    
     
-unzip("data/raw/CSI WiFiLogs.zip") 
-merge_logs("data/raw/CSI WiFiLogs", "data/clean/logs_clean.csv")
-gt_clean("data/raw/CSI Occupancy report/CSI-Table 1.csv", "data/raw/gt_raw.csv", "data/clean/gt_clean.csv")
-timetable_clean("data/raw/timetables/B0.02 B0.03 B0.04 Timetable.xlsx", "data/clean/timetable_clean.csv")
+# unzip("data/raw/CSI WiFiLogs.zip")
+# merge_logs("data/raw/CSI WiFiLogs", "data/clean/logs_clean.csv")
+# gt_clean("data/raw/CSI Occupancy report/CSI-Table 1.csv", "data/raw/gt_raw.csv", "data/clean/gt_clean.csv")
+# timetable_clean("data/raw/timetables/B0.02 B0.03 B0.04 Timetable.xlsx", "data/clean/timetable_clean.csv")

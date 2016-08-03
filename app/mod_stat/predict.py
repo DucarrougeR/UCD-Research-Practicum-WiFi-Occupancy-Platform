@@ -9,16 +9,18 @@ def predict(csv):
     Generates new predictions from an uploaded CSV file and returns a pandas dataframe. 
     """
 
-    # Loads the serialised analytic model. 
-    lrm = joblib.load("app/mod_stat/model.pkl")    
+    # Loads the serialised analytic model.
+    if csv.endswith(".csv"):
+        lrm = joblib.load("app/mod_stat/model.pkl")
 
-    # Reads the CSV file. 
-    df = pd.read_csv(csv)
-    
-    # Generates predicted values in a new column.     
-    df["predicted"] = list(map(lambda x: int(lrm.predict(x)[0]), df["associated"]))
-    
-    return df
+        # Reads the CSV file.
+        df = pd.read_csv(csv)
+
+        # Generates predicted values in a new column.
+        df["predicted"] = list(map(lambda x: int(lrm.predict(x)[0]), df["associated"]))
+
+        return df
+    return None
 
 def predict_all():
     """ 

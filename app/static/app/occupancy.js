@@ -109,11 +109,11 @@ occupancyApp.controller("UploadController", ['$scope', 'Upload', '$timeout', fun
                 if (!file.$error) {
                     // check an appropriate file type is selected
                     if ($scope.filetype == "wifi" || $scope.filetype == "truth" || $scope.filetype == "timetable") {
+                      console.log($scope.filetype);
                         Upload.upload({
-                            url: '/api/data/upload',
+                            url: '/api/data/upload/' + $scope.filetype,
                             data: {
-                                file: file,
-                                filetype: $scope.filetype
+                                file: file
                             }
                         }).then(function(resp) {
                             $timeout(function() {
