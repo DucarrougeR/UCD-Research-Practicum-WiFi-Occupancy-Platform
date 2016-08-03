@@ -100,6 +100,7 @@ XP_Min.to_sql('Min_table', connect, flavor='sqlite', if_exists='replace',
               index=True, chunksize=None)
 # XP_Min.head()
 
+
 XP_Max = Fixed_DF.groupby([Fixed_DF['date'], Fixed_DF['hour'], Fixed_DF['room']])
 XP_Max = XP_Max.max()
 XP_Max['time'] = XP_Max['time'].map(lambda x: x[:-6])
@@ -111,6 +112,7 @@ XP_Max.to_sql('Max_table', connect, flavor='sqlite', if_exists='replace',
               index=True, index_label=None, chunksize=None)
 #XP_Max.head()
 
+
 XP_Mean = Fixed_DF
 XP_Mean['time'] = XP_Mean['time'].map(lambda x: x[:-6])
 XP_Mean = XP_Mean.groupby([Fixed_DF['time'], Fixed_DF['room']]).mean()
@@ -120,12 +122,13 @@ XP_Mean.columns = ['counts_capacity', 'counts_truth', 'counts_size',
 		'counts_associated', 'counts_authenticated']
 		
 XP_Mean['counts_truth_percent'] = ((XP_Mean['counts_truth']/XP_Mean['counts_capacity'])*100)
-XP_Mean['counts_truth_percent'].astype('str')
-XP_Mean['counts_truth_percent'].map(lambda x: str(x) + "%")
+XP_Mean['counts_truth_percent'] = XP_Mean['counts_truth_percent'].astype(str)
+XP_Mean['counts_truth_percent'] = XP_Mean['counts_truth_percent'].map(lambda x: x.replace('.0','%'))
 
 XP_Mean.to_sql('Mean_table', connect, flavor='sqlite', if_exists='replace',
                index=True, chunksize=None)
 #XP_Mean.head()
+
 
 XP_Med = Fixed_DF
 XP_Med = XP_Med.groupby([Fixed_DF['time'], Fixed_DF['room']]).median()
@@ -133,11 +136,10 @@ XP_Med = XP_Med.drop(['hour','date'], axis=1)
 XP_Med.index.names = ['counts_time', 'counts_room']
 XP_Med.columns = ['counts_capacity', 'counts_truth', 'counts_size',
 		'counts_associated', 'counts_authenticated']
-
-XP_Med['counts_truth_percent'] = ((XP_Med['counts_truth']/XP_Med['counts_capacity'])*100)
-XP_Med['counts_truth_percent'].astype('str')
-XP_Med['counts_truth_percent'].map(lambda x: str(x) + "%")
 		
+(XP_Med['counts_truth_percent']) = ((XP_Med['counts_truth']/XP_Med['counts_capacity'])*100)
+XP_Med['counts_truth_percent'] = XP_Med['counts_truth_percent'].astype(str)
+XP_Med['counts_truth_percent'] = XP_Med['counts_truth_percent'].map(lambda x: x.replace('.0','%'))
 XP_Med.to_sql('Med_table', connect, flavor='sqlite', if_exists='replace',
               index=True, chunksize=None)
 #XP_Med.head()
