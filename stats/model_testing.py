@@ -282,8 +282,9 @@ def agg_count():
     # Changes the counts_truth column to float. 
     df["counts_truth"] = df["counts_truth"].astype("float64")
 
-    # Looks only at columns with ground truth observations. 
+    # Looks only at columns with observations. 
     df_obs = df[pd.notnull(df["counts_truth"])]    
+    df_obs = df_obs[pd.notnull(df["counts_associated"])]    
 
     # Formats the counts_truth_percent column.
     df_obs["counts_truth_percent"] = df_obs["counts_truth_percent"].map(lambda x: x.replace("%", ""))
@@ -315,8 +316,9 @@ def agg_count():
     # Changes the counts_truth column to float. 
     df["counts_truth"] = df["counts_truth"].astype("float64")
 
-    # Looks only at columns with ground truth observations. 
+    # Looks only at columns with observations. 
     df_obs = df[pd.notnull(df["counts_truth"])]    
+    df_obs = df_obs[pd.notnull(df["counts_associated"])]    
 
     # Formats the counts_truth_percent column.
     df_obs["counts_truth_percent"] = df_obs["counts_truth_percent"].map(lambda x: x.replace("%", ""))
@@ -348,8 +350,9 @@ def agg_count():
     # Changes the counts_truth column to float. 
     df["counts_truth"] = df["counts_truth"].astype("float64")
 
-    # Looks only at columns with ground truth observations. 
+    # Looks only at columns with observations. 
     df_obs = df[pd.notnull(df["counts_truth"])]    
+    df_obs = df_obs[pd.notnull(df["counts_associated"])]    
 
     # Formats the counts_truth_percent column.
     df_obs["counts_truth_percent"] = df_obs["counts_truth_percent"].map(lambda x: x.replace("%", ""))
