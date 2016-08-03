@@ -6,7 +6,10 @@ if not python_version == 3:
     print("Requires python 3")
     sys.exit(1)
 
-if not call(["pip", "install", "-r", "requirements.txt"]) == 0:
+if not call(["pip3"]) == 0:
+    print("Pip must be installed. Please install pip before continuing")
+    sys.exit(1)
+if not call(["pip3", "install", "-r", "requirements.txt"]) == 0:
     print("Error install python dependencies. Please ensure pip is correctly installed")
     sys.exit(1)
 
