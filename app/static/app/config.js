@@ -22,6 +22,19 @@ occupancyApp.config(['$locationProvider' ,'$routeProvider', '$logProvider', 'Cha
       }).
       when('/upload', {
         templateUrl: '/static/app/templates/upload.html',
+        resolve:{
+          "check":function(Permissions,$location){   //function to be resolved, accessFac and $location Injected
+            Permissions.hasPermission("add-logs").then(function(data){
+              if (data) {
+                return true;
+              } else {
+                $location.path('/');                //redirect user to home if it does not have permission.
+                alert("You don't have access here");
+              }
+            });
+            
+          }
+        },
         controller: 'UploadController'
       }).
       when('/add/user', {
