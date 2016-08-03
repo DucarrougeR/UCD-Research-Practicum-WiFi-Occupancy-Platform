@@ -16,7 +16,7 @@ def fit_15():
     """)
     
     # Creates a SQL connection to our SQLite database.
-    con = sqlite3.connect("../../database.db")    
+    con = sqlite3.connect("../database.db")    
 
     # Reads the database at xx:15 for every hour (corresponding to the time the ground truth data was collected). 
     df = pd.read_sql_query("SELECT * from counts WHERE counts_time LIKE '%__:13:%' \
@@ -60,7 +60,7 @@ def fit_15_outliers():
     """)
 
     # Creates a SQL connection to our SQLite database.
-    con = sqlite3.connect("../../database.db")    
+    con = sqlite3.connect("../database.db")    
 
     # Reads the database at xx:15 for every hour (corresponding to the time the ground truth data was collected). 
     df = pd.read_sql_query("SELECT * from counts WHERE counts_time LIKE '%__:13:%' \
@@ -108,7 +108,7 @@ def assoc_vs_authen():
     """
 
     # Creates a SQL connection to our SQLite database.
-    con = sqlite3.connect("../../database.db")    
+    con = sqlite3.connect("../database.db")    
 
     print("""
     COMPARING ASSOCIATED AND AUTHENTICATED COUNTS
@@ -174,7 +174,7 @@ def time_window():
     """
 
     # Creates a SQL connection to our SQLite database.
-    con = sqlite3.connect("../../database.db")    
+    con = sqlite3.connect("../database.db")    
 
     print("""
     DETERMINING THE OPTIMAL TIME WINDOW
@@ -258,14 +258,15 @@ def time_window():
 
 def agg_count():
     """
-    Determines the best aggregated count (max, mean, mode) to use for accurate predictions. 
+    Specifies models based on aggregated counts (max, mean, median, mode) and 
+    tests them on the data. 
     """
 
     # Creates a SQL connection to our SQLite database.
-    con = sqlite3.connect("../../database.db")    
+    con = sqlite3.connect("../analysis.db")    
 
     print("""
-    DETERMINING THE OPTIMAL AGGREGATED COUNT
+    SPECIFYING MODELS BASED ON AGGREGATED COUNTS (MAX, MEAN, MEDIAN, MODE)
     ___________________________________
     """)
 
@@ -275,10 +276,7 @@ def agg_count():
     print("MAXIMUM COUNT")
 
     # Reads the database. 
-    query = "SELECT * from counts WHERE counts_time LIKE '%__:(" + str(times[i]) + ":%' \
-            OR counts_time LIKE '%__:" + str(times[i+1]) + ":%' OR counts_time LIKE '%__:" + str(times[i+2]) + ":%' \
-            OR counts_time LIKE '%__:" + str(times[i+3]) +":%'\
-            OR counts_time LIKE '%__:" + str(times[i+4]) + ":%'"
+    query = "SELECT * from Max_table"
     df = pd.read_sql_query(query, con)    
 
     # Changes the counts_truth column to float. 
@@ -299,13 +297,79 @@ def agg_count():
     df_obs = df_obs[df_obs["counts_outliers"] == False]
 
     # Fits the models and stores the results in the relevant list. 
-    outputs_ols.append("MAX:")
-    outputs_ols.append(ols(df_obs, "plots/ols_window_outliers.png", "plots/predictions_ols_window_utliers.png"))
-    outputs_ols_bin.append("MAX:")    
-    outputs_ols_bin.append(ols_bin(df_obs, "plots/ols_window_bin_outliers.png", "plots/predictions_ols_window_bin_outliers.png"))
-    outputs_logit.append("MAX:")    
-    outputs_logit.append(logit(df_obs, "plots/predictions_logit_window_outliers.png"))
-    outputs_ordlogit.append("MAX:")    
+    outputs_ols.append("MAX")
+    outputs_ols.append(ols(df_obs, "plots/ols_max_outliers.png", "plots/predictions_ols_max_utliers.png"))
+    outputs_ols_bin.append("MAX")    
+    outputs_ols_bin.append(ols_bin(df_obs, "plots/ols_max_bin_outliers.png", "plots/predictions_ols_max_bin_outliers.png"))
+    outputs_logit.append("MAX")    
+    outputs_logit.append(logit(df_obs, "plots/predictions_logit_max_outliers.png"))
+    outputs_ordlogit.append("MAX")    
+    outputs_ordlogit.append(ordlogit(df_obs))
+
+    print("MEAN COUNT")
+
+    # Reads the database. 
+    query = "SELECT * from Mean_table"
+    df = pd.read_sql_query(query, con)    
+
+    # Changes the counts_truth column to float. 
+    df["counts_truth"] = df["counts_truth"].astype("float64")
+
+    # Looks only at columns with ground truth observations. 
+    df_obs = df[pd.notnull(df["counts_truth"])]    
+
+    # Formats the counts_truth_percent column.
+    df_obs["counts_truth_percent"] = df_obs["counts_truth_percent"].map(lambda x: x.replace("%", ""))
+    df_obs.replace(to_replace={"counts_truth_percent" : {'0': 0, '25': 25, '50': 50, '75': 75, '100':100}}, inplace = True)    
+    
+    # Compares ground_truth to counts_associated to find large outliers. 
+    df_obs["counts_difference"] = abs(df_obs["counts_associated"] - df_obs["counts_truth"])    
+    df_obs["counts_outliers"] = abs(df_obs["counts_difference"]) > 20 # Cutoff determined through trial and error
+    
+    # Drops outlier rows.
+    df_obs = df_obs[df_obs["counts_outliers"] == False]
+
+    # Fits the models and stores the results in the relevant list. 
+    outputs_ols.append("MEAN")
+    outputs_ols.append(ols(df_obs, "plots/ols_mean_outliers.png", "plots/predictions_ols_mean_utliers.png"))
+    outputs_ols_bin.append("MEAN")    
+    outputs_ols_bin.append(ols_bin(df_obs, "plots/ols_mean_bin_outliers.png", "plots/predictions_ols_mean_bin_outliers.png"))
+    outputs_logit.append("MEAN")    
+    outputs_logit.append(logit(df_obs, "plots/predictions_logit_mean_outliers.png"))
+    outputs_ordlogit.append("MEAN")    
+    outputs_ordlogit.append(ordlogit(df_obs))
+
+    print("MEDIAN COUNT")
+
+    # Reads the database. 
+    query = "SELECT * from Med_table"
+    df = pd.read_sql_query(query, con)    
+
+    # Changes the counts_truth column to float. 
+    df["counts_truth"] = df["counts_truth"].astype("float64")
+
+    # Looks only at columns with ground truth observations. 
+    df_obs = df[pd.notnull(df["counts_truth"])]    
+
+    # Formats the counts_truth_percent column.
+    df_obs["counts_truth_percent"] = df_obs["counts_truth_percent"].map(lambda x: x.replace("%", ""))
+    df_obs.replace(to_replace={"counts_truth_percent" : {'0': 0, '25': 25, '50': 50, '75': 75, '100':100}}, inplace = True)    
+    
+    # Compares ground_truth to counts_associated to find large outliers. 
+    df_obs["counts_difference"] = abs(df_obs["counts_associated"] - df_obs["counts_truth"])    
+    df_obs["counts_outliers"] = abs(df_obs["counts_difference"]) > 20 # Cutoff determined through trial and error
+    
+    # Drops outlier rows.
+    df_obs = df_obs[df_obs["counts_outliers"] == False]
+
+    # Fits the models and stores the results in the relevant list. 
+    outputs_ols.append("MEDIAN")
+    outputs_ols.append(ols(df_obs, "plots/ols_median_outliers.png", "plots/predictions_ols_median_utliers.png"))
+    outputs_ols_bin.append("MEDIAN")
+    outputs_ols_bin.append(ols_bin(df_obs, "plots/ols_median_bin_outliers.png", "plots/predictions_ols_median_bin_outliers.png"))
+    outputs_logit.append("MEDIAN")
+    outputs_logit.append(logit(df_obs, "plots/predictions_logit_median_outliers.png"))
+    outputs_ordlogit.append("MEDIAN")    
     outputs_ordlogit.append(ordlogit(df_obs))
     
     # Loops over all the lists of outputs and finds the most predictive model. 
@@ -349,7 +413,7 @@ def room_model():
     """)
 
     # Creates a SQL connection to our SQLite database.
-    con = sqlite3.connect("../../database.db")        
+    con = sqlite3.connect("../database.db")        
     
     # Reads list of rooms from the database. 
     rooms = pd.read_sql_query("SELECT DISTINCT counts_room_number FROM counts", con)
@@ -407,7 +471,7 @@ def module_model():
     """)
 
     # Creates a SQL connection to our SQLite database.
-    con = sqlite3.connect("../../database.db")        
+    con = sqlite3.connect("../database.db")        
 
     # Reads list of modules from the database. 
     modules = pd.read_sql_query("SELECT DISTINCT counts_module_code FROM counts", con)
@@ -468,7 +532,7 @@ def binary_model():
     """)
     
     # Creates a SQL connection to our SQLite database.
-    con = sqlite3.connect("../../database.db")    
+    con = sqlite3.connect("../database.db")    
 
     # Reads the database at xx:15 for every hour (corresponding to the time the ground truth data was collected). 
     df = pd.read_sql_query("SELECT * from counts WHERE counts_time LIKE '%__:13:%' \
