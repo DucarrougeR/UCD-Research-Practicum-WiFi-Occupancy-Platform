@@ -2,6 +2,7 @@
 from werkzeug.security import generate_password_hash, check_password_hash
 from peewee import *
 from .BaseModel import BaseModel
+import random, string
 
 
 class User(BaseModel):
@@ -49,6 +50,10 @@ class User(BaseModel):
         if user['id']:
             del user['id']
         return user
+
+    @staticmethod
+    def generate_password(length = 8):
+        return ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(length))
 
 
 User.create_table(fail_silently=True)

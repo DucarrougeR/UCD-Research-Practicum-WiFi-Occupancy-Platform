@@ -12,9 +12,13 @@
         <form class="form-inline" ng-submit="submit()">
             <label class="column-mid-5 column">
                 <span class="text-accent">User Email</span><br>
-                <input type="text" placeholder="user@example.com">
+                <input type="email" ng-model="email" placeholder="user@example.com">
             </label>
-            <input type="submit" class="submit-button" value = "Get Data >">
+            <label class="column-mid-5 column">
+                <span class="text-accent">Permission level</span><br>
+                <input type="text" ng-model="permisson" value="user">
+            </label>
+            <input type="submit" class="submit-button" value = "Add user">
         </form>
     </div>
 </div>
