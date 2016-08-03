@@ -1,0 +1,33 @@
+<nav class="column column-mid-2 full-height sidebar sidebar--fixed">
+    <ul class="nav-list nav-list--main">
+        <li><a ng-href="/dashboard">Dashboard</a></li>
+        <li><a href="/upload">Upload logs</a></li>
+        <li><a href="/add/user" ng-show="permission.addUser == true">Add a user</a></li>
+        <li><a href="/add/class" ng-show="permission.addClass == true">Add a class</a></li>
+        <li><a href="/add/ground-truth" ng-show="permission.addTruth == true">Add ground truth</a></li>
+    </ul>
+</nav>
+<div class="column column-mid-10 column-mid-offset-2 main-content">
+    <div class="container content-container row">
+        <div class="message-banner {{ type }}" ng-show="message">{{ message }}</div>
+        <form class="form-inline" ng-submit="submit()">
+            <label class="column-mid-5 column">
+                <span class="text-accent">User Email</span>
+                <br>
+                <input type="email" ng-model="email" placeholder="user@example.com">
+            </label>
+            <label class="column-mid-5 column">
+                <span class="text-accent">Permission level</span>
+                <br>
+                <select ng-model="day">
+                  <option value="mon">Monday</option>
+                  <option value="tue">Tuesday</option>
+                  <option value="wed">Wednesday</option>
+                  <option value="thu">Thursday</option>
+                  <option value="fri">Friday</option>
+                </select>
+            </label>
+            <input type="submit" class="submit-button" value="Add user">
+        </form>
+    </div>
+</div>
