@@ -14,7 +14,7 @@ except:
 
 try:
     print("Installing python dependencies. If there are any errors...well...")
-    call(["pip3", "install", "-r", "-U", "requirements.txt"])
+    call(["pip3", "install", "-r", "requirements.txt"])
 except:
     print("Error install python dependencies. Please ensure pip is correctly installed")
     sys.exit(1)
