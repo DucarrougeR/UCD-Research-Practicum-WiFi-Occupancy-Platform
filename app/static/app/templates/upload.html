@@ -7,17 +7,26 @@
 <div class="column column-mid-10 column-mid-offset-2 main-content">
     <h1>UPLOAD</h1>
     <div ng-controller="UploadController">
-	    <div ngf-drop ngf-select="upload($files)" ng-model="files" class="drop-box" 
-	        ngf-drag-over-class="'dragover'" ngf-multiple="true" ngf-allow-dir="true"
-	        accept="image/*,application/pdf, application/zip,.zip,zip,.csv,csv" 
-	        ngf-pattern="'image/*,application/pdf,application/zip,.zip,zip,.csv,csv'">Drop files here to upload</div>
-	    <div ngf-no-file-drop>File Drag/Drop is not supported for this browser</div>
-	    Files:
-	    <ul>
-	        <li ng-repeat="f in files" style="font:smaller">{{f.name}} {{f.$error}} {{f.$errorParam}}</li>
-	    </ul>
-	    Upload Log:
-	    <pre>{{log}}</pre>
-	</div>
+        <form>
+            <label>
+                <input type="radio" ng-model="filetype" value="wifi"> WiFi Logs
+            </label>
+            <label>
+                <input type="radio" ng-model="filetype" value="timetable"> Timetable
+            </label>
+            <label>
+                <input type="radio" ng-model="filetype" value="truth"> Ground Truth
+            </label>
+            <div ng-show="filetype" ngf-drop ngf-select="upload()" ng-model="files" class="drop-box" ngf-drag-over-class="'dragover'" ngf-multiple="true" ngf-allow-dir="true" accept="application/zip,.zip,zip,.csv,csv" ngf-pattern="'application/zip,.zip,zip,.csv,csv'">Drop files here to upload</div>
+            <div ngf-no-file-drop>File Drag/Drop is not supported for this browser</div>
+	        Files:
+	        <ul>
+	            <li ng-repeat="f in files" style="font:smaller">{{f.name}} {{f.$error}} {{f.$errorParam}}</li>
+	        </ul>
+	        Upload Log:
+	        <pre>{{log}}</pre>
+        </form>
+        
+    </div>
 </div>
 </div>
