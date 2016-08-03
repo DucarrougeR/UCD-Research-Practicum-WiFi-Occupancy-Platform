@@ -7,20 +7,18 @@ var occupancyApp = angular.module('occupancyApp', [
   'ngFileUpload'
 ]);
 
-occupancyApp.controller('DashboardController', ['$scope', '$http', 'chartData', 'Authentication', 'Session', function($scope, $http, chartData, Authentication, Session) {
+occupancyApp.controller('DashboardController', ['$scope', '$http', 'chartData', 'Authentication', 'Session', 'DataManagement', 'Permissions', function($scope, $http, chartData, Authentication, Session, DataManagemen, Permissions) {
     $scope.message = "Hello Admin";
 
     // make the hasPermission function available to templates
-    $scope.hasPermission = Authentication.hasPermission;
+    $scope.hasPermission = Permissions.hasPermission;
     // if there is no current user
     if (!Session.user) {
       Authentication.getLoggedInUser().then(function(data) {
         // Session service is shared between controllers to keep track of the current user
         Session.user = data;
       });
-    } else {
-      $scope.permissions.addUser = Session.user.permissions['add-user'];
-    }
+    } 
 
     // TODO: move this to a service or something
     $scope.submit = function() {
@@ -30,60 +28,24 @@ occupancyApp.controller('DashboardController', ['$scope', '$http', 'chartData', 
         console.log("making request to " + url);
         $http.get(url).then(function successCallback(response) {
           
-          var hours = [];
+          
           if (response.data.results.length > 0) {
-            // separates results into unique hours
-            response.data.results.map(function(item, index) {
-              var subStr = item.counts_time.substring(11, 13) * 1
-              // if the hour has already been listed then push it onto the hours array at a specific index
-              if (hours[subStr]) {
-                hours[subStr].push(item);
-              } else {
-                hours[subStr] = [item];
-              }
+            
 
-            });
-
-            var min = hours[0][0].room_capacity;
-            var max = 0;
-
-            // cycle through each hour
-            var reducedData = hours.map(function(item) {
-
-              // reduce the items to a single total value
-              var reduced = item.reduce(function(total, i){
-                if (i.counts_authenticated > max) {
-                  max = i.counts_authenticated;
-                }
-
-                if (i.counts_authenticated < min) {
-                  min = i.counts_authenticated;
-                }
-
-                return (total + (i.counts_authenticated / 1))
-              }, 0);
-
-              // return the average
-              return reduced / item.length
-            });
-
-            var avg = reducedData.reduce(function(total, i) {
-              
-              return total + i;
-            }) / reducedData.length;
+            var results = DataManagement.organiseData(response.data.results);
 
             // bind the values
-            $scope.maxValue = max;
-            $scope.minValue = min;
-            $scope.avgValue = Math.round(avg * 1000) / 1000 ;
-            $scope.totalValue = hours[0][0].room_capacity;
+            $scope.maxValue = results["max"];
+            $scope.minValue = results["min"];
+            $scope.avgValue = Math.round(results["avg"] * 1000) / 1000 ;
+            $scope.totalValue = results["hours"][0][0].room_capacity;
             
             // set the chart data
-            $scope.data = [reducedData];
+            $scope.data = [results["data"]];
             $scope.series = ['% occupied'];
 
             // build the labels
-            $scope.labels = reducedData.map(function(item, index) {
+            $scope.labels = results["data"].map(function(item, index) {
               return "Hour " + index;
             });
           }
@@ -177,7 +139,6 @@ occupancyApp.controller('AuthController', ['$scope', '$location', 'Authenticatio
         if (data.error) {
           $scope.error = data.error;
         } else {
-          console.log(data);
           data['loggedIn'] = true;
           Session.user = data;
           $location.path('/dashboard');
@@ -187,8 +148,26 @@ occupancyApp.controller('AuthController', ['$scope', '$location', 'Authenticatio
   }
 }]);
 
-occupancyApp.controller('RegisterController', ['$scope', 'Authentication', function($scope, Authentication){
+occupancyApp.controller('RegisterController', ['$scope', 'Authentication', 'Permissions', function($scope, Authentication, Permissions){
+  // get possible permissions for a user
+  Permissions.getPossiblePermissions().then(function(permissions) {
+    
+    $scope.permissions = permissions;
+  });
+  
+
   $scope.submit = function() {
-      Authentication.registerUser($scope.email, $scope.permission);
+      Authentication.registerUser($scope.email, $scope.permission).then(function(data) {
+        if (data.data.success) {
+          // successful
+          $scope.type = "success";
+          $scope.message = data.data.success;
+          $scope.email = "";
+        } else {
+          //failure
+          $scope.type = "error";
+          $scope.message = data.data.error;
+        }
+      });
     }
 }]);

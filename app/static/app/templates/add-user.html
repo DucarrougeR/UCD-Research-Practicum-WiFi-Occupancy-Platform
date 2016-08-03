@@ -9,16 +9,22 @@
 </nav>
 <div class="column column-mid-10 column-mid-offset-2 main-content">
     <div class="container content-container row">
+        <div class="message-banner {{ type }}" ng-show="message">{{ message }}</div>
         <form class="form-inline" ng-submit="submit()">
             <label class="column-mid-5 column">
-                <span class="text-accent">User Email</span><br>
+                <span class="text-accent">User Email</span>
+                <br>
                 <input type="email" ng-model="email" placeholder="user@example.com">
             </label>
             <label class="column-mid-5 column">
-                <span class="text-accent">Permission level</span><br>
-                <input type="text" ng-model="permisson" value="user">
+                <span class="text-accent">Permission level</span>
+                <br>
+                
+                <select ng-model="permission" ng-show="permissions">
+                  <option ng-repeat="p in permissions" value="{{ p }}">{{ p }}</option>
+                </select>
             </label>
-            <input type="submit" class="submit-button" value = "Add user">
+            <input type="submit" class="submit-button" value="Add user">
         </form>
     </div>
 </div>

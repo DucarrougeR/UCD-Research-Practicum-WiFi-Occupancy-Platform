@@ -27,8 +27,8 @@ occupancyApp.config(['$locationProvider' ,'$routeProvider', '$logProvider', 'Cha
       when('/add/user', {
         templateUrl: '/static/app/templates/add-user.html',
         resolve:{
-          "check":function(Authentication,$location){   //function to be resolved, accessFac and $location Injected
-            Authentication.hasPermission("add-user").then(function(data){
+          "check":function(Permissions,$location){   //function to be resolved, accessFac and $location Injected
+            Permissions.hasPermission("add-user").then(function(data){
               if (data) {
                 return true;
               } else {
@@ -44,8 +44,8 @@ occupancyApp.config(['$locationProvider' ,'$routeProvider', '$logProvider', 'Cha
       when('/add/ground-truth', {
         templateUrl: '/static/app/templates/add-truth.html',
         resolve:{
-          "check":function(Authentication,$location){   //function to be resolved, accessFac and $location Injected
-            if(Authentication.hasPermission("add-truth")){    //check if the user has permission -- This happens before the page loads
+          "check":function(Permissions,$location){   //function to be resolved, accessFac and $location Injected
+            if(Permissions.hasPermission("add-truth")){    //check if the user has permission -- This happens before the page loads
                 return true;
             }else{
               $location.path('/');                //redirect user to home if it does not have permission.
@@ -57,8 +57,8 @@ occupancyApp.config(['$locationProvider' ,'$routeProvider', '$logProvider', 'Cha
       when('/add/class', {
         templateUrl: '/static/app/templates/add-class.html',
         resolve:{
-          "check":function(Authentication,$location){   //function to be resolved, accessFac and $location Injected
-            Authenication.hasPermission("add-class").then(function(data){
+          "check":function(Permissions,$location){   //function to be resolved, accessFac and $location Injected
+            Permissions.hasPermission("add-class").then(function(data){
               console.log(data);
               if (data) {
 

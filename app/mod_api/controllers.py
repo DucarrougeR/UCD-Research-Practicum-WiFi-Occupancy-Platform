@@ -107,20 +107,27 @@ def register_user():
         data = json.loads(request.data.decode())
         email = data['email']
         password = User.generate_password()
-        if User.create_new(email, password):
-            # notify the new user
-            try:
-                msg = Message("Hello",
-                              sender=config.DEFAULT_MAIL_SENDER,
-                              recipients=[email])
-                msg.html = "<h1>Hello, you've been signed up for our app</h1>Your password is: " + password
-                mail.send(msg)
-            except Exception:
-                print("error sending email")
-
-            return jsonify({"success": strings.SUCCESS_REGISTER_USER}), 200
+        if data['permission']:
+            permission = data['permission']
         else:
-            return jsonify({"error": strings.ERROR_REGISTER_USER}), 500
+            permission = Permissions.default_permission
+        if Permissions.user_has_permission(current_user, 'add-user'):
+            if User.create_new(email, password, permission):
+                # notify the new user
+                try:
+                    msg = Message("Hello",
+                                  sender=config.DEFAULT_MAIL_SENDER,
+                                  recipients=[email])
+                    msg.html = "<h1>Hello, you've been signed up for our app</h1>Your password is: " + password
+                    mail.send(msg)
+                except Exception:
+                    print("error sending email")
+
+                return jsonify({"success": strings.SUCCESS_REGISTER_USER}), 200
+            else:
+                return jsonify({"error": strings.ERROR_REGISTER_USER}), 500
+        else:
+            return "Page not found", 404
 
 
 @mod_api.route('/auth/loggedin', methods=['GET'])
@@ -141,3 +148,8 @@ def get_current_user():
         return jsonify(user)
     else:
         return jsonify(None)
+
+@mod_api.route('/auth/permissions/get-all', methods=['GET'])
+def get_all_permissions():
+    # TODO: only allow adding of permissions at same or lower level than current user's permission level (may require some kind of hierarchy integer)
+    return jsonify(Permissions.get_all())

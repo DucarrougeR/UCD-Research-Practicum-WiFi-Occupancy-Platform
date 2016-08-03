@@ -1,4 +1,4 @@
-occupancyApp.factory('Authentication', ['$http', 'Session', function($http, Session){
+occupancyApp.service('Authentication', ['$http', function($http){
 	var currentUser;
 	return {
 		getLoggedInUser: function() {
@@ -19,7 +19,7 @@ occupancyApp.factory('Authentication', ['$http', 'Session', function($http, Sess
 		},
 
 		registerUser: function (email, permission) {
-			$http({
+			return $http({
 				method: 'POST',
 				data: {
 					"email": email,
@@ -53,25 +53,6 @@ occupancyApp.factory('Authentication', ['$http', 'Session', function($http, Sess
 			}, function errorCallback(response) {
 				return response.data;
 			});
-		},
-
-		hasPermission: function(permission) {
-			// if the user has already been logged in
-			if (Session.user) {
-				// check their permissions
-				if (Session.user.permissions[permission]) {
-					return true;
-				}
-			} else {
-				// otherwise, get the current logged in user
-				return this.getLoggedInUser().then(function(data) {
-					
-					if (data.permissions[permission]) {
-						return true;
-					}
-				});
-			}
-			return false;
 		}
 	}
 }]);
