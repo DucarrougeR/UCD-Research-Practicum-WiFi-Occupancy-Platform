@@ -12,8 +12,8 @@ from app.values import strings
 import json
 from flask_mail import Message
 from app import mail
-
-
+from app.mod_stat import *
+import sqlite3
 
 mod_api = Blueprint('mod_api', __name__, url_prefix='/api')
 
@@ -80,16 +80,17 @@ def upload_file():
             # If new file is a single CSV:
             if file.filename.endswith(".csv"):
                 # Generates predictions for the file. 
-                df = mod_stat.predict.predict(file)
+                print(file.filename)
+                df = predict.predict(file.filename)
 
                 # Writes dataframe with predictions to database. 
-                df.columns = ["room", "counts_time", "counts_associated", "counts_authenticated", "counts_predicted"]
+                df.columns = ["counts_room_number", "counts_time", "counts_associated", "counts_authenticated", "counts_predicted"]
                 con = sqlite3.connect(config.DATABASE["name"])    
-                df.to_sql("counts", con, flavor="sqlite", if_exists="replace", index=False, chunksize=None)
+                df.to_sql("counts", con, flavor="sqlite", if_exists="append", index=False, chunksize=None)
             # Else new file is a .zip filled with CSVs. 
             elif file.filename.endswith(".zip"):
                 # Unzips all of the zips. 
-                mod_db.data_clean(app.config["UPLOAD_FOLDER"])
+                data_clean(app.config["UPLOAD_FOLDER"])
 
                 # Loops through every CSV file in every folder in the directory.
                 for root, dirs, files in os.walk(app.config["UPLOAD_FOLDER"]):
@@ -98,9 +99,9 @@ def upload_file():
                         df = mod_stat.predict.predict(f)
 
                         # Writes dataframe with predictions to database. 
-                        df.columns = ["room", "counts_time", "counts_associated", "counts_authenticated", "counts_predicted"]
+                        df.columns = ["counts_room_number", "counts_time", "counts_associated", "counts_authenticated", "counts_predicted"]
                         con = sqlite3.connect(config.DATABASE["name"])    
-                        df.to_sql("counts", con, flavor="sqlite", if_exists="replace", index=False, chunksize=None)
+                        df.to_sql("counts", con, flavor="sqlite", if_exists="append", index=False, chunksize=None)
             
             return "uploaded"
 
