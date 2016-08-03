@@ -6,27 +6,37 @@ if not python_version == 3:
     print("Requires python 3")
     sys.exit(1)
 
-if not call(["pip3"]) == 0:
+try:
+    call(["pip3"])
+except:
     print("Pip must be installed. Please install pip before continuing")
     sys.exit(1)
-if not call(["pip3", "install", "-r", "requirements.txt"]) == 0:
+
+try:
+    print("Installing python dependencies. If there are any errors...well...")
+    call(["pip3", "install", "-r", "requirements.txt"])
+except:
     print("Error install python dependencies. Please ensure pip is correctly installed")
     sys.exit(1)
 
+
 os.chdir("app/static")
-if not call(["node", "--version"]) == 0:
+try:
+    call(["node", "--version"])
+except:
     print("This requires node js to be installed. Please install node before continuing")
     sys.exit(1)
 
-if not call(["node", "--help"]) == 0:
-    print("This requires node js to be installed. Please install node before continuing")
-    sys.exit(1)
 
-if not call(["npm", "--help"]) == 0:
+try:
+    call(["npm", "--help"])
+except:
     print("This requires npm to be installed. Please install npm before continuing")
     sys.exit(1)
 
-if not call(["bower", "--help"]) == 0:
+try:
+    call(["bower", "--help"])
+except:
     print("This requires bower to be installed. Installing now")
     call(["npm", "-g", "install", "bower"])
 
