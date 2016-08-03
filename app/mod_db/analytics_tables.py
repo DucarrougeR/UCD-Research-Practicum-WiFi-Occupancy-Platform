@@ -124,6 +124,7 @@ XP_Mean.columns = ['counts_capacity', 'counts_truth', 'counts_size',
 XP_Mean['counts_truth_percent'] = ((XP_Mean['counts_truth']/XP_Mean['counts_capacity'])*100)
 XP_Mean['counts_truth_percent'] = XP_Mean['counts_truth_percent'].astype(str)
 XP_Mean['counts_truth_percent'] = XP_Mean['counts_truth_percent'].map(lambda x: x.replace('.0','%'))
+XP_Mean['counts_truth_percent'] = XP_Mean['counts_truth_percent'].replace('nan',np.nan)
 
 XP_Mean.to_sql('Mean_table', connect, flavor='sqlite', if_exists='replace',
                index=True, chunksize=None)
@@ -137,9 +138,11 @@ XP_Med.index.names = ['counts_time', 'counts_room']
 XP_Med.columns = ['counts_capacity', 'counts_truth', 'counts_size',
 		'counts_associated', 'counts_authenticated']
 		
-(XP_Med['counts_truth_percent']) = ((XP_Med['counts_truth']/XP_Med['counts_capacity'])*100)
+XP_Med['counts_truth_percent'] = ((XP_Med['counts_truth']/XP_Med['counts_capacity'])*100)
 XP_Med['counts_truth_percent'] = XP_Med['counts_truth_percent'].astype(str)
 XP_Med['counts_truth_percent'] = XP_Med['counts_truth_percent'].map(lambda x: x.replace('.0','%'))
+XP_Med['counts_truth_percent'] = XP_Med['counts_truth_percent'].replace('nan',np.nan)
+
 XP_Med.to_sql('Med_table', connect, flavor='sqlite', if_exists='replace',
               index=True, chunksize=None)
 #XP_Med.head()
