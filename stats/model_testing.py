@@ -376,31 +376,36 @@ def agg_count():
     outputs_ordlogit.append(ordlogit(df_obs))
     
     # Loops over all the lists of outputs and finds the most predictive model. 
-    best_ols = outputs_ols[0]
-    best_ols_time = ""
-    for i in range(0, len(outputs_ols)):
+    best_ols = outputs_ols[1]
+    best_ols_bin = outputs_ols_bin[1]
+    best_logit = outputs_logit[1]
+    best_ordlogit = outputs_ordlogit[1]
+    best_ols_type, best_ols_bin_type, best_logit_type, best_ordlogit_type = "", "", "", ""
+
+    for i in range(1, len(outputs_ols), 2):
         if outputs_ols[i][2] > best_ols[2]:
             best_ols = outputs_ols[i]
-    best_ols_bin = outputs_ols_bin[0]
-    for i in range(0, len(outputs_ols_bin)):
+            best_ols_type = outputs_ols[i-1]
+    for i in range(1, len(outputs_ols_bin), 2):
         if outputs_ols_bin[i][2] > best_ols_bin[2]:
             best_ols_bin = outputs_ols_bin[i]
-    best_logit = outputs_logit[0]
-    for i in range(0, len(outputs_logit)):
+            best_ols_bin_type = outputs_ols_bin[i-1]
+    for i in range(1, len(outputs_logit), 2):
         if outputs_logit[i][2] > best_logit[2]:
             best_logit = outputs_logit[i]
+            best_logit_type = outputs_logit[i-1]
     """
-    best_ordlogit = outputs_ols[0]
     for i in range(0, len(outputs_ordlogit)):
         if outputs_ordlogit[i][2] > best_ordlogit[2]:
             best_ordlogit = outputs_ordlogit[i]
+            best_ordlogit_type = outputs_ordlogit[i-1]
     """
     
     print("\nOUTPUT\n")
-    print("Most predictive OLS model: ", best_ols)
-    print("Most predictive OLS model (with bins): ", best_ols_bin)
-    print("Most predictive Logit model: ", best_logit)
-    print("Most predictive Ordinal Logit model: ", best_ordlogit)    
+    print("Most predictive OLS model: ", best_ols, best_ols_type)
+    print("Most predictive OLS model (with bins): ", best_ols_bin, best_ols_bin_type)
+    print("Most predictive Logit model: ", best_logit, best_logit_type)
+    #print("Most predictive Ordinal Logit model: ", best_ordlogit, best_ordlogit_type)    
 
     con.close()
     
