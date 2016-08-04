@@ -38,6 +38,24 @@ class Permissions(BaseModel):
             return True
         return False
 
+    @staticmethod
+    def permissions_for_filetype(user, type):
+        # checks relevant permissions for file type
+        if type == "wifi":
+            if Permissions.user_has_permission(user, "add-logs"):
+                return True
+
+        if type == "truth":
+            if Permissions.user_has_permission(user, "add-truth"):
+                return True
+
+        if type == "timetable":
+            if Permissions.user_has_permission(user, "add-class"):
+                return True
+
+        return False
+
+
 
 
 Permissions.create_table(fail_silently=True)
