@@ -1,21 +1,30 @@
 occupancyApp.service('Permissions', ['$http', 'Session', 'Authentication', function($http, Session, Authentication) {
     return {
-        hasPermission: function(permission) {
+        hasPermission: function(permission, type) {
             // if the user has already been logged in
             if (Session.user) {
                 // check their permissions
-                if (Session.user.permissions[permission]) {
-                    return true;
-                }
-            } else {
-                // otherwise, get the current logged in user
-                return Authentication.getLoggedInUser().then(function(data) {
-                    console.log("user doesn't exists");
-                    if (data.permissions[permission]) {
-                        return true;
+                if( Object.prototype.toString.call( permission ) === '[object Array]' ) {
+                    // iterate through each item
+                    for (var i = 0; i < permissions.length; i++) {
+                        // if type is AND then user requires all the permissions. Exit if they don't have one of them
+                        if (type == "AND") {
+                            if (!Session.user.permissions[i]) {
+                                return false;
+                            } 
+                        } else if (type == "OR") {
+                            // if user has any of the listed permissions, then return true
+                            if (Session.user.permissions[i]) {
+                                return true;
+                            } 
+                        }
                     }
-                });
-            }
+                } else {
+                    // otherwise, single permission passed and so return true if they have it and false if they don't
+                    return Session.user.permissions[permission]  
+                }
+                
+            } 
             
             return false;
         },

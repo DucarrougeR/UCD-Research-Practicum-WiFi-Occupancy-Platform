@@ -9,7 +9,6 @@ occupancyApp.service('Authentication', ['$http', function($http){
 				// this callback will be called asynchronously
 				// when the response is available
 				var user = this.currentUser = response.data;
-
 				return user;
 			}, function errorCallback(response) {
 				// called asynchronously if an error occurs

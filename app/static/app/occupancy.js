@@ -9,16 +9,21 @@ var occupancyApp = angular.module('occupancyApp', [
 
 occupancyApp.controller('DashboardController', ['$scope', '$http', 'chartData', 'Authentication', 'Session', 'DataManagement', 'Permissions', function($scope, $http, chartData, Authentication, Session, DataManagemen, Permissions) {
     $scope.message = "Hello Admin";
-
-    // make the hasPermission function available to templates
-    $scope.hasPermission = Permissions.hasPermission;
-    // if there is no current user
+    // check if there is a user defined
     if (!Session.user) {
         Authentication.getLoggedInUser().then(function(data) {
-            // Session service is shared between controllers to keep track of the current user
+
             Session.user = data;
+            // make the hasPermission function available to templates
+            $scope.hasPermission = Permissions.hasPermission;
+
         });
+    } else {
+        $scope.hasPermission = Permissions.hasPermission;
     }
+
+
+
 
     // TODO: move this to a service or something
     $scope.submit = function() {
@@ -90,7 +95,19 @@ occupancyApp.controller("lineCtrl", ['$scope', '$timeout', 'chartData', function
 }]);
 
 
-occupancyApp.controller("UploadController", ['$scope', 'Upload', '$timeout', function($scope, Upload, $timeout) {
+occupancyApp.controller("UploadController", ['$scope', 'Upload', '$timeout', 'Permissions', 'Session', 'Authentication', function($scope, Upload, $timeout, Permissions, Session, Authentication) {
+    if (!Session.user) {
+        Authentication.getLoggedInUser().then(function(data) {
+
+            Session.user = data;
+            // make the hasPermission function available to templates
+            $scope.hasPermission = Permissions.hasPermission;
+
+        });
+    } else {
+        $scope.hasPermission = Permissions.hasPermission;
+    }
+
     $scope.$watch('files', function() {
         $scope.upload($scope.files);
     });
@@ -109,7 +126,7 @@ occupancyApp.controller("UploadController", ['$scope', 'Upload', '$timeout', fun
                 if (!file.$error) {
                     // check an appropriate file type is selected
                     if ($scope.filetype == "wifi" || $scope.filetype == "truth" || $scope.filetype == "timetable") {
-                      console.log($scope.filetype);
+                        console.log($scope.filetype);
                         Upload.upload({
                             url: '/api/data/upload/' + $scope.filetype,
                             data: {
@@ -131,8 +148,8 @@ occupancyApp.controller("UploadController", ['$scope', 'Upload', '$timeout', fun
                         });
 
                     } else {
-                      $scope.type = "error";
-                      $scope.message = "Please Select an appropriate upload type";
+                        $scope.type = "error";
+                        $scope.message = "Please Select an appropriate upload type";
                     }
                 }
             }

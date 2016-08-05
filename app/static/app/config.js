@@ -17,21 +17,24 @@ occupancyApp.config(['$locationProvider' ,'$routeProvider', '$logProvider', 'Cha
         templateUrl: '/static/app/templates/login.html',
         controller: 'AuthController'
       }).
-      when('/signup', {
-        template: '<phone-detail></phone-detail>'
-      }).
       when('/upload', {
         templateUrl: '/static/app/templates/upload.html',
         resolve:{
-          "check":function(Permissions,$location){   //function to be resolved, accessFac and $location Injected
-            Permissions.hasPermission("add-logs").then(function(data){
-              if (data) {
-                return true;
-              } else {
-                $location.path('/');                //redirect user to home if it does not have permission.
-                alert("You don't have access here");
-              }
-            });
+          "check":function(Permissions,Session, Authentication, $location){   //function to be resolved, accessFac and $location Injected
+            if (!Session.user) {
+              Authentication.getLoggedInUser().then(function(data) {
+                if (Permissions.hasPermission(["add-truth", "add-logs", "add-class"], "OR")) {
+                  return true;
+                }
+                return false;
+
+              });
+            } else {
+              if (Permissions.hasPermission(["add-truth", "add-logs", "add-class"], "OR")) {
+                  return true;
+                }
+                return false;
+            }
             
           }
         },
@@ -40,15 +43,23 @@ occupancyApp.config(['$locationProvider' ,'$routeProvider', '$logProvider', 'Cha
       when('/add/user', {
         templateUrl: '/static/app/templates/add-user.html',
         resolve:{
-          "check":function(Permissions,$location){   //function to be resolved, accessFac and $location Injected
-            Permissions.hasPermission("add-user").then(function(data){
-              if (data) {
-                return true;
-              } else {
-                $location.path('/');                //redirect user to home if it does not have permission.
-                alert("You don't have access here");
-              }
-            });
+          "check":function(Permissions,Session, Authentication, $location){   //function to be resolved, accessFac and $location Injected
+            if (!Session.user) {
+              Authentication.getLoggedInUser().then(function(data) {
+                if (Permissions.hasPermission("add-user")) {
+                  return true;
+                }
+                return false;
+                
+
+              });
+            } else {
+              if (Permissions.hasPermission("add-user")) {
+                  return true;
+                }
+                return false;
+            }
+            
             
           }
         },
@@ -57,12 +68,21 @@ occupancyApp.config(['$locationProvider' ,'$routeProvider', '$logProvider', 'Cha
       when('/add/ground-truth', {
         templateUrl: '/static/app/templates/add-truth.html',
         resolve:{
-          "check":function(Permissions,$location){   //function to be resolved, accessFac and $location Injected
-            if(Permissions.hasPermission("add-truth")){    //check if the user has permission -- This happens before the page loads
-                return true;
-            }else{
-              $location.path('/');                //redirect user to home if it does not have permission.
-              alert("You don't have access here");
+          "check":function(Permissions,Session, Authentication,$location){   //function to be resolved, accessFac and $location Injected
+            if (!Session.user) {
+              Authentication.getLoggedInUser().then(function(data) {
+                
+                if (Permissions.hasPermission("add-truth")) {
+                  return true;
+                }
+                return false;
+
+              });
+            } else {
+              if (Permissions.hasPermission("add-truth")) {
+                  return true;
+                }
+                return false;
             }
           }
         }
@@ -70,15 +90,21 @@ occupancyApp.config(['$locationProvider' ,'$routeProvider', '$logProvider', 'Cha
       when('/add/class', {
         templateUrl: '/static/app/templates/add-class.html',
         resolve:{
-          "check":function(Permissions,$location){   //function to be resolved, accessFac and $location Injected
-            Permissions.hasPermission("add-class").then(function(data){
-              console.log(data);
-              if (data) {
-
-              } else {
-                console.log('no permission');
-              }
-            });
+          "check":function(Permissions,Session, Authentication,$location){   //function to be resolved, accessFac and $location Injected
+            if (!Session.user) {
+              Authentication.getLoggedInUser().then(function(data) {
+                
+                if (Permissions.hasPermission("add-class")) {
+                  return true;
+                }
+                return false;
+              });
+            } else {
+              if (Permissions.hasPermission("add-class")) {
+                  return true;
+                }
+                return false;
+            }
             
           }
         }

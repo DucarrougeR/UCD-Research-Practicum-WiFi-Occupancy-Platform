@@ -8,14 +8,14 @@
     <h1>UPLOAD</h1>
     <div ng-controller="UploadController">
         <form>
-            <label>
-                <input type="radio" ng-model="filetype" value="wifi"> WiFi Logs
+            <label ng-show="hasPermission('add-logs')">
+                <input type="radio" ng-model="filetype" value="wifi" > WiFi Logs
             </label>
-            <label>
-                <input type="radio" ng-model="filetype" value="timetable"> Timetable
+            <label ng-show="hasPermission('add-class')">
+                <input type="radio" ng-model="filetype" value="timetable" > Timetable
             </label>
-            <label>
-                <input type="radio" ng-model="filetype" value="truth"> Ground Truth
+            <label ng-show="hasPermission('add-truth')">
+                <input type="radio" ng-model="filetype" value="truth" > Ground Truth
             </label>
             <div ng-show="filetype" ngf-drop ngf-select="upload()" ng-model="files" class="drop-box" ngf-drag-over-class="'dragover'" ngf-multiple="true" ngf-allow-dir="true" accept="application/zip,.zip,zip,.csv,csv" ngf-pattern="'application/zip,.zip,zip,.csv,csv'">Drop files here to upload</div>
             <div ngf-no-file-drop>File Drag/Drop is not supported for this browser</div>
