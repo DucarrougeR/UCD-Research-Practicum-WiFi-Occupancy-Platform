@@ -93,7 +93,7 @@ def upload_file(filetype):
                             df = predict.predict(file.filename)
 
                             # Writes dataframe with predictions to database.
-                            df.columns = ["counts_room_number", "counts_time", "counts_associated", "counts_authenticated", "counts_predicted"]
+                            df.columns = ["counts_room_number", "counts_time", "counts_associated", "counts_authenticated", "counts_predicted", "counts_predicted_is_occupied"]
                             con = sqlite3.connect(config.DATABASE["name"])
                             df.to_sql("counts", con, flavor="sqlite", if_exists="append", index=False, chunksize=None)
                         # Else new file is a .zip filled with CSVs.
@@ -108,7 +108,7 @@ def upload_file(filetype):
                                     df = predict.predict(f)
                                     if df:
                                         # Writes dataframe with predictions to database.
-                                        df.columns = ["counts_room_number", "counts_time", "counts_associated", "counts_authenticated", "counts_predicted"]
+                                        df.columns = ["counts_room_number", "counts_time", "counts_associated", "counts_authenticated", "counts_predicted", "counts_predicted_is_occupied"]
                                         con = sqlite3.connect(config.DATABASE["name"])
                                         df.to_sql("counts", con, flavor="sqlite", if_exists="append", index=False, chunksize=None)
                                     else:

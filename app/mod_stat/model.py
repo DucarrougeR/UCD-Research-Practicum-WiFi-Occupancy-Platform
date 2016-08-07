@@ -3,7 +3,11 @@ import pandas as pd
 import statsmodels.formula.api as sm
 import numpy as np
 from sklearn.linear_model import LinearRegression
+from sklearn.linear_model import LogisticRegression
 from sklearn.externals import joblib
+
+# Silences a pandas warning. 
+pd.options.mode.chained_assignment = None
 
 def train_ols():
     """
@@ -43,7 +47,40 @@ def train_ols():
     lrm.fit(X, y)
 
     # Serialises the fitted regression to disk. 
-    joblib.dump(lrm, "app/mod_stat/model.pkl") 
+    joblib.dump(lrm, "app/mod_stat/model_linear.pkl") 
 
-# Silences a pandas warning. 
-pd.options.mode.chained_assignment = None
+def train_binary_logit():
+    """
+    Trains a binary logistic model on ground-truth count.
+    Serialises the output to a pickle file.
+    """
+
+    # Creates a SQL connection to the SQLite database. 
+    con = sqlite3.connect("database.db")
+    
+    # Reads the database at xx:15 for every hour (corresponding to the time the ground truth data was collected). 
+    df = pd.read_sql_query("SELECT * from counts WHERE counts_time LIKE '%__:13:%' \
+            OR counts_time LIKE '%__:14:%' OR counts_time LIKE '%__:15:%' OR counts_time LIKE '%__:16:%'\
+            OR counts_time LIKE '%__:17:%'", con)
+
+    # Changes the counts_truth column to float. 
+    df["counts_truth"] = df["counts_truth"].astype("float64")
+
+    # Looks only at columns with ground truth observations. 
+    df_obs = df[pd.notnull(df["counts_truth"])]    
+
+    # Compares ground_truth to counts_associated to find large outliers. 
+    df_obs["counts_difference"] = abs(df_obs["counts_associated"] - df_obs["counts_truth"])    
+    df_obs["counts_outliers"] = abs(df_obs["counts_difference"]) > 20 # Cutoff determined through trial and error
+    
+    # Drops outlier rows.
+    df_obs = df_obs[df_obs["counts_outliers"] == False]
+
+    # Fits the logistic model.  
+    y = df["counts_truth_is_occupied"]
+    X = np.array(df["counts_associated"].reshape(-1, 1))
+    log = LogisticRegression()    
+    log.fit(X, y)
+
+    # Serialises the fitted regression to disk. 
+    joblib.dump(lrm, "app/mod_stat/model_binary.pkl")
