@@ -8,12 +8,15 @@
 <body>
 	<div class="full-height">
 		
-		<div class="top-bar u-clearfix ">
+		<div class="top-bar u-clearfix " ng-controller="TopbarController">
 			<div class="logo u-pull-left">
 				Ouranos
 			</div>
 			<div class="logged-status u-pull-right">
-				<div ng-cloak ng-show="message">Hello Admin</div>
+				<div ng-cloak ng-show="userEmail">{{ userEmail }}</div>
+                <ul>
+                    <li ng-show="logout">{{ logout }}</li>
+                </ul>
 			</div>
 		</div>
 		

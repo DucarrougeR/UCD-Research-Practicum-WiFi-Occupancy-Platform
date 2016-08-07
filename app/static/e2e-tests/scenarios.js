@@ -1,7 +1,7 @@
 'use strict';
 
 /* https://github.com/angular/protractor/blob/master/docs/toc.md */
-
+// TODO e2e tests for all of config. Use beforeeach to set valid users
 describe('my app', function() {
 
 

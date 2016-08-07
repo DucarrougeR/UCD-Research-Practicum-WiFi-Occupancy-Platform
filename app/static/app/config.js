@@ -7,11 +7,54 @@ occupancyApp.config(['$locationProvider' ,'$routeProvider', '$logProvider', 'Cha
     $routeProvider.
       when('/', {
         templateUrl: '/static/app/templates/login.html',
-        controller: 'AuthController'
+        controller: 'AuthController',
+        resolve: {
+          "check":function(Permissions,Session, Authentication, $location){   //function to be resolved, accessFac and $location Injected
+            if (!Session.user) {
+              Authentication.getLoggedInUser().then(function(data) {
+                // if the user is logged in
+                if (data) {
+                  // redirect to dashboard
+                  $location.path("/dashboard");
+                } else {
+                  // if not logged in
+                  // redirect to login
+                  $location.path("/login");
+
+                }
+
+              });
+            } else {
+              // user is logged in
+              // redirect to dashboard
+              $location.path("/dashboard");
+
+            }
+            
+          }
+        }
       }).
       when('/dashboard', {
         templateUrl: '/static/app/templates/home.html',
-        controller: 'DashboardController'
+        resolve:{
+          "check":function(Permissions,Session, Authentication, $location){   //function to be resolved, accessFac and $location Injected
+            if (!Session.user) {
+              Authentication.getLoggedInUser().then(function(data) {
+                if (data) {
+                  return true;
+                } else {
+                  $location.path("/login");
+                }
+
+              });
+            } else {
+              return true;
+            }
+            
+          }
+        },
+        controller: 'DashboardController',
+
       }).
       when('/login', {
         templateUrl: '/static/app/templates/login.html',
@@ -108,7 +151,11 @@ occupancyApp.config(['$locationProvider' ,'$routeProvider', '$logProvider', 'Cha
             
           }
         }
-      })
+      }).
+      when('/logout', {
+        controller: "LogoutController",
+        template: "<h1>Logging you out</h1>"
+      });
 
     //$locationProvider.html5Mode(true);  
 

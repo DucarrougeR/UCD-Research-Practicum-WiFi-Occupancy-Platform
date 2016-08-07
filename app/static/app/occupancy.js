@@ -1,5 +1,5 @@
 'use strict';
-
+// TODO TEST all controllers are defined and various other parts. Check all views etc
 var occupancyApp = angular.module('occupancyApp', [
     'ngRoute',
     'pikaday',
@@ -7,8 +7,39 @@ var occupancyApp = angular.module('occupancyApp', [
     'ngFileUpload'
 ]);
 
-occupancyApp.controller('DashboardController', ['$scope', '$http', 'chartData', 'Authentication', 'Session', 'DataManagement', 'Permissions', function($scope, $http, chartData, Authentication, Session, DataManagemen, Permissions) {
-    $scope.message = "Hello Admin";
+occupancyApp.controller('TopbarController', ['$scope', 'Authentication', 'Session', function($scope, Authentication, Session) {
+    console.log('TopbarController');
+    $scope.user = Session.user;
+    $scope.$watch('user', function() {
+        console.log("watching topbar");
+        console.log(Session.user);
+        if (Session.user) {
+          $scope.email = Session.user.email;
+        } else {
+          $scope.email = null;
+        }
+        
+
+    });
+
+    // console.log("checking");
+    // if (!Session.user) {
+    //     console.log("checking auth");
+    //     Authentication.getLoggedInUser().then(function(data) {
+
+    //         Session.user = data;
+    //         $scope.user = data;
+
+    //     });
+    // } else {
+    //   $scope.user = Session.user;
+    // }
+
+    
+}]);
+
+occupancyApp.controller('DashboardController', ['$scope', '$http', 'Authentication', 'Session', 'DataManagement', 'Permissions', function($scope, $http, Authentication, Session, DataManagement, Permissions) {
+
     // check if there is a user defined
     if (!Session.user) {
         Authentication.getLoggedInUser().then(function(data) {
@@ -23,16 +54,13 @@ occupancyApp.controller('DashboardController', ['$scope', '$http', 'chartData', 
     }
 
 
-
-
-    // TODO: move this to a service or something
     $scope.submit = function() {
         if ($scope.formData.room && $scope.formData.date) {
             // formatting the URL
             var url = "/api/room/occupancy/" + $scope.formData.room + "/" + $scope.formData.date.split(" ").join("%20");
             console.log("making request to " + url);
             $http.get(url).then(function successCallback(response) {
-
+                console.log(response);
 
                 if (response.data.results.length > 0) {
 
@@ -71,28 +99,28 @@ occupancyApp.controller('DashboardController', ['$scope', '$http', 'chartData', 
     }
 }]);
 
-occupancyApp.controller("lineCtrl", ['$scope', '$timeout', 'chartData', function($scope, $timeout, chartData) {
+// occupancyApp.controller("lineCtrl", ['$scope', '$timeout', 'chartData', function($scope, $timeout, chartData) {
 
-    //$scope.labels = ["07:00", "08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00"];
-    $scope.series = ['% occupied'];
+//     //$scope.labels = ["07:00", "08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00"];
+//     $scope.series = ['% occupied'];
 
-    // build the labels
-    $scope.labels = chartData.data.map(function(item, index) {
-        return "Hour " + index;
-    });
+//     // build the labels
+//     $scope.labels = chartData.data.map(function(item, index) {
+//         return "Hour " + index;
+//     });
 
-    console.log("charting");
-    // get the data
-    $scope.data = [
-        chartData.data
-    ];
-    $scope.options = {
-        responsive: true
-    }
-    $scope.onClick = function(points, evt) {
-        console.log(points, evt);
-    };
-}]);
+//     console.log("charting");
+//     // get the data
+//     $scope.data = [
+//         chartData.data
+//     ];
+//     $scope.options = {
+//         responsive: true
+//     }
+//     $scope.onClick = function(points, evt) {
+//         console.log(points, evt);
+//     };
+// }]);
 
 
 occupancyApp.controller("UploadController", ['$scope', 'Upload', '$timeout', 'Permissions', 'Session', 'Authentication', function($scope, Upload, $timeout, Permissions, Session, Authentication) {
@@ -166,6 +194,7 @@ occupancyApp.controller('AuthController', ['$scope', '$location', 'Authenticatio
             } else {
                 data['loggedIn'] = true;
                 Session.user = data;
+                console.log(Session.user);
                 $location.path('/dashboard');
             }
         });
@@ -195,4 +224,12 @@ occupancyApp.controller('RegisterController', ['$scope', 'Authentication', 'Perm
             }
         });
     }
+}]);
+
+occupancyApp.controller('LogoutController', ['$scope', '$location', 'Authentication', 'Session', function($scope, $location, Authentication, Session) {
+    Authentication.logoutUser().then(function(data) {
+        Session.user = null;
+        $location.path('/login');
+    });
+
 }]);

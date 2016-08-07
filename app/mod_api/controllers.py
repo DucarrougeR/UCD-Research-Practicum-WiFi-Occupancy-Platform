@@ -191,6 +191,15 @@ def get_current_user():
     else:
         return jsonify(None)
 
+@mod_api.route('/auth/logout', methods=['GET'])
+def logout():
+    if current_user.is_authenticated:
+        logout_user()
+        return jsonify({"success": strings.SUCCESS_LOGOUT})
+    else:
+        return jsonify({"error": strings.ERROR_LOGOUT}), 500
+
+
 @mod_api.route('/auth/permissions/get-all', methods=['GET'])
 def get_all_permissions():
     # TODO: only allow adding of permissions at same or lower level than current user's permission level (may require some kind of hierarchy integer)

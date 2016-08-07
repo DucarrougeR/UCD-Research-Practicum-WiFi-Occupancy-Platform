@@ -1,10 +1,12 @@
 
 occupancyApp.service('DataManagement', [function() {
+    // TODO TEST organiseData function
     return {
         organiseData: function(results) {
+            console.log(results);
             var hours = [];
             // separates results into unique hours
-            response.data.results.map(function(item, index) {
+            results.map(function(item, index) {
                 var subStr = item.counts_time.substring(11, 13) * 1
                     // if the hour has already been listed then push it onto the hours array at a specific index
                 if (hours[subStr]) {

@@ -1,4 +1,4 @@
-occupancyApp.service('Authentication', ['$http', function($http){
+occupancyApp.service('Authentication', ['$http', function($http, Session){
 	var currentUser;
 	return {
 		getLoggedInUser: function() {
@@ -51,6 +51,20 @@ occupancyApp.service('Authentication', ['$http', function($http){
 				return response.data;
 			}, function errorCallback(response) {
 				return response.data;
+			});
+		}, 
+
+		logoutUser: function() {
+			return $http({
+				method: 'GET',
+				url: '/api/auth/logout'
+			}).then(function successCallback(response) {
+				
+				return true;
+				
+			}, function errorCallback(response) {
+				
+				return false;
 			});
 		}
 	}
