@@ -52,3 +52,4 @@ def predict_all():
         # Updates every row of the database having that value with a corresponding binary estimation. 
         query = Counts.update(counts_predicted_is_occupied=log.predict(int(count))[0]).where(Counts.counts_associated == count)
         query.execute()
+

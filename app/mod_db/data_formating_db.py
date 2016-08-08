@@ -170,14 +170,14 @@ Counts_DB = Counts_DB.drop("Unnamed: 0", axis=1).drop("capacity", axis=1).drop("
 Counts_DB = Counts_DB.drop("hour", axis=1).drop("date", axis=1).drop("capacity_y", axis=1)
 Counts_DB = Counts_DB.drop('time', axis=1)
 
-# add boolean featrue in column for 'counts_truth_is_occupied'
-Counts_DB['counts_truth_is_occupied'] = Counts_DB['occupancy']
-Counts_DB.counts_truth_is_occupied.astype(str)
-Counts_DB['counts_truth_is_occupied'][Counts_DB.counts_truth_is_occupied == '25%'] = 1
-Counts_DB['counts_truth_is_occupied'][Counts_DB.counts_truth_is_occupied == '50%'] = 1
-Counts_DB['counts_truth_is_occupied'][Counts_DB.counts_truth_is_occupied == '75%'] = 1
-Counts_DB['counts_truth_is_occupied'][Counts_DB.counts_truth_is_occupied == '100%'] = 1
-Counts_DB['counts_truth_is_occupied'][Counts_DB.counts_truth_is_occupied == '0%'] = 0
+# add column for 'counts_truth_is_occupied'
+Counts_DB['counts_truth_is_occupied'] = np.nan
+
+Counts_DB.loc[Counts_DB.occupancy == '25%', 'counts_truth_is_occupied'] = 1
+Counts_DB.loc[Counts_DB.occupancy == '50%', 'counts_truth_is_occupied'] = 1
+Counts_DB.loc[Counts_DB.occupancy == '75%', 'counts_truth_is_occupied'] = 1
+Counts_DB.loc[Counts_DB.occupancy == '100%', 'counts_truth_is_occupied'] = 1
+Counts_DB.loc[Counts_DB.occupancy == '0%', 'counts_truth_is_occupied'] = 0
 
 Counts_DB.columns = ['counts_room_number', 'counts_truth_percent', 'counts_truth',
        'counts_module_code', 'counts_time', 'counts_associated', 'counts_authenticated','counts_truth_is_occupied']
@@ -206,8 +206,8 @@ Checks_DB['rssi'] = np.nan
 Checks_DB.columns = ['checks_room_number', 'checks_time', 'checks_audio', 'checks_rssi']
 
 '''
-Current table format is in 5-min interval as per initial discussion.
-Below is code to use to change the table to an hourly basis
+# Current table format is in 5-min interval as per initial discussion.
+# Below is code to use to change the table to an hourly basis
 Checks_DB['checks_time'] = Checks_DB['checks_time'].map(lambda x: x[:-6)		# removes seconds and minutes
 Checks_DB = Checks_DB.drop_duplicates(subset='checks_time', keep='first')		# keeps 1 row per hour
 '''
@@ -224,3 +224,4 @@ Classes_DB.to_sql('classes', con, flavor='sqlite', if_exists='replace', index=Fa
 Checks_DB.to_sql('secondary_checks', con, flavor='sqlite', if_exists='replace', index=False, chunksize=None)
 
 print('Tables created')
+
