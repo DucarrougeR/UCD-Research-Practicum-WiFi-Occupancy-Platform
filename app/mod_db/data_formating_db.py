@@ -210,8 +210,6 @@ Checks_DB['checks_time'] = Checks_DB['checks_time'].map(lambda x: x[:-6)		# remo
 Checks_DB = Checks_DB.drop_duplicates(subset='checks_time', keep='first')		# keeps 1 row per hour
 '''
 
-
-
 #########################################################################
 ''' Writting dataframe to sql files '''
 
