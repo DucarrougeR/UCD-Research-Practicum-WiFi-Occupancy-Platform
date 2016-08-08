@@ -158,6 +158,8 @@ Rooms_DB.loc[Rooms_DB.room == "B1.09", 'building'] = "Computer Science"
 Rooms_DB.loc[Rooms_DB.room == "B1.09", 'campus'] = "Belfield"
 
 Rooms_DB.columns = ["room_number", "room_building", "room_campus", "room_capacity"]
+# using np.nan here since to_sql function will automatically write nan as NULL
+Rooms_DB['room_occupancy_score'] = np.nan
 
 ##########################################################################
 Counts_DB = pd.read_csv('data/clean/DataForCountsTable.csv')
@@ -180,7 +182,6 @@ Counts_DB['counts_truth_is_occupied'][Counts_DB.counts_truth_is_occupied == '0%'
 Counts_DB.columns = ['counts_room_number', 'counts_truth_percent', 'counts_truth',
        'counts_module_code', 'counts_time', 'counts_associated', 'counts_authenticated','counts_truth_is_occupied']
 # adding empty columns for model predictions on continuous and categorial features
-# using np.nan here since to_sql function will automatically write nan as NULL
 Counts_DB['counts_predicted'] = np.nan
 Counts_DB['counts_predicted_is_occupied'] = np.nan
 
@@ -191,6 +192,7 @@ Classes_DB['time'] = Classes_DB['time'].map(lambda x: x[:-5])
 Classes_DB['time'] = Classes_DB['time']+"00:00"
 
 Classes_DB.columns = ['classes_room_number', 'classes_time', 'classes_module_code', 'classes_size']
+Classes_DB['classes_attendance_score'] = np.nan
 
 Classes_DB.drop_duplicates(subset=['classes_room_number','classes_time'], keep='last')
 
