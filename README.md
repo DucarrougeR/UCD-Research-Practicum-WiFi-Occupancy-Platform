@@ -27,23 +27,38 @@ and estimate room occupancy based on wifi log data.
 Ouranos uses a number of open source projects to work properly:
 * [Python 3.5.x] -
 * [AngularJS] - HTML enhanced for web apps!
-* [Flask] - awesome web-based text editor
-* [node.js] - evented I/O for the backend
-* [jQuery] - 
+* [Flask] - Mico-web server for Python web apps
+* [node.js] - evented I/O for the backend. Ouranos uses this to install front-end dependencies via NPM
+* [node-sass] - CSS with more features
+* SQLite
 
 
 
 ### Installation
 
-Ouranos requires 
+Ouranos requires:
+- Node JS
+- Python3 
+ be installed.
 
+On Linux, some packages (such as Pandas and Sci-kit learn) may need to installed through apt-get. 
+
+To install Ouranos:
+```sh
+$ git clone [git-repo-url] ouranos
+```
+
+Run the install script, which will prompt you if you need to install additional technologies
+```sh
+python install.py
+```
+
+Alternatively, if you just need the python dependencies
 ```sh
 pip install -r requirements.txt
 ```
 
-```sh
-$ git clone [git-repo-url] ouranos
-```
+
 
 ### Required Libraries
 
@@ -77,4 +92,5 @@ MIT
    [node.js]: <http://nodejs.org>
    [jQuery]: <http://jquery.com>
    [AngularJS]: <http://angularjs.org>
+   [node-sass]: <https://github.com/sass/node-sass>
 
