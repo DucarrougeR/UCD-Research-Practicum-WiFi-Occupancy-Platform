@@ -18,17 +18,11 @@ from .BaseModel import BaseModel
 #         self.occupancy = occupancy
 #         self.occupancyCount = occupancy_count
 
-class Counts(BaseModel):
-    counts_room_number = CharField(null=False)
-    counts_time = DateTimeField(null=False)
-    counts_module_code = DateTimeField(null=False)
-    counts_associated = IntegerField()
-    counts_authenticated = IntegerField()
-    counts_truth_percent = CharField()
-    counts_truth = IntegerField()
-    counts_predicted = IntegerField()
-    counts_truth_is_occupied = IntegerField()
-    counts_predicted_is_occupied = IntegerField()
+class SecondaryChecks(BaseModel):
+    checks_room_number = CharField(null=False)
+    checks_time = DateTimeField(null=False)
+    checks_audio = IntegerField()
+    checks_rssi = IntegerField()
 
     def __init__(self, **kwargs):
         super(BaseModel, self).__init__(**kwargs)
@@ -40,4 +34,4 @@ class Counts(BaseModel):
         # self.occupancyCount = occupancy_count
 
     class Meta:
-        primary_key = CompositeKey('counts_room_number', 'counts_time')
+        primary_key = CompositeKey('checks_room_number', 'checks_time')
