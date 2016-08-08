@@ -10,11 +10,10 @@ Ouranos is a Flask web application enabling predictive analytics of room occupan
 You can also:
   - Add new data
   - Drag and drop files into the "Upload new data" section
-  - Export documents as Markdown, HTML and PDF
 
 
-> Develop a software system that will estimate
-room occupancy based on wifi log data.
+> Develop a software system that will reflect whether a room is occupied or not
+and estimate room occupancy based on wifi log data.
 >Teams have freedom to decide on the scope. 
 
 > The application developed also incorporates Received Signal Strength Indicator (RSSI) and audio data.
@@ -32,8 +31,7 @@ Ouranos uses a number of open source projects to work properly:
 * [node.js] - evented I/O for the backend
 * [jQuery] - 
 
-And of course Dillinger itself is open source with a [public repository][dill]
- on GitHub.
+
 
 ### Installation
 
