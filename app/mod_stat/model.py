@@ -77,10 +77,10 @@ def train_binary_logit():
     df_obs = df_obs[df_obs["counts_outliers"] == False]
 
     # Fits the logistic model.  
-    y = df["counts_truth_is_occupied"]
-    X = np.array(df["counts_associated"].reshape(-1, 1))
+    y = df_obs["counts_truth_is_occupied"]
+    X = np.array(df_obs["counts_associated"].reshape(-1, 1))
     log = LogisticRegression()    
     log.fit(X, y)
 
     # Serialises the fitted regression to disk. 
-    joblib.dump(lrm, "app/mod_stat/model_binary.pkl")
+    joblib.dump(log, "app/mod_stat/model_binary.pkl")

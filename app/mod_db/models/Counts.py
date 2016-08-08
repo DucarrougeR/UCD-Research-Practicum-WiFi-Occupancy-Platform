@@ -27,6 +27,8 @@ class Counts(BaseModel):
     counts_truth_percent = CharField()
     counts_truth = IntegerField()
     counts_predicted = IntegerField()
+    counts_truth_is_occupied = IntegerField()
+    counts_predicted_is_occupied = IntegerField()
 
     def __init__(self, **kwargs):
         super(BaseModel, self).__init__(**kwargs)

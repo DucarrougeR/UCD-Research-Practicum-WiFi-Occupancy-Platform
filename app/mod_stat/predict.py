@@ -12,14 +12,14 @@ def predict(csv):
     # Loads the serialised analytic models.
     if csv.endswith(".csv"):
         lrm = joblib.load("app/mod_stat/model_linear.pkl")
-        log = joblib.load("app_mod_stat/model_binary.pkl")
+        log = joblib.load("app/mod_stat/model_binary.pkl")
 
         # Reads the CSV file.
         df = pd.read_csv(csv)
 
         # Generates predicted values in new columns.
         df["predicted"] = list(map(lambda x: int(lrm.predict(x)[0]), df["associated"]))
-        df["predicted_is_occupied"] = list(map(lambda: x: log.predict(x)[0], df["associated"]))
+        df["predicted_is_occupied"] = list(map(lambda x: log.predict(x)[0], df["associated"]))
 
     return df
 
@@ -32,8 +32,8 @@ def predict_all():
     """
     
     # Loads the serialised analytic models. 
-    lrm = joblib.load("app/mod_stat/model.pkl")    
-    log = joblib.load("app_mod_stat/model_binary.pkl")
+    lrm = joblib.load("app/mod_stat/model_linear.pkl")    
+    log = joblib.load("app/mod_stat/model_binary.pkl")
     
     # Queries each unique associated count value from the database.
     results = Counts.select(Counts.counts_associated).distinct()
@@ -49,5 +49,6 @@ def predict_all():
         query = Counts.update(counts_predicted=int(lrm.predict(int(count))[0])).where(Counts.counts_associated == count)
         query.execute()
 
-        query = Counts.update(counts_predicted_is_occupied=log.predict(int(count))[0])).where(Counts.counts_associated == count)
+        # Updates every row of the database having that value with a corresponding binary estimation. 
+        query = Counts.update(counts_predicted_is_occupied=log.predict(int(count))[0]).where(Counts.counts_associated == count)
         query.execute()
