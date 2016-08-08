@@ -2,8 +2,8 @@
 occupancyApp.service('DataManagement', [function() {
     // TODO TEST organiseData function
     return {
-        organiseData: function(results) {
-            console.log(results);
+        organiseData: function(results, type) {
+            
             var hours = [];
             // separates results into unique hours
             results.map(function(item, index) {
@@ -25,34 +25,43 @@ occupancyApp.service('DataManagement', [function() {
 
                 // reduce the items to a single total value
                 var reduced = item.reduce(function(total, i) {
-                    if (i.counts_authenticated > max) {
-                        max = i.counts_authenticated;
-                    }
+                    // if (i.counts_authenticated > max) {
+                    //     max = i.counts_authenticated;
+                    // }
 
-                    if (i.counts_authenticated < min) {
-                        min = i.counts_authenticated;
+                    // if (i.counts_authenticated < min) {
+                    //     min = i.counts_authenticated;
+                    // }
+                    if (type=="binary") {
+                        return (total || i.counts_predicted_is_occupied);
+                        
+                    } else {
+                        console.log(item);
+                        return (total + (i.counts_predicted / i.room_capacity/ 1));
                     }
-
-                    return (total + (i.counts_authenticated / 1))
+                    
                 }, 0);
 
+                
                 // return the average
+                if (type=="binary") {
+                    return reduced;
+                }
                 return reduced / item.length
             });
 
-            var avg = reducedData.reduce(function(total, i) {
+            // var avg = reducedData.reduce(function(total, i) {
               
-              return total + i;
-            }) / reducedData.length;
+            //   return total + i;
+            // }) / reducedData.length;
 
             // return results
-            return {
-              "min": min,
-              "max": max,
-              "avg": avg,
+            returnResults = {
               "data": reducedData,
               "hours": hours
-            }
+            };
+            console.log(returnResults);
+            return returnResults;
         }
     }
 

@@ -56,6 +56,28 @@ occupancyApp.config(['$locationProvider' ,'$routeProvider', '$logProvider', 'Cha
         controller: 'DashboardController',
 
       }).
+      when('/rooms', {
+        templateUrl: '/static/app/templates/rooms.html',
+        resolve:{
+          "check":function(Permissions,Session, Authentication, $location){   //function to be resolved, accessFac and $location Injected
+            if (!Session.user) {
+              Authentication.getLoggedInUser().then(function(data) {
+                if (data) {
+                  return true;
+                } else {
+                  $location.path("/login");
+                }
+
+              });
+            } else {
+              return true;
+            }
+            
+          }
+        },
+        controller: 'RoomsController',
+
+      }).
       when('/login', {
         templateUrl: '/static/app/templates/login.html',
         controller: 'AuthController'

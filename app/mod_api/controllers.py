@@ -8,7 +8,6 @@ import os
 from werkzeug.utils import secure_filename
 from app.mod_db.models import User
 from flask_login import LoginManager, current_user, login_user, login_required, logout_user
-from app.values import strings
 import json
 from flask_mail import Message
 from app import mail
@@ -25,8 +24,8 @@ def hello():
     return jsonify("hello")
 
 @mod_api.route('/room/occupancy/<room>/')
-@mod_api.route('/room/occupancy/<room>/<time>')
-def occupancy_data(room, time=None):
+@mod_api.route('/room/occupancy/<room>/<time>/<type>')
+def occupancy_data(room, time=None, type=None):
     if time:
         time = " ".join(time.split("%20"))
 
@@ -39,7 +38,8 @@ def occupancy_data(room, time=None):
             join_cond = (Rooms.room_number == Counts.counts_room_number)
             date_cond = "%" + date[1] + " " + date[2] + "%"
             results = Rooms.select(Rooms, Counts).join(Counts, on=join_cond).where(
-                (Rooms.room_number == room) & (Counts.counts_time ** date_cond)).naive()
+                 (Rooms.room_number == room) & (Counts.counts_time ** date_cond)).naive()
+            # results = Counts.select(Counts).where((Counts.counts_room_number == room)
     else:
         join_cond = (Rooms.room_number == Counts.counts_room_number)
         results = Rooms.select(Rooms, Counts).join(Counts, on=join_cond).where(
@@ -50,13 +50,20 @@ def occupancy_data(room, time=None):
 
     for result in results:
         # gets the fields of the result set
-        fields = Counts._meta.sorted_field_names + Rooms._meta.sorted_field_names
+        # fields = Counts._meta.sorted_field_names + Rooms._meta.sorted_field_names
+        fields = ["counts_room_number", "counts_time", "counts_module_code",
+                  "counts_predicted", "counts_predicted_is_occupied", "room_capacity"]
         results_dict = {}
 
         for field in fields:
             # creates a dictionary of each result
             results_dict[field] = getattr(result, field)
+            # print(results_dict)
+            if type == "binary":
+                # if binary data, transform to 1 or 0
+                pass
         results_list.append(results_dict)
+
 
     return jsonify({"results" : results_list})
 
@@ -204,3 +211,12 @@ def logout():
 def get_all_permissions():
     # TODO: only allow adding of permissions at same or lower level than current user's permission level (may require some kind of hierarchy integer)
     return jsonify(Permissions.get_all())
+
+@mod_api.route('/rooms/list', methods=['GET'])
+def get_rooms():
+    rooms = Rooms.select(Rooms.room_number)
+    rooms_list = []
+    for room in rooms:
+        rooms_list.append(room.get_result())
+
+    return jsonify(rooms_list)

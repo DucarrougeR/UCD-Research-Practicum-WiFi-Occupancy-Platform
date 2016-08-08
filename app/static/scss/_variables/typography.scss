@@ -1,5 +1,13 @@
-$text-heading: "font-family: arial, sans-serif";
-$text-body: "font-family: arial, sans-serif";
+$text-heading: "Lato", arial, sans-serif;
+$text-body: arial, sans-serif;
+
+h1, h2, h3, h3, h5 {
+	font-family: $text-heading;
+}
+
+h1, h2, h3 {
+	text-transform: uppercase;
+}
 
 .text-heading {
 	font-size:1.2em;

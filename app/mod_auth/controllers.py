@@ -21,8 +21,11 @@ mod_auth = Blueprint('mod_auth', __name__, url_prefix='/auth')
 
 @login_manager.user_loader
 def load_user(user_id):
-    user = User.get(User.id == user_id)
-    return user
+    try:
+        user = User.get(User.id == user_id)
+        return user
+    except Exception:
+        print("uh oh")
 
 # Set the route and accepted methods
 @mod_auth.route('/hello', methods=['GET', 'POST'])

@@ -17,9 +17,7 @@ occupancyApp.controller('TopbarController', ['$scope', 'Authentication', 'Sessio
           $scope.email = Session.user.email;
         } else {
           $scope.email = null;
-        }
-        
-
+        } 
     });
 
     // console.log("checking");
@@ -72,6 +70,70 @@ occupancyApp.controller('DashboardController', ['$scope', '$http', 'Authenticati
                     $scope.minValue = results["min"];
                     $scope.avgValue = Math.round(results["avg"] * 1000) / 1000;
                     $scope.totalValue = results["hours"][0][0].room_capacity;
+
+                    // set the chart data
+                    $scope.data = [results["data"]];
+                    $scope.series = ['% occupied'];
+
+                    // build the labels
+                    $scope.labels = results["data"].map(function(item, index) {
+                        return "Hour " + index;
+                    });
+                }
+
+                $scope.options = {
+                    responsive: true
+                }
+                $scope.onClick = function(points, evt) {
+                    console.log(points, evt);
+                };
+
+
+            }, function errorCallback(response) {
+                // called asynchronously if an error occurs
+                // or server returns response with an error status.
+            });
+        }
+    }
+}]);
+
+
+occupancyApp.controller('RoomsController', ['$scope', '$http', 'Authentication', 'Session', 'DataManagement', 'Permissions', 'RoomOccupancy', function($scope, $http, Authentication, Session, DataManagement, Permissions, RoomOccupancy) {
+
+    // check if there is a user defined
+    if (!Session.user) {
+        Authentication.getLoggedInUser().then(function(data) {
+
+            Session.user = data;
+            // make the hasPermission function available to templates
+            $scope.hasPermission = Permissions.hasPermission;
+
+        });
+    } else {
+        $scope.hasPermission = Permissions.hasPermission;
+    }
+
+    // get list of rooms
+    RoomOccupancy.getRooms().then(function(resp){
+      $scope.rooms = resp;
+    });
+
+    $scope.submit = function() {
+        if ($scope.formData.room && $scope.formData.date && $scope.formData.type) {
+            // formatting the URL
+            var url = "/api/room/occupancy/" + $scope.formData.room + "/" + $scope.formData.date.split(" ").join("%20") + "/" + $scope.formData.type;
+            console.log("making request to " + url);
+            $http.get(url).then(function successCallback(response) {
+                console.log(response);
+
+                if (response.data.results.length > 0) {
+                    var results = DataManagement.organiseData(response.data.results, $scope.formData.type);
+
+                    // bind the values
+                    // $scope.maxValue = results["max"];
+                    // $scope.minValue = results["min"];
+                    // $scope.avgValue = Math.round(results["avg"] * 1000) / 1000;
+                    // $scope.totalValue = results["hours"][0][0].room_capacity;
 
                     // set the chart data
                     $scope.data = [results["data"]];
