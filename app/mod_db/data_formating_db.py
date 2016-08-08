@@ -38,7 +38,6 @@ df1['room'] = df1['room'].map(lambda x: x.replace('-', ''))
 #remove trailing string part
 df1['time'] = df1['time'].map(lambda x: x.replace(' GMT+00:00 2015', ''))
 
-
 df1.to_csv("data/clean/formattedLogs.csv")
 print('Logs data has been cleaned')
 
@@ -56,7 +55,7 @@ df2['occupancyCount'] = df2['occupancyCount'] * df2['capacity'] / 100
 df2['occupancy'] = df2['occupancy'].map(lambda x: x.replace('%', ''))
 
 df2.to_csv("data/clean/formattedGroundTruthData.csv")
-# df2.head()
+
 print('Ground Truth Data has been cleaned')
 
 ##########################################################################
@@ -84,10 +83,8 @@ DF = pd.merge(d1, d2, left_on=["room", "time"], right_on=["room", "time"],
 
 DF.drop('Unnamed: 0_x', axis=1, inplace=True)
 DF.drop('Unnamed: 0_y', axis=1, inplace=True)
-# DF.head(50)
 
 d3 = pd.read_csv("data/clean/formattedTimeTable.csv")
-# d3.head()
 
 
 DFinal = pd.merge(DF, d3, left_on=["room", "time"], right_on=["room", "time"],
@@ -113,10 +110,6 @@ DFinal[['date']] = DFinal[['date']].apply(pd.to_numeric)
 # other with no null values for associated
 DF_occupancy_Not_null = DFinal[DFinal['occupancy'].notnull()]
 DF_data_Not_null = DFinal[DFinal['associated'].notnull()]
-
-
-# DF_occupancy_null.head()
-# DF_data_null.head()
 
 # Merging two dataframes based on three keys 'Room', 'Date', 'Hour'
 dataframeFinal = pd.merge(DF_occupancy_Not_null, DF_data_Not_null, left_on=["room", "date", "hour"],
@@ -165,7 +158,6 @@ Rooms_DB.loc[Rooms_DB.room == "B1.09", 'building'] = "Computer Science"
 Rooms_DB.loc[Rooms_DB.room == "B1.09", 'campus'] = "Belfield"
 
 Rooms_DB.columns = ["room_number", "room_building", "room_campus", "room_capacity"]
-# Rooms_DB.head()
 
 ##########################################################################
 Counts_DB = pd.read_csv('data/clean/DataForCountsTable.csv')
@@ -188,6 +180,7 @@ Counts_DB['counts_truth_is_occupied'][Counts_DB.counts_truth_is_occupied == '0%'
 Counts_DB.columns = ['counts_room_number', 'counts_truth_percent', 'counts_truth',
        'counts_module_code', 'counts_time', 'counts_associated', 'counts_authenticated','counts_truth_is_occupied']
 # adding empty columns for model predictions on continuous and categorial features
+# using np.nan here since to_sql function will automatically write nan as NULL
 Counts_DB['counts_predicted'] = np.nan
 Counts_DB['counts_predicted_is_occupied'] = np.nan
 
@@ -198,11 +191,26 @@ Classes_DB['time'] = Classes_DB['time'].map(lambda x: x[:-5])
 Classes_DB['time'] = Classes_DB['time']+"00:00"
 
 Classes_DB.columns = ['classes_room_number', 'classes_time', 'classes_module_code', 'classes_size']
-# No need to change the 'NaN' values
-# to_sql supports writing NaN values (will be written as NULL) 
 
 Classes_DB.drop_duplicates(subset=['classes_room_number','classes_time'], keep='last')
-# Classes_DB.head()
+
+#########################################################################
+''' implementing tables for secondary checks (Future RoadMap Dev)'''
+# room # time # audio_check # rssi_check
+Checks_DB = DFinal[['room','time']]
+Checks_DB['audio'] = np.nan
+Checks_DB['rssi'] = np.nan
+
+Checks_DB.columns = ['checks_room_number', 'checks_time', 'checks_audio', 'checks_rssi']
+
+'''
+Current table format is in 5-min interval as per initial discussion.
+Below is code to use to change the table to an hourly basis
+Checks_DB['checks_time'] = Checks_DB['checks_time'].map(lambda x: x[:-6)		# removes seconds and minutes
+Checks_DB = Checks_DB.drop_duplicates(subset='checks_time', keep='first')		# keeps 1 row per hour
+'''
+
+
 
 #########################################################################
 ''' Writting dataframe to sql files '''
@@ -213,6 +221,6 @@ cur = con.cursor()
 Rooms_DB.to_sql('rooms', con, flavor='sqlite', if_exists='replace', index=False, chunksize=None)
 Counts_DB.to_sql('counts', con, flavor='sqlite', if_exists='replace', index=False, chunksize=None)
 Classes_DB.to_sql('classes', con, flavor='sqlite', if_exists='replace', index=False, chunksize=None)
+Checks_DB.to_sql('secondary_checks', con, flavor='sqlite', if_exists='replace', index=False, chunksize=None)
 
 print('Tables created')
-print(Counts_DB.head(10))
