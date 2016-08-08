@@ -143,8 +143,8 @@ dataframeFinal.columns = ['room', 'capacity', 'occupancy', 'occupancyCount',
 
 dataframeFinal.sort(columns=["date","hour"], axis=0)
 
-# ##########################################################################
-# ''' Creating Dataframe to match DB schema's tables '''
+##########################################################################
+''' Creating Dataframe to match DB schema's tables '''
 
 Rooms_DB = DFinal[['room', 'building', 'campus', 'capacity']]
 
@@ -167,7 +167,7 @@ Rooms_DB.loc[Rooms_DB.room == "B1.09", 'campus'] = "Belfield"
 Rooms_DB.columns = ["room_number", "room_building", "room_campus", "room_capacity"]
 # Rooms_DB.head()
 
-
+##########################################################################
 Counts_DB = pd.read_csv('data/clean/DataForCountsTable.csv')
 
 Counts_DB.time_0.fillna(Counts_DB.time, inplace=True)
@@ -176,21 +176,30 @@ Counts_DB = Counts_DB.drop("Unnamed: 0", axis=1).drop("capacity", axis=1).drop("
 Counts_DB = Counts_DB.drop("hour", axis=1).drop("date", axis=1).drop("capacity_y", axis=1)
 Counts_DB = Counts_DB.drop('time', axis=1)
 
+# add boolean featrue in column for 'counts_truth_is_occupied'
+Counts_DB['counts_truth_is_occupied'] = Counts_DB['occupancy']
+Counts_DB.counts_truth_is_occupied.astype(str)
+Counts_DB['counts_truth_is_occupied'][Counts_DB.counts_truth_is_occupied == '25%'] = 1
+Counts_DB['counts_truth_is_occupied'][Counts_DB.counts_truth_is_occupied == '50%'] = 1
+Counts_DB['counts_truth_is_occupied'][Counts_DB.counts_truth_is_occupied == '75%'] = 1
+Counts_DB['counts_truth_is_occupied'][Counts_DB.counts_truth_is_occupied == '100%'] = 1
+Counts_DB['counts_truth_is_occupied'][Counts_DB.counts_truth_is_occupied == '0%'] = 0
+
 Counts_DB.columns = ['counts_room_number', 'counts_truth_percent', 'counts_truth',
-       "counts_module_code", "counts_time", "counts_associated", "counts_authenticated"]
-# adding an empty column for model predictions
+       'counts_module_code', 'counts_time', 'counts_associated', 'counts_authenticated','counts_truth_is_occupied']
+# adding empty columns for model predictions on continuous and categorial features
 Counts_DB['counts_predicted'] = np.nan
-# Counts_DB.head()
+Counts_DB['counts_predicted_is_occupied'] = np.nan
 
-
+##########################################################################
 Classes_DB = DFinal[['room', 'time', 'module', 'size']]
 
 Classes_DB['time'] = Classes_DB['time'].map(lambda x: x[:-5])
 Classes_DB['time'] = Classes_DB['time']+"00:00"
 
 Classes_DB.columns = ['classes_room_number', 'classes_time', 'classes_module_code', 'classes_size']
-# ''' No need to change the 'NaN' values
-# to_sql supports writing NaN values (will be written as NULL) '''
+# No need to change the 'NaN' values
+# to_sql supports writing NaN values (will be written as NULL) 
 
 Classes_DB.drop_duplicates(subset=['classes_room_number','classes_time'], keep='last')
 # Classes_DB.head()
@@ -206,3 +215,4 @@ Counts_DB.to_sql('counts', con, flavor='sqlite', if_exists='replace', index=Fals
 Classes_DB.to_sql('classes', con, flavor='sqlite', if_exists='replace', index=False, chunksize=None)
 
 print('Tables created')
+print(Counts_DB.head(10))
