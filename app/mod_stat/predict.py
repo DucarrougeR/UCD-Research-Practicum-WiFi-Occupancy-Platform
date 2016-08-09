@@ -63,6 +63,44 @@ def generate_scores():
             query = Rooms.update(room_occupancy_score = room_score).where(Rooms.room_number == room)
             query.execute()
     
+    """
+    # Queries each unique module from the database. 
+    results = Classes.select(Classes.classes_module_code).distinct()
+    print(results)
+    modules = []
+    for module in results:
+        modules.append(module.get_result()["classes_module_code"]) 
+    
+    # Iterates over modules. 
+    for module in modules:
+        # Gets the module's size.
+        results = Classes.select(Classes.classes_size).where(Classes.classes_module_code == module)
+        size = results.get_result()
+
+        # Queries counts from 9AM to 5PM for that room.
+        df = pd.read_sql_query(
+        "SELECT * FROM counts WHERE counts_module_code = '" + module + "' AND counts_time LIKE '%09:__:%' \
+        UNION SELECT * FROM counts WHERE counts_module_code = '" + module + "' AND counts_time LIKE '%10:__:%'\
+        UNION SELECT * FROM counts WHERE counts_module_code = '" + module + "' AND counts_time LIKE '%11:__:%'\
+        UNION SELECT * FROM counts WHERE counts_module_code = '" + module + "' AND counts_time LIKE '%12:__:%'\
+        UNION SELECT * FROM counts WHERE counts_module_code = '" + module + "' AND counts_time LIKE '%13:__:%'\
+        UNION SELECT * FROM counts WHERE counts_module_code = '" + module + "' AND counts_time LIKE '%14:__:%'\
+        UNION SELECT * FROM counts WHERE counts_module_code = '" + module + "' AND counts_time LIKE '%15:__:%'\
+        UNION SELECT * FROM counts WHERE counts_module_code = '" + module + "' AND counts_time LIKE '%16:__:%'", con)
+        
+        # Ignores null values. 
+        df_obs = df[pd.notnull(df["counts_predicted"])]    
+
+        # Ignores empty dataframes. 
+        if df["counts_predicted"].count() != 0:
+            # Calculates the attendance score, equal to the number of rows with predicted occupancy divided by the total number of (non-null) rows. 
+            attendance_score = df[df["counts_predicted_is_occupied"] == 1.0]["counts_predicted_is_occupied"].count() / df["counts_predicted_is_occupied"].count()
+            print(attendance_score)
+
+            # Records the score in the database. 
+    """
+
+
 def predict_all():
     """ 
     Populates all rows of the database with predicted occupancy 
