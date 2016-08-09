@@ -21,7 +21,8 @@ class Rooms(BaseModel):
     room_number = CharField(null=False, primary_key=True)
     room_building = CharField(null=False)
     room_campus = CharField(null=False)
-    room_capacity = IntegerField()
+    room_capacity = IntegerField(null=False)
+    room_occupancy_score = FloatField(null=False)
 
     def __init__(self, **kwargs):
         super(BaseModel, self).__init__(**kwargs)

@@ -19,6 +19,7 @@ class Classes(BaseModel):
     classes_size = CharField(null=False)
     classes_room_number = CharField(null=False)
     classes_time = IntegerField(null=False)
+    classes_attendance_score = FloatField(null=False)
 
     def __init__(self, room, time, module, size, **kwargs):
         super(BaseModel, self).__init__(**kwargs)
