@@ -6,7 +6,7 @@ occupancyApp.service('Permissions', ['$http', 'Session', 'Authentication', funct
                 // check their permissions
                 if( Object.prototype.toString.call( permission ) === '[object Array]' ) {
                     // iterate through each item
-                    for (var i = 0; i < permissions.length; i++) {
+                    for (var i = 0; i < permission.length; i++) {
                         // if type is AND then user requires all the permissions. Exit if they don't have one of them
                         if (type == "AND") {
                             if (!Session.user.permissions[i]) {

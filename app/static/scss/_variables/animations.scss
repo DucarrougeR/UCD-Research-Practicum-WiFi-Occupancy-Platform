@@ -1,0 +1,31 @@
+@keyframes scale {
+    from {
+        -ms-transform: scale(0, 0);
+        /* IE 9 */
+        -webkit-transform: scale(0, 0);
+        /* Safari */
+        transform: scale(0, 0);
+    }
+    to {
+        -ms-transform: scale(1, 1);
+        /* IE 9 */
+        -webkit-transform: scale(1, 1);
+        /* Safari */
+        transform: scale(1, 1);
+    }
+}
+
+@keyframes up-and-fade {
+	from {
+        -ms-transform: translate(0, 50px); /* IE 9 */
+	   	-webkit-transform: translate(0, 50px); /* Safari */
+	    transform: translate(0, 50px);
+	    opacity:0;
+    }
+    to {
+        -ms-transform: translate(0, 0); /* IE 9 */
+	   	-webkit-transform: translate(0, 0); /* Safari */
+	    transform: translate(0, 0);
+	    opacity:1;
+    }
+}

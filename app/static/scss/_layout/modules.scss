@@ -123,3 +123,39 @@
 	color:$color-text-secondary;
 }
 
+.options-list {
+	width:100%;
+    display:flex;
+    &__item {
+    	width:50%;
+    	box-sizing:border-box;
+    	animation-name:scale;
+    	animation-duration: 0.5s;
+	    animation-timing-function: ease-in-out;
+	    animation-delay: 0s;
+	    animation-iteration-count: 1;
+	    animation-direction: forward;
+    	a {
+    		width:100%;
+    		display:block;
+    		padding:4em 0.5em;
+    		box-sizing:border-box;
+    		border:2px solid rgba($color-text, 0.5);
+    		color: $color-text;
+    		&:hover {
+	    		background-color:$color-background-secondary;
+	    	}
+    	}
+    	
+    }
+ }
+
+ .animated-container {
+ 	animation-name: up-and-fade;
+    animation-duration: 0.25s;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: 1;
+    animation-direction: forward;
+ }
+
+

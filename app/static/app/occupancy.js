@@ -124,9 +124,9 @@ occupancyApp.controller('RoomsController', ['$scope', '$http', 'Authentication',
             var url = "/api/room/occupancy/" + $scope.formData.room + "/" + $scope.formData.date.split(" ").join("%20") + "/" + $scope.formData.type;
             console.log("making request to " + url);
             $http.get(url).then(function successCallback(response) {
-                console.log(response);
 
                 if (response.data.results.length > 0) {
+
                     var results = DataManagement.organiseData(response.data.results, $scope.formData.type);
 
                     // bind the values
@@ -134,23 +134,33 @@ occupancyApp.controller('RoomsController', ['$scope', '$http', 'Authentication',
                     // $scope.minValue = results["min"];
                     // $scope.avgValue = Math.round(results["avg"] * 1000) / 1000;
                     // $scope.totalValue = results["hours"][0][0].room_capacity;
+                    $scope.results = true;
 
                     // set the chart data
-                    $scope.data = [results["data"]];
+                    var resultsPercent = results["data"].map(function(i) {
+                      return DataManagement.convertToPercent(i);
+                    });
+                    $scope.data = [resultsPercent];
+                   
                     $scope.series = ['% occupied'];
+                    $scope.score = DataManagement.convertToPercent(results["hours"][0][0]["room_occupancy_score"]);
 
                     // build the labels
                     $scope.labels = results["data"].map(function(item, index) {
                         return "Hour " + index;
                     });
+
+                    $scope.options = {
+                        responsive: true
+                    }
+                    $scope.onClick = function(points, evt) {
+                        console.log(points, evt);
+                    };
+                } else {
+                  $scope.message = "No data available for " + $scope.formData.room + " on " + $scope.formData.date;
                 }
 
-                $scope.options = {
-                    responsive: true
-                }
-                $scope.onClick = function(points, evt) {
-                    console.log(points, evt);
-                };
+                
 
 
             }, function errorCallback(response) {
@@ -264,12 +274,24 @@ occupancyApp.controller('AuthController', ['$scope', '$location', 'Authenticatio
     }
 }]);
 
-occupancyApp.controller('RegisterController', ['$scope', 'Authentication', 'Permissions', function($scope, Authentication, Permissions) {
+occupancyApp.controller('RegisterController', ['$scope', 'Authentication', 'Permissions', 'Session', function($scope, Authentication, Permissions, Session) {
     // get possible permissions for a user
     Permissions.getPossiblePermissions().then(function(permissions) {
 
         $scope.permissions = permissions;
     });
+
+    if (!Session.user) {
+        Authentication.getLoggedInUser().then(function(data) {
+
+            Session.user = data;
+            // make the hasPermission function available to templates
+            $scope.hasPermission = Permissions.hasPermission;
+
+        });
+    } else {
+        $scope.hasPermission = Permissions.hasPermission;
+    }
 
 
     $scope.submit = function() {

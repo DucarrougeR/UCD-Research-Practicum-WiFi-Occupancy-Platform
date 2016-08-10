@@ -14,8 +14,8 @@
             </div>
             {% raw %}
             <div class="logged-status u-pull-right">
-                <div class="u-pull-left" ng-cloak ng-show="Authentication.user">{{ Authentication.user.email }}</div>
-                <ul class="u-pull-left" ng-show="Authentication.user">
+                <div class="u-pull-left" ng-cloak ng-show="Session.user">{{ Session.user.email }}</div>
+                <ul class="u-pull-left" ng-show="Session.user">
                     <li ><a ng-href="/#/logout">Logout</a></li>
                 </ul>
             </div>

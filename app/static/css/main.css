@@ -8,6 +8,39 @@ h1, h2, h3 {
 .text-heading {
   font-size: 1.2em; }
 
+.text-accent {
+  color: #199C7B; }
+
+@keyframes scale {
+  from {
+    -ms-transform: scale(0, 0);
+    /* IE 9 */
+    -webkit-transform: scale(0, 0);
+    /* Safari */
+    transform: scale(0, 0); }
+  to {
+    -ms-transform: scale(1, 1);
+    /* IE 9 */
+    -webkit-transform: scale(1, 1);
+    /* Safari */
+    transform: scale(1, 1); } }
+
+@keyframes up-and-fade {
+  from {
+    -ms-transform: translate(0, 50px);
+    /* IE 9 */
+    -webkit-transform: translate(0, 50px);
+    /* Safari */
+    transform: translate(0, 50px);
+    opacity: 0; }
+  to {
+    -ms-transform: translate(0, 0);
+    /* IE 9 */
+    -webkit-transform: translate(0, 0);
+    /* Safari */
+    transform: translate(0, 0);
+    opacity: 1; } }
+
 /*! normalize.css v4.1.1 | MIT License | github.com/necolas/normalize.css */
 /**
  * 1. Change the default font family in all browsers (opinionated).
@@ -555,6 +588,35 @@ textarea {
   background-color: #212122;
   color: #ddd; }
 
+.options-list {
+  width: 100%;
+  display: flex; }
+  .options-list__item {
+    width: 50%;
+    box-sizing: border-box;
+    animation-name: scale;
+    animation-duration: 0.5s;
+    animation-timing-function: ease-in-out;
+    animation-delay: 0s;
+    animation-iteration-count: 1;
+    animation-direction: forward; }
+    .options-list__item a {
+      width: 100%;
+      display: block;
+      padding: 4em 0.5em;
+      box-sizing: border-box;
+      border: 2px solid rgba(60, 62, 59, 0.5);
+      color: #3C3E3B; }
+      .options-list__item a:hover {
+        background-color: #F3F6F4; }
+
+.animated-container {
+  animation-name: up-and-fade;
+  animation-duration: 0.25s;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: 1;
+  animation-direction: forward; }
+
 /*
  * WTF, forms?
  * Released under MIT and copyright 2014 Mark Otto.
@@ -898,6 +960,12 @@ textarea {
   content: "";
   display: table;
   clear: both; }
+
+.u-shouty-text {
+  font-size: 5em; }
+
+.u-text-center {
+  text-align: center; }
 
 .label-inline {
   margin-right: 0.5em; }

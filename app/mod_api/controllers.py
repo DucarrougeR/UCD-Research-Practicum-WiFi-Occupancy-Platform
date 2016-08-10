@@ -23,9 +23,12 @@ mod_api = Blueprint('mod_api', __name__, url_prefix='/api')
 def hello():
     return jsonify("hello")
 
+
+
 @mod_api.route('/room/occupancy/<room>/')
 @mod_api.route('/room/occupancy/<room>/<time>/<type>')
 def occupancy_data(room, time=None, type=None):
+    results = None
     if time:
         time = " ".join(time.split("%20"))
 
@@ -45,24 +48,27 @@ def occupancy_data(room, time=None, type=None):
         results = Rooms.select(Rooms, Counts).join(Counts, on=join_cond).where(
             (Rooms.room_number == room)).naive()
 
-
+    print(results)
     results_list = []
+    if results:
+        for result in results:
+            # gets the fields of the result set
+            # fields = Counts._meta.sorted_field_names + Rooms._meta.sorted_field_names
+            fields = ["counts_room_number", "counts_time", "counts_module_code",
+                      "counts_predicted", "counts_predicted_is_occupied", "room_capacity", "room_occupancy_score"]
+            results_dict = {}
 
-    for result in results:
-        # gets the fields of the result set
-        # fields = Counts._meta.sorted_field_names + Rooms._meta.sorted_field_names
-        fields = ["counts_room_number", "counts_time", "counts_module_code",
-                  "counts_predicted", "counts_predicted_is_occupied", "room_capacity"]
-        results_dict = {}
+            for field in fields:
+                # creates a dictionary of each result
+                results_dict[field] = getattr(result, field)
+                # print(results_dict)
+                if type == "binary":
+                    # if binary data, transform to 1 or 0
+                    pass
+            results_list.append(results_dict)
 
-        for field in fields:
-            # creates a dictionary of each result
-            results_dict[field] = getattr(result, field)
-            # print(results_dict)
-            if type == "binary":
-                # if binary data, transform to 1 or 0
-                pass
-        results_list.append(results_dict)
+
+
 
 
     return jsonify({"results" : results_list})
