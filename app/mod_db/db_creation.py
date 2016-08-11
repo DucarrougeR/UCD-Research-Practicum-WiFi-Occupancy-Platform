@@ -1,6 +1,5 @@
 #Romain Ducarrouge
-from flask import Flask
-from theApp import app 
+from flask import Flask 
 
 def init_db():
 	db = get_db()
@@ -18,5 +17,4 @@ def initdb_command():
 '''sources
 engine creation: http://docs.sqlalchemy.org/en/latest/core/engines.html
 video for SQLAlchemy https://www.youtube.com/watch?v=f_-ApViOv20
-GitHub repo for Flaskr tutorial to flask and sql
 '''
