@@ -4,34 +4,25 @@ var occupancyApp = angular.module('occupancyApp', [
     'ngRoute',
     'pikaday',
     'chart.js',
-    'ngFileUpload'
+    'ngFileUpload',
 ]);
 
 occupancyApp.controller('TopbarController', ['$scope', 'Authentication', 'Session', function($scope, Authentication, Session) {
-    console.log('TopbarController');
-    $scope.user = Session.user;
-    $scope.$watch('user', function() {
-        console.log("watching topbar");
-        console.log(Session.user);
-        if (Session.user) {
-          $scope.email = Session.user.email;
-        } else {
-          $scope.email = null;
-        } 
-    });
+    
+    
 
     // console.log("checking");
-    // if (!Session.user) {
-    //     console.log("checking auth");
-    //     Authentication.getLoggedInUser().then(function(data) {
+    if (!Session.user) {
+        console.log("checking auth");
+        Authentication.getLoggedInUser().then(function(data) {
 
-    //         Session.user = data;
-    //         $scope.user = data;
+            Session.user = data;
+            $scope.user = data;
 
-    //     });
-    // } else {
-    //   $scope.user = Session.user;
-    // }
+        });
+    } else {
+      $scope.user = Session.user;
+    }
 
     
 }]);
@@ -122,7 +113,7 @@ occupancyApp.controller('RoomsController', ['$scope', '$http', 'Authentication',
         if ($scope.formData.room && $scope.formData.date && $scope.formData.type) {
             // formatting the URL
             var url = "/api/room/occupancy/" + $scope.formData.room + "/" + $scope.formData.date.split(" ").join("%20") + "/" + $scope.formData.type;
-            console.log("making request to " + url);
+            
             $http.get(url).then(function successCallback(response) {
 
                 if (response.data.results.length > 0) {
@@ -156,7 +147,15 @@ occupancyApp.controller('RoomsController', ['$scope', '$http', 'Authentication',
                     $scope.onClick = function(points, evt) {
                         console.log(points, evt);
                     };
+
+                    // for use in display messages
+                    $scope.room = $scope.formData.room;
+                    $scope.date = $scope.formData.date;
+                    $scope.type = $scope.formData.type;
+
+
                 } else {
+                  $scope.results = false;
                   $scope.message = "No data available for " + $scope.formData.room + " on " + $scope.formData.date;
                 }
 

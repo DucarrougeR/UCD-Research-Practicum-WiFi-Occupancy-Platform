@@ -191,4 +191,21 @@ occupancyApp.config(['$locationProvider' ,'$routeProvider', '$logProvider', 'Cha
       datasetFill: false
     });
   }
-  ]);
+  ]).run(function($rootScope, $location, Session, Authentication) {
+    // this runs before any routing
+    $rootScope.$on( "$routeChangeStart", function(event, next, current) {
+      
+      if (!Session.user) {
+        
+        Authentication.getLoggedInUser().then(function(user) {
+
+          Session.user = user;
+          $rootScope.user = user;
+          
+        });
+      } else {
+        
+        $rootScope.user = Session.user;
+      }
+    });
+  });

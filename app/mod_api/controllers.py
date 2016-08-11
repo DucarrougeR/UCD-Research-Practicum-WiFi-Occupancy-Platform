@@ -23,6 +23,11 @@ mod_api = Blueprint('mod_api', __name__, url_prefix='/api')
 def hello():
     return jsonify("hello")
 
+@mod_api.route('/module/<module>')
+def module_data(module):
+
+
+    return jsonify(get_module_results(module))
 
 
 @mod_api.route('/room/occupancy/<room>/')

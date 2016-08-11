@@ -32,7 +32,7 @@
         {{ message }}
     </div>
     <div class="chart container content-container row" ng-show="results">
-        <h2 class="u-text-center">Showing {{ formData.type }} results for {{ formData.room }} on {{ formData.date }}</h2>
+        <h2 class="u-text-center">Showing {{ type }} results for {{ room }} on {{ date }}</h2>
         <div class="column column-mid-4">
             <div class="column__item u-text-center">
                 <h3>Occupancy Score</h3>
@@ -40,9 +40,7 @@
                 <br>
                 <small>Based on percentage occupancy between 9am and 5pm on average</small>
             </div>
-            <!-- <div class="column__item">
-                Normally: <span class="callout-text"></span>
-            </div> -->
+            
         </div>
         <div class="column column-mid-8">
         <canvas id="line" class="chart chart-line" chart-data="data" chart-labels="labels" chart-legend="true" chart-series="series" chart-click="onClick" style="margin:auto;height:200px"></canvas>

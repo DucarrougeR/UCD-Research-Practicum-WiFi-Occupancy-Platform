@@ -18,15 +18,12 @@ class Classes(BaseModel):
     classes_module_code = CharField(null=False)
     classes_size = CharField(null=False)
     classes_room_number = CharField(null=False)
-    classes_time = IntegerField(null=False)
+    classes_time = CharField(null=False)
     classes_attendance_score = FloatField(null=False)
 
-    def __init__(self, room, time, module, size, **kwargs):
+    def __init__(self, **kwargs):
         super(BaseModel, self).__init__(**kwargs)
-        self.classes_room_number = room
-        self.classes_time = time
-        self.classes_module_code = module
-        self.classes_size = size
+
 
     class Meta:
         primary_key = CompositeKey('classes_module_code', 'classes_time')
