@@ -62,6 +62,10 @@ occupancyApp.service('DataManagement', [function() {
             };
             console.log(returnResults);
             return returnResults;
+        },
+
+        convertToPercent: function(value) {
+            return Math.round(value*10000)/100;
         }
     }
 

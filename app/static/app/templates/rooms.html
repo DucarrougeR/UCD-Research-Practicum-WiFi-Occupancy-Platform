@@ -1,14 +1,12 @@
 <nav class="column column-mid-2 full-height sidebar sidebar--fixed">
     <ul class="nav-list nav-list--main">
-        <li><a ng-href="/dashboard">Dashboard</a></li>
-        <li><a ng-href="/upload" >Upload logs</a></li>
-        <li><a ng-href="/add/user" ng-show="hasPermission('add-user')">Add a user</a></li>
-        <li><a ng-href="/add/class" ng-show="hasPermission('add-class')">Add a class</a></li>
-        <li><a ng-href="/add/ground-truth" ng-show="hasPermission('add-truth')">Add ground truth</a></li>
+        <li><a ng-href="#/dashboard">Dashboard</a></li>
+        <li><a ng-href="#/upload" ng-show="hasPermission('add-class') || hasPermission('add-truth') || hasPermission('add-logs')">Upload Data</a></li>
+        <li><a ng-href="#/add/user" ng-show="hasPermission('add-user')">Add a user</a></li>
     </ul>
 </nav>
 <div class="column column-mid-10 column-mid-offset-2 main-content">
-    <div class="container content-container row container--occupancy-form">
+    <div class="container content-container row">
         <form class="form-inline" ng-submit="submit()">
             <div>
                 <label class="label-inline"><input type="radio" ng-model="formData.type" value="binary">Binary</label>
@@ -16,7 +14,7 @@
                 <hr>
             </div>
             <label class="column-mid-5 column">
-                <span class="text-accent">Select Room </span><br>
+                <span >Select Room </span><br>
                 <select aria-label="Select a room" ng-model="formData.room">
                     <option value="{{ room.room_number }}" ng-repeat="room in rooms">{{ room.room_number }}</option>
                     
@@ -24,27 +22,29 @@
                 
             </label>
             <div class="column-mid-6 column">
-                <span class="text-accent">Select a date </span><br>
+                <span >Select a date </span><br>
                 <input pikaday="example.myPickerObject" format="DD/MM/YYYY" ng-model="formData.date" >
             </div>
             <input type="submit" class="submit-button" value = "Get Data >">
         </form>
     </div>
-    <h1>Showing results for ROOM (DAY or ALL TIME)</h1>
-    <div class="chart container content-container row">
+    <div class="container content-container row" ng-show="!results">
+        {{ message }}
+    </div>
+    <div class="chart container content-container row" ng-show="results">
+        <h2 class="u-text-center">Showing {{ type }} results for {{ room }} on {{ date }}</h2>
         <div class="column column-mid-4">
-            <div class="column__item">
-                <h2>Score</h2>
-                SOME VALUE
+            <div class="column__item u-text-center">
+                <h3>Occupancy Score</h3>
+                <span class="u-shouty-text u-text-accent">{{ score }}</span>
+                <br>
                 <small>Based on percentage occupancy between 9am and 5pm on average</small>
             </div>
-            <div class="column__item">
-                Now:<br>
-                Normally: <span class="callout-text"></span>
-            </div>
+            
         </div>
         <div class="column column-mid-8">
         <canvas id="line" class="chart chart-line" chart-data="data" chart-labels="labels" chart-legend="true" chart-series="series" chart-click="onClick" style="margin:auto;height:200px"></canvas>
         </div>
     </div>
+
 </div>

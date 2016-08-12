@@ -8,14 +8,15 @@
 <body>
     <div class="full-height">
         
-        <div class="top-bar u-clearfix " ng-controller="TopbarController">
+        <div class="top-bar u-clearfix " >
             <div class="logo u-pull-left">
                 Ouranos
             </div>
             {% raw %}
             <div class="logged-status u-pull-right">
-                <div class="u-pull-left" ng-cloak ng-show="Authentication.user">{{ Authentication.user.email }}</div>
-                <ul class="u-pull-left" ng-show="Authentication.user">
+                <!-- <logged-in-user></logged-in-user> -->
+                <div class="u-pull-left" ng-show="user">{{ user.email }}</div>
+                <ul class="u-pull-left" ng-show="user">
                     <li ><a ng-href="/#/logout">Logout</a></li>
                 </ul>
             </div>

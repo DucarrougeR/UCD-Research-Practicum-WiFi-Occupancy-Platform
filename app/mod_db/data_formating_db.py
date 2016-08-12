@@ -160,6 +160,8 @@ Rooms_DB.loc[Rooms_DB.room == "B1.09", 'campus'] = "Belfield"
 Rooms_DB.columns = ["room_number", "room_building", "room_campus", "room_capacity"]
 # using np.nan here since to_sql function will automatically write nan as NULL
 Rooms_DB['room_occupancy_score'] = np.nan
+Rooms_DB['room_rssi_baseline'] = np.nan
+Rooms_DB['room_audio_baseline'] = np.nan
 
 ##########################################################################
 Counts_DB = pd.read_csv('data/clean/DataForCountsTable.csv')
