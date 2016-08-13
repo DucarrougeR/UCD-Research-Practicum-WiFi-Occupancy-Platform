@@ -62,7 +62,7 @@ def login():
                     print(current_user)
                     return "valid user"
                 else:
-                    return "error logging in"
+                    return "error logging in", 500
             else:
                 flash(strings.ERROR_LOGIN)
                 return render_template('auth/login.html', form=form)

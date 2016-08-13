@@ -28,7 +28,6 @@ def home_index():
 # development use
 @app.route('/static/<path:path>')
 def send_static(path):
-    print(path)
     return send_from_directory(url_for("static"), path)
 
 # Sample HTTP error handling
