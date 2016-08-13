@@ -48,6 +48,11 @@ class APITests(unittest.TestCase):
     def parse_date_test(self):
         assert len(app.mod_api.models.parse_date("Mon Jul 04 2016")) == 4
 
+    def allowed_file_test(self):
+        self.assertEqual(app.mod_api.models.allowed_file("sample.csv"), True)
+        self.assertEqual(app.mod_api.models.allowed_file("hello.docx"), False)
+
+
 
 
 class DataBaseTests(unittest.TestCase):

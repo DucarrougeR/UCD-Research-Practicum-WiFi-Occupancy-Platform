@@ -25,8 +25,6 @@ def hello():
 
 @mod_api.route('/module/<module>')
 def module_data(module):
-
-
     return jsonify(get_module_results(module))
 
 
