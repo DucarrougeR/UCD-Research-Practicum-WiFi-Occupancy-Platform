@@ -1,24 +1,28 @@
 # Romain Ducarrouge
 
 ''' Generating Classes_Attendance_Score and Room_Occupancy_Score '''
+import config
 import sqlite3
 import pandas as pd
 import numpy as np
 
 # Creates a direct SQL connection to database.
-con = sqlite3.connect("analysis.db")    
+con1 = sqlite3.connect("analysis.db")    
 
 # Reads the database at xx:15 for every hour (corresponding to the time the ground truth data was collected). 
-df = pd.read_sql_query("SELECT * from Max_table", con)
+df = pd.read_sql_query("SELECT * from Max_table", con1)
 
+# Generate a new column, to use for generating score
 df['room_allocation_score'] = np.nan
 df['room_allocation_score'] = (df['counts_size']/df['counts_capacity'])*100
 
+# Removing all rows without score
+df = df.dropna(subset=['room_allocation_score'])
 
-print(df.head(10))
+# Connect to Database.db to save the table
+con = sqlite3.connect(config.DATABASE['name'])
+cur = con.cursor()
 
+df.to_sql('Allocation_Score', con, flavor='sqlite', if_exists='replace', index=False, chunksize=None)
 
-#room_score = df[df["counts_predicted_is_occupied"] == 1.0]["counts_predicted_is_occupied"].count() / df["counts_predicted_is_occupied"].count()
-# Records the score in the database. 
-#query = Rooms.update(room_occupancy_score = room_score).where(Rooms.room_number == room)
-#query.execute()
+print("The room allocation scores were generated and saved in table 'Allocation_Score'")
