@@ -1,3 +1,5 @@
+import openpyxl
+from openpyxl.utils import get_column_letter
 # no tests
 def timetable_clean(xlsx, outf):
     """ Takes a raw timetable XLSX file, formats and cleans it and saves it to CSV."""

@@ -3,8 +3,7 @@ NB: Some operations are hard-coded to the original dataset, particularly with re
 to time. This can be changed at a later point.
 """
 
-import zipfile, os, re, csv, openpyxl
-from openpyxl.utils import get_column_letter
+import zipfile, os, re, csv
 
 # no tests yet
 def unzip(zip_path, room_path=None):
