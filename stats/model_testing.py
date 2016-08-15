@@ -572,10 +572,10 @@ def binary_model():
 pd.options.mode.chained_assignment = None
 
 #fit_15()
-#fit_15_outliers()
+fit_15_outliers()
 #assoc_vs_authen()
 #time_window()
-agg_count()
+#agg_count()
 #room_model()
 #module_model()
 #binary_model()

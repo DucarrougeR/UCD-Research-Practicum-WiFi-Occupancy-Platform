@@ -45,7 +45,7 @@ On Linux, some packages (such as Pandas and Sci-kit learn) may need to installed
 
 To install Ouranos:
 ```sh
-$ git clone [git-repo-url] ouranos
+$ git clone [git-url] ouranos
 ```
 
 Run the install script, which will prompt you if you need to install additional technologies
@@ -87,7 +87,7 @@ MIT
 [//]: # (These are reference links used in the file. http://stackoverflow.com/questions/4823468/store-comments-in-markdown-syntax)
 
    [Python 3.5.x]: <https://docs.python.org>
-   [git-repo-url]: <https://github.com/lukekearney/research-practicum/>
+   [git-url]: <https://github.com/lukekearney/research-practicum>
    [Flask]: <http://flask.pocoo.org/>
    [node.js]: <http://nodejs.org>
    [jQuery]: <http://jquery.com>
