@@ -1,32 +1,42 @@
-<nav class="column column-mid-2 full-height sidebar sidebar--fixed">
-    <ul class="nav-list nav-list--main">
+<nav class="column column-12 column-mid-2 full-height-mid sidebar sidebar--fixed">
+    <button class="navigation-toggle" ng-click="toggleNavigation()">Menu</button>
+    <ul id="main-nav" class="nav-list nav-list--main closed">
         <li><a ng-href="#/dashboard">Dashboard</a></li>
         <li><a ng-href="#/upload" ng-show="hasPermission('add-class') || hasPermission('add-truth') || hasPermission('add-logs')">Upload Data</a></li>
         <li><a ng-href="#/add/user" ng-show="hasPermission('add-user')">Add a user</a></li>
     </ul>
-    
 </nav>
-<div class="column column-mid-10 column-mid-offset-2 main-content animated-container">
-    <h1>UPLOAD</h1>
+<div class="column column-12 column-mid-10 column-mid-offset-2 main-content animated-container">
+    <div class="title-container">
+        <h1>Upload</h1>
+        <hr>
+    </div>
     <div ng-controller="UploadController">
         <form>
-            <label ng-show="hasPermission('add-logs')">
-                <input type="radio" ng-model="filetype" value="wifi" > WiFi Logs
-            </label>
-            <label ng-show="hasPermission('add-class')">
-                <input type="radio" ng-model="filetype" value="timetable" > Timetable
-            </label>
-            <label ng-show="hasPermission('add-truth')">
-                <input type="radio" ng-model="filetype" value="truth" > Ground Truth
-            </label>
+            <div>
+                <label class="label-inline" ng-show="hasPermission('add-logs')">
+                    <input type="radio" ng-model="filetype" value="wifi" > WiFi Logs
+                </label>
+                <label class="label-inline" ng-show="hasPermission('add-class')">
+                    <input type="radio" ng-model="filetype" value="timetable" > Timetable
+                </label>
+                <label class="label-inline" ng-show="hasPermission('add-truth')">
+                    <input type="radio" ng-model="filetype" value="truth" > Ground Truth
+                </label>
+            </div>
             <div ng-show="filetype" ngf-drop ngf-select="upload()" ng-model="files" class="drop-box" ngf-drag-over-class="'dragover'" ngf-multiple="true" ngf-allow-dir="true" accept="application/zip,.zip,zip,.csv,csv" ngf-pattern="'application/zip,.zip,zip,.csv,csv'">Drop files here to upload</div>
             <div ngf-no-file-drop>File Drag/Drop is not supported for this browser</div>
-	        Files:
-	        <ul>
-	            <li ng-repeat="f in files" style="font:smaller">{{f.name}} {{f.$error}} {{f.$errorParam}}</li>
-	        </ul>
-	        Upload Log:
-	        <pre>{{log}}</pre>
+            <div ng-show="progress">
+    	        Files:
+    	        <ul>
+    	            <li ng-repeat="f in files" style="font:smaller">{{f.name}} {{f.$error}} {{f.$errorParam}}</li>
+    	        </ul>
+    	        <progress max="100" value="{{ progress }}">
+                    <div class="progress-bar">
+                        <span style="width: {{ progress }}%;"></span>
+                    </div>
+                </progress>
+            </div>
         </form>
         
     </div>

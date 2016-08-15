@@ -1,28 +1,33 @@
-<nav class="column column-mid-2 full-height sidebar sidebar--fixed">
-    <ul class="nav-list nav-list--main">
+<nav class="column column-12 column-mid-2 full-height-mid sidebar sidebar--fixed">
+    <button class="navigation-toggle" ng-click="toggleNavigation()">Menu</button>
+    <ul id="main-nav" class="nav-list nav-list--main closed">
         <li><a ng-href="#/dashboard">Dashboard</a></li>
         <li><a ng-href="#/upload" ng-show="hasPermission('add-class') || hasPermission('add-truth') || hasPermission('add-logs')">Upload Data</a></li>
         <li><a ng-href="#/add/user" ng-show="hasPermission('add-user')">Add a user</a></li>
     </ul>
 </nav>
-<div class="column column-mid-10 column-mid-offset-2 main-content animated-container">
+<div class="column column-12 column-mid-10 column-mid-offset-2 main-content animated-container">
     <div class="container content-container row">
-        <div class="message-banner {{ type }}" ng-show="message">{{ message }}</div>
-        <form class="form-inline" ng-submit="submit()">
-            <label class="column-mid-5 column">
-                <span >User Email</span>
-                <br>
-                <input type="email" ng-model="email" placeholder="user@example.com">
-            </label>
-            <label class="column-mid-5 column">
-                <span >Permission level</span>
-                <br>
-                
-                <select ng-model="permission" ng-show="permissions">
-                  <option ng-repeat="p in permissions" value="{{ p }}">{{ p }}</option>
-                </select>
-            </label>
-            <input type="submit" class="submit-button" value="Add user">
-        </form>
+        <div class="login-modal">
+            <div class="message-banner {{ type }}" ng-show="message">{{ message }}</div>
+            <form class="form-inline" ng-submit="submit()">
+                <label >
+                    <span>User Email</span>
+                    <br>
+                    <input type="email" ng-model="email" placeholder="user@example.com">
+                    <span class="text__underline"></span>
+                </label><br>
+                <label>
+                    <span>Permission level</span>
+                    <br>
+                    <select ng-model="permission" ng-show="permissions">
+                        <option ng-repeat="p in permissions" value="{{ p }}">{{ p }}</option>
+                    </select>
+                </label><br><br>
+                <div class="clearfix">
+                    <input type="submit" class="submit-button u-pull-right" value="Add user">
+                </div>
+            </form>
+        </div>
     </div>
 </div>

@@ -1,0 +1,21 @@
+body,html {
+	height:100%;
+	color:$color-text;
+}
+
+nav,div {
+	//border:1px dashed #000;
+}
+
+button, .button {
+	background-color:$color-background-secondary;
+	border: 1px solid $color-text;
+	border-radius:5px;
+	padding:0.5em;
+
+}
+
+a {
+	color: #41707B;
+	color: $color-text-accent;
+}

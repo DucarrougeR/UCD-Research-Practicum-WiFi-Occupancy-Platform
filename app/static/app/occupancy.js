@@ -244,6 +244,7 @@ occupancyApp.controller("UploadController", ['$scope', 'Upload', '$timeout', 'Pe
                             $scope.log = 'progress: ' + progressPercentage +
                                 '% ' + evt.config.data.file.name + '\n' +
                                 $scope.log;
+                            $scope.progress = progressPercentage;
                         });
 
                     } else {

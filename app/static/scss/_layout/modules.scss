@@ -1,133 +1,217 @@
 @import "navigation";
-
 .sidebar {
-	border-right:1px solid rgba($color-text,0.25);
-	margin-top:3em;
-	background:$color-background;
-	z-index:4000;
-	margin-left:1em;
-	&--fixed {
-		position: fixed;
-		top:0;
-		left:0;
-	}
+    border-bottom: 1px solid $color-border;
+    padding-top: 0.5em;
+    padding-bottom: 0.75em;
+    @media screen and (min-width: $breakpoint-mid) {
+        padding-top: 0;
+        padding-bottom: 0;
+        margin-top: 3em;
+        border-right: 1px solid rgba($color-text, 0.25);
+        border-bottom: none;
+    }
+    background:$color-background;
+    z-index:4000;
+    &--fixed {
+        position: fixed;
+        top: 0;
+        left: 0;
+    }
 }
 
 .top-bar {
-	background:$color-background;
-	z-index:4001;
-	position:fixed;
-	top:0;
-	left:0;
-	height:3em;
-	box-sizing:border-box;
-	padding:1em;
-	width:100%;
-	box-shadow: 0px 2px 2px rgba(0,0,0,0.5);
+    background: $color-background-tertiary;
+    z-index: 4001;
+    margin-top: 3.5em;
+    color: $color-text-secondary;
+    @media screen and (min-width: $breakpoint-mid) {
+        position: fixed;
+        top: 0;
+        left: 0;
+        margin-top: 0;
+    }
+    height:3em;
+    box-sizing:border-box;
+    padding:1em;
+    width:100%;
+    // box-shadow: 0px 2px 2px rgba(0,0,0,0.5);
+    ul {
+        list-style: none;
+        margin-top: 0;
+    }
+}
+
+.logo {
+    margin-top: -0.5em;
 }
 
 .main-content {
-	margin-top:3em;
+    @media screen and (min-width: $breakpoint-mid) {
+        margin-top: 3em;
+    }
+    text-align:center;
 }
 
+
+
 .content-container {
-	border-bottom:1px solid rgba($color-text, 0.25);
+    border-bottom: none;
 }
 
 .drop-box {
-	width:100%;
-	padding:5em;
-	box-sizing:border-box;
-	text-align:center;
-	background-color: $color-background-secondary;
-	border: 5px dashed rgba($color-text-accent, 0.25);
+    width: 100%;
+    padding: 5em;
+    box-sizing: border-box;
+    text-align: center;
+    background-color: $color-background-secondary;
+    border: 5px dashed rgba($color-text-accent, 0.25);
 }
 
 .bg-secondary {
-	background-color: $color-background-secondary;
+    background-color: $color-background-secondary;
 }
 
 .stats-list {
-	&--horizontal {
-		border-right:1px solid rgba($color-text, 0.25);
-		box-sizing:border-box;
-		&:last-of-type {
-			border-right: none;
-		}
-	}
-
-	&__values {
-		font-size:1.5em;
-		color:$color-text-accent;
-	}
-
-
-}
-
-.submit-button {
-	color: $color-text;
-	border:none;
-	background-color: $color-success;
-	padding: 0.5em 0.7em;
-	border-radius:5px;
-	// margin-top:-1em;
-	box-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+    &--horizontal {
+        border-right: 1px solid rgba($color-text, 0.25);
+        box-sizing: border-box;
+        &:last-of-type {
+            border-right: none;
+        }
+    }
+    &__values {
+        font-size: 1.5em;
+        color: $color-text-accent;
+    }
 }
 
 .login-modal {
-	margin:auto;
-	padding: 1em;
-	border:1px solid rgba($color-text, 0.25);
-	margin-top: 5em;
-	max-width: 300px;
-	text-align:center;
+    margin: auto;
+    padding: 1em;
+    border: 1px solid rgba($color-text, 0.25);
+    
+    max-width: 300px;
+    text-align: center;
+    text-align:left;
 }
 
 .container--occupancy-form {
-	background-color: $color-background-tertiary;
-	color:$color-text-secondary;
+    background-color: $color-background-tertiary;
+    color: $color-text-secondary;
 }
 
 .options-list {
-	width:100%;
-	@media screen and (min-width:$breakpoint-mid) {
-		 display:flex;
-	}
-   
-    &__item {
-    	width:100%;
-    	@media screen and (min-width:$breakpoint-mid){
-    		width:50%;
-    	}
-    	
-    	box-sizing:border-box;
-    	animation-name:scale;
-    	animation-duration: 0.5s;
-	    animation-timing-function: ease-in-out;
-	    animation-delay: 0s;
-	    animation-iteration-count: 1;
-	    animation-direction: forward;
-    	a {
-    		width:100%;
-    		display:block;
-    		padding:4em 0.5em;
-    		box-sizing:border-box;
-    		border:2px solid rgba($color-text, 0.5);
-    		color: $color-text;
-    		&:hover {
-	    		background-color:$color-background-secondary;
-	    	}
-    	}
-    	
+    width: 100%;
+    @media screen and (min-width: $breakpoint-mid) {
+        display: flex;
     }
- }
+    &__item {
+        width: 100%;
+        @media screen and (min-width: $breakpoint-mid) {
+            width: 50%;
+        }
+        box-sizing:border-box;
+        animation-name:scale;
+        animation-duration: 0.5s;
+        animation-timing-function: ease-in-out;
+        animation-delay: 0s;
+        animation-iteration-count: 1;
+        animation-direction: forward;
+        a {
+            width: 100%;
+            display: block;
+            background-color: $color-background-secondary;
+            padding: 4em 0.5em;
+            box-sizing: border-box;
+            border: 2px solid rgba($color-text, 0.5);
+            color: $color-text;
+            &:hover {
+                background-color: $color-text-accent;
+                color: $color-text-secondary;
+            }
+        }
+    }
+}
 
- .animated-container {
- 	animation-name: up-and-fade;
+.title-container {
+    display: inline-block;
+    margin: auto;
+    h1 {
+        font-size: 1.2em;
+        margin: 0;
+        padding-top: 0.75em;
+        text-align: center;
+    }
+    hr {
+        width: 50%;
+        border-color: $color-background-secondary;
+    }
+}
+
+.animated-container {
+    animation-name: up-and-fade;
     animation-duration: 0.25s;
     animation-timing-function: ease-in-out;
     animation-iteration-count: 1;
     animation-direction: forward;
- }
+}
+
+// progress bars
+progress[value] {
+    /* Reset the default appearance */
+    // -webkit-appearance: none;
+    // -moz-appearance: none;
+    // appearance: none;
+    /* Get rid of default border in Firefox. */
+    border: none;
+    /* Dimensions */
+    width: 100%;
+    height: 20px;
+    /* For IE10 */
+    color: blue;
+    
+    background-color: $color-background-secondary;
+    border-radius: 2px;
+    background-size: 35px 20px, 100% 100%, 100% 100%;
+}
+
+progress[value]::-webkit-progress-value {
+    background-color:$color-text-accent;
+	border-radius: 2px;
+	background-size: 35px 20px,
+	100% 100%,
+	100% 100%;
+
+}
+progress[value]::-webkit-progress-bar {
+	
+    background-color: $color-background-secondary;
+    border-radius: 2px;
+    background-size: 35px 20px, 100% 100%, 100% 100%;
+}
+
+progress[value]::-moz-progress-bar {
+	background-color:$color-text-accent;
+	border-radius: 2px;
+	background-size: 35px 20px,
+	100% 100%,
+	100% 100%;
+}
 
 
+
+.progress-bar {
+    background-color: whiteSmoke;
+    border-radius: 2px;
+    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.25) inset;
+    width: 250px;
+    height: 20px;
+    position: relative;
+    display: block;
+}
+.progress-bar > span {
+    background-color: blue;
+    border-radius: 2px;
+    display: block;
+    text-indent: -9999px;
+}

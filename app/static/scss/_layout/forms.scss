@@ -1,6 +1,46 @@
 .label-inline {
-	margin-right:0.5em;
-	input {
-		margin-right:0.25em;
-	}
+    margin-right: 0.5em;
+    input {
+        margin-right: 0.25em;
+    }
 }
+
+.submit-button {
+    color: $color-text-secondary;
+    
+    background-color: $color-text-accent;
+    
+}
+
+.text__underline {
+    -webkit-transition: width 0.2s;
+    /* Safari */
+    transition: width 0.2s;
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    -ms-box-sizing: border-box;
+    -o-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    background-color: $color-text-accent;
+    width: 0;
+    height: 0.15em;
+    display: block;
+    
+}
+
+input[type=text], input[type=password], input[type=email] {
+    width: 100%;
+    background-color:$color-background-secondary;
+    border: none;
+    padding: 0.5em 0.25em;
+
+    &:focus {
+    	outline:none;
+    }
+    &:focus + .text__underline {
+        width: 100%;
+        
+    }
+}
+
+

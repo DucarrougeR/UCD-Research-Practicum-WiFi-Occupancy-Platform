@@ -3,12 +3,15 @@
 	margin:0;
 	padding:0;
 	padding-top:1em;
-	padding-right:1em;
+	
+	width:100%;
 	li {
+
 		//border-top:1px solid rgba($color-text, 0.25);
 		a {
 			color:$color-text;
 			display:block;
+
 			text-align:right;
 			font-family: $text-heading;
 			text-transform: uppercase;
@@ -21,6 +24,7 @@
 		// 	border-bottom:1px solid rgba($color-text, 0.25);
 		// }
 	}
+
 	
 }
 
@@ -31,8 +35,16 @@
 }
 
 .nav-list--main {
+	li {
+		border-bottom:1px solid $color-border;
+		&:last-of-type {
+			border-bottom:none;
+		}
+	}
 	li a {
 		padding:0.75em 1em;
+		text-decoration:none;
+		
 	}
 }
 
@@ -46,6 +58,14 @@
 		display:block;
 	}
 	
+}
+
+.navigation-toggle {
+	float:right;
+	margin-right:1em;
+	@media screen and (min-width:$breakpoint-mid) {
+		display:none;
+	}
 }
 
 

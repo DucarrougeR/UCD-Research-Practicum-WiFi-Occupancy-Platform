@@ -1,11 +1,12 @@
-<div class="container content-container row">
+<div class="container content-container row main-content full-height">
     <div class="login-modal">
     	<div class="error-banner" ng-show="error">{{ error }}</div>
         <form ng-submit="submit()">
-            <label>Email    <br><input type="text" ng-model="email" value="admin@admin.com"></label><br>
-            <hr>
-            <label>Password<br><input type="password" ng-model="password" ></label> <br><br>
-            <input type="submit">
+            <label>Email    <br><input type="text" ng-model="email" value="admin@admin.com"><span class="text__underline"></span></label><br>
+            
+            <label>Password<br><input type="password" ng-model="password" ><span class="text__underline"></span></label> <br><br>
+            <div class="clearfix">
+            <input class="u-pull-right button submit-button" type="submit" value="Login"></div>
         </form>
     </div>
 </div>
