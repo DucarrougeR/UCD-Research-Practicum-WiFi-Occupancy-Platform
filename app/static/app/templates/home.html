@@ -1,17 +1,18 @@
-<nav class="column column-mid-2 full-height sidebar sidebar--fixed">
-    <ul class="nav-list nav-list--main">
+<nav class="column column-12 column-mid-2 full-height-mid sidebar sidebar--fixed">
+    <button class="navigation-toggle" ng-click="toggleNavigation()">Menu</button>
+    <ul id="main-nav" class="nav-list nav-list--main closed">
         <li><a ng-href="#/dashboard">Dashboard</a></li>
         <li><a ng-href="#/upload" ng-show="hasPermission('add-class') || hasPermission('add-truth') || hasPermission('add-logs')">Upload Data</a></li>
         <li><a ng-href="#/add/user" ng-show="hasPermission('add-user')">Add a user</a></li>
     </ul>
 </nav>
-<div class="column column-mid-10 column-mid-offset-2 main-content">
+<div class="column column-12 column-mid-10 column-mid-offset-2 main-content">
     <div class="options-list">
-        <div class="column-mid-6 u-text-center options-list__item">
+        <div class="column-12 column-mid-6 u-text-center options-list__item">
             <h3 class="display-frame__title u-text-center"><a href="#/rooms">View data by Room</a></h3>
             
         </div>
-        <div class="column-mid-6 u-text-center options-list__item">
+        <div class="column-12 column-mid-6 u-text-center options-list__item">
             <h3 class="display-frame__title u-text-center"><a href="#/modules">View data by Module</a></h3>
             
         </div>
