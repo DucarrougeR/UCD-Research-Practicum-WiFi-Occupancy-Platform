@@ -7,7 +7,7 @@ def monitor(room):
     """
 
     # Calls Bash to generate the CSV file and print headings. 
-    filename = os.popen('dir="data/"; now=$(date "+%d-%m-%Y-%H:%M:%S"); format=".csv"; filename=$dir$1$now$format; echo $filename').read().strip()
+    filename = os.popen('dir="data/"; now=$(date "+%d-%m-%Y-%H-%M-%S"); format=".csv"; filename=$dir$1$now$format; echo $filename').read().strip()
     cmd = 'printf "room,date,month,year,time,face" >> "{0}"'.format(filename)
     os.system(cmd)
 

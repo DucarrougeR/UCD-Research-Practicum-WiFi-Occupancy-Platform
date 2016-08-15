@@ -3,7 +3,6 @@
 import sqlite3
 import pandas as pd
 import numpy as np
-from scipy.stats.mstats import mode
 
 
 DFinal = pd.read_csv("data/clean/FullyMergedDataframe.csv")

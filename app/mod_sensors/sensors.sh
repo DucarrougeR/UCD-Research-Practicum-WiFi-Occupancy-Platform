@@ -1,7 +1,7 @@
 # Writes a CSV file containing RSSI readings from the wlan0 interface
 # and the maximum amplitude in a recorded wav file in 30-second intervals. 
 # Takes 1 argument, which should be a room number, e.g., B002
-dir="data/"; now=$(date "+%d-%m-%Y-%H:%M:%S"); format=".csv"; filename=$dir$1$now$format 
+dir="data/"; now=$(date "+%d-%m-%Y-%H-%M-%S"); format=".csv"; filename=$dir$1$now$format 
 printf "room,date,month,year,time,maxamp,rssi" >> $filename
 while true; do
     arecord -d 30 temp.wav 
