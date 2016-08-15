@@ -1,27 +1,32 @@
 .container {
-	@include container(80em);
-	padding:1em;
+    @include container(80em);
+    padding: 1em;
 }
 
 .column {
-	@media screen and (min-width:30em){
-		@for $i from 1 through 12 {
-		  &-mid-#{$i} {
-		  	@include span($i of 12);
-		  }
-
-		  &-mid-offset-#{$i} {
-		  	@include push($i of 12);
-		  }
-		}
-	}
-    
-    
-    &:last-of-type{
-		margin-right:0;
+    @for $i from 1 through 12 {
+        &-#{$i} {
+            @include span($i of 12);
+        }
+        &-offset-#{$i} {
+            @include push($i of 12);
+        }
+    }
+    @media screen and (min-width:$breakpoint-mid) {
+        @for $i from 1 through 12 {
+            &-mid-#{$i} {
+                @include span($i of 12);
+            }
+            &-mid-offset-#{$i} {
+                @include push($i of 12);
+            }
+        }
+    }
+    &:last-of-type {
+        margin-right: 0;
     }
 }
 
 .grid-item {
-	border:1px solid rgba(0,0,0,0.25);
+    border: 1px solid rgba(0, 0, 0, 0.25);
 }
