@@ -1,6 +1,5 @@
 import sqlite3
 import pandas as pd
-import statsmodels.formula.api as sm
 import numpy as np
 from sklearn.linear_model import LinearRegression
 from sklearn.linear_model import LogisticRegression
