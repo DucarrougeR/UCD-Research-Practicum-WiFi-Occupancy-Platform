@@ -19,6 +19,16 @@ df['room_allocation_score'] = (df['counts_size']/df['counts_capacity'])*100
 # Removing all rows without score
 df = df.dropna(subset=['room_allocation_score'])
 
+
+# Code to get the average allocation rating for rooms B002, B003, B004
+df2 = df
+
+df2 = df2.groupby([df2['counts_room']]).mean()
+
+print(df2.room_allocation_score)
+
+
+
 # Connect to Database.db to save the table
 con = sqlite3.connect(config.DATABASE['name'])
 cur = con.cursor()
