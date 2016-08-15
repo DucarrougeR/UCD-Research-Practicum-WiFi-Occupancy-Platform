@@ -61,36 +61,20 @@ pip install -r requirements.txt
 
 
 ### Required Libraries
-Python Librairies used:
 
-File Handling:			os,
-						sys,
-						subprocess,
-						ZipFile
+File Handling:              os, sys, subprocess, ZipFile
 	
-Data Gathering:			csv,
-						OpenPyXL,
-						time,
-						re
+Data Gathering:			    csv, OpenPyXL, time, re
 
-Data Cleaning:			Pandas,
-						NumPy,
-						Sqlite3
+Data Cleaning:              Pandas, NumPy, SQLite3
 					
-Data Analysis:			sklearn,
-						statsmodels,
+Data Analysis:              Scikit Learn, StatsModels
 	
-Data Visualization:		matplotlib
+Data Visualization:         MatPlotLib
 	
-Web App:				Flask,
-						flask_login,
-						flask_wtf,
-						peewee,
-						flask_peewee
-	
-Testing:				werkzeug,
-						unittest,
-						tempfile
+Web App:				    Flask, flask_login, flask_wtf, peewee, flask_peewee
+
+Testing:                    werkzeug, unittest, tempfile
 
 
 ### Development
