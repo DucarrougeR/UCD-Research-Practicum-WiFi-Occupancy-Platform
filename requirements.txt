@@ -11,4 +11,3 @@ sklearn
 flask_login
 flask-mail
 openpyxl
-openpyxl.utils
