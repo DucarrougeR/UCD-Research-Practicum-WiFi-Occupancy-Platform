@@ -199,19 +199,17 @@ Classes_DB['classes_attendance_score'] = np.nan
 Classes_DB.drop_duplicates(subset=['classes_room_number','classes_time'], keep='last')
 
 #########################################################################
-''' implementing tables for secondary checks (Future RoadMap Dev)'''
-# room # time # audio_check # rssi_check
-Checks_DB = DFinal[['room','time']]
-Checks_DB['audio'] = np.nan
-Checks_DB['rssi'] = np.nan
+''' implementing tables for sensors '''
 
-Checks_DB.columns = ['checks_room_number', 'checks_time', 'checks_audio', 'checks_rssi']
+columns = ['sensors_room','sensors_time', 'sensors_rssi', 'sensors_audio', 'sensors_video']
+Sensors_DB = pd.DataFrame(columns=columns)
+
 
 '''
 # Current table format is in 5-min interval as per initial discussion.
 # Below is code to use to change the table to an hourly basis
-Checks_DB['checks_time'] = Checks_DB['checks_time'].map(lambda x: x[:-6)		# removes seconds and minutes
-Checks_DB = Checks_DB.drop_duplicates(subset='checks_time', keep='first')		# keeps 1 row per hour
+Sensors_DB['checks_time'] = Sensors_DB['checks_time'].map(lambda x: x[:-6)		# removes seconds and minutes
+Sensors_DB = Sensors_DB.drop_duplicates(subset='checks_time', keep='first')		# keeps 1 row per hour
 '''
 
 #########################################################################
@@ -223,7 +221,7 @@ cur = con.cursor()
 Rooms_DB.to_sql('rooms', con, flavor='sqlite', if_exists='replace', index=False, chunksize=None)
 Counts_DB.to_sql('counts', con, flavor='sqlite', if_exists='replace', index=False, chunksize=None)
 Classes_DB.to_sql('classes', con, flavor='sqlite', if_exists='replace', index=False, chunksize=None)
-Checks_DB.to_sql('secondary_checks', con, flavor='sqlite', if_exists='replace', index=False, chunksize=None)
+Sensors_DB.to_sql('sensors', con, flavor='sqlite', if_exists='replace', index=False, chunksize=None)
 
 print('Tables created')
 
