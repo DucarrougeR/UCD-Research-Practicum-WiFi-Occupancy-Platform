@@ -72,7 +72,7 @@ Data Analysis:              Scikit Learn, StatsModels
 	
 Data Visualization:         MatPlotLib
 	
-Web App:				    Flask, flask_login, flask_wtf, peewee, flask_peewee
+Web App:				    Flask, flask_login, flask_wtf, peewee, flask_peewee, flask_mail
 
 Testing:                    werkzeug, unittest, tempfile
 
