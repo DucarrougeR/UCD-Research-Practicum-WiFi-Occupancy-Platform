@@ -1,4 +1,4 @@
-adir="data/"; now=$(date "+%d-%m-%Y-%H:%M:%S"); format=".csv"; type="audio"; afilename=$adir$type$now$format 
+adir="data/"; now=$(date "+%d-%m-%Y-%H-%M-%S"); format=".csv"; type="audio"; afilename=$adir$type$now$format 
 printf "date,month,year,time,maxamp" >> $afilename 
 while true; do 
     arecord -d 30 temp.wav 
