@@ -18,7 +18,7 @@ from app.mod_db import *
 # login_manager = LoginManager()
 
 @app.route('/')
-def home_index():
+def my_index():
     # join_cond = (Rooms.room_number == Counts.counts_room_number)
     # building = Rooms.select(Rooms, Counts).join(Counts, on=join_cond).where((Rooms.room_number=="B002") & (Counts.counts_time ** "%Nov 02%")).naive()
     # for item in building:
