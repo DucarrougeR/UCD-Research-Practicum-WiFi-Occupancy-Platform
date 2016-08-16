@@ -1,8 +1,8 @@
-# Ouranos
+# WiSpy
 
 [![Build Status](https://travis-ci.com/lukekearney/research-practicum.svg?token=9AQVD3a9aH85bqC19gfz&branch=master)](https://travis-ci.com/lukekearney/research-practicum)
 
-Ouranos is a Flask web application enabling predictive analytics of room occupancy on the University College Dublin Belfield campus.
+WiSpy is a Flask web application enabling predictive analytics of room occupancy on the University College Dublin Belfield campus.
 
   - Using ground truth data collected on campus
   - Development and cross-validation of various predicitive models
@@ -26,11 +26,11 @@ and estimate room occupancy based on wifi log data.
 
 ### Tech Stack
 
-Ouranos uses a number of open source projects to work properly:
+WiSpy uses a number of open source projects to work properly:
 * [Python 3.5.x] -
 * [AngularJS] - HTML enhanced for web apps!
 * [Flask] - Mico-web server for Python web apps
-* [node.js] - evented I/O for the backend. Ouranos uses this to install front-end dependencies via NPM
+* [node.js] - evented I/O for the backend. WiSpy uses this to install front-end dependencies via NPM
 * [node-sass] - CSS with more features
 * [SQLite] - software library that implements a self-contained, serverless, zero-configuration, transactional SQL database engine.
 
@@ -38,14 +38,14 @@ Ouranos uses a number of open source projects to work properly:
 
 ### Installation
 
-Ouranos requires:
+WiSpy requires:
 - Node JS
 - Python3 
  be installed.
 
 On Linux, some packages (such as Pandas and Sci-kit learn) may need to installed through apt-get. 
 
-To install Ouranos:
+To install WiSpy:
 ```sh
 $ git clone https://github.com/lukekearney/research-practicum
 ```
