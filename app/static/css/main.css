@@ -425,7 +425,8 @@ a {
   max-width: 80em;
   margin-left: auto;
   margin-right: auto;
-  padding: 1em; }
+  padding: 1em;
+  box-sizing: border-box; }
   .container:after {
     content: " ";
     display: block;
@@ -1160,6 +1161,9 @@ progress[value]::-moz-progress-bar {
 .text-center {
   text-align: center; }
 
+.text-left {
+  text-align: left; }
+
 .u-pull-left {
   float: left; }
 
@@ -1216,7 +1220,8 @@ input[type=text], input[type=password], input[type=email] {
   width: 100%;
   background-color: #F3F6F4;
   border: none;
-  padding: 0.5em 0.25em; }
+  padding: 0.5em 0.25em;
+  border-bottom: 1px solid rgba(60, 62, 59, 0.25); }
   input[type=text]:focus, input[type=password]:focus, input[type=email]:focus {
     outline: none; }
   input[type=text]:focus + .text__underline, input[type=password]:focus + .text__underline, input[type=email]:focus + .text__underline {

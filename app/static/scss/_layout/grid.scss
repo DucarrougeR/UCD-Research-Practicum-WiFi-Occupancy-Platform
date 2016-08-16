@@ -1,6 +1,7 @@
 .container {
     @include container(80em);
     padding: 1em;
+    box-sizing:border-box;
 }
 
 .column {

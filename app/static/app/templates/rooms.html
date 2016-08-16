@@ -1,5 +1,6 @@
-<nav class="column column-mid-2 full-height sidebar sidebar--fixed">
-    <ul class="nav-list nav-list--main">
+<nav class="column column-12 column-mid-2 full-height-mid sidebar sidebar--fixed">
+    <button class="navigation-toggle" ng-click="toggleNavigation()">Menu</button>
+    <ul id="main-nav" class="nav-list nav-list--main closed">
         <li><a ng-href="#/dashboard">Dashboard</a></li>
         <li><a ng-href="#/upload" ng-show="hasPermission('add-class') || hasPermission('add-truth') || hasPermission('add-logs')">Upload Data</a></li>
         <li><a ng-href="#/add/user" ng-show="hasPermission('add-user')">Add a user</a></li>
@@ -7,7 +8,7 @@
 </nav>
 <div class="column column-mid-10 column-mid-offset-2 main-content">
     <div class="container content-container row">
-        <form class="form-inline" ng-submit="submit()">
+        <form class="form-inline text-left" ng-submit="submit()">
             <div>
                 <label class="label-inline"><input type="radio" ng-model="formData.type" value="binary">Binary</label>
                 <label class="label-inline"><input type="radio" ng-model="formData.type" value="continuous">Continuous</label>
