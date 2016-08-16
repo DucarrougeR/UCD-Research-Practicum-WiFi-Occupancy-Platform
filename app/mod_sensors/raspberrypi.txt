@@ -1,0 +1,49 @@
+SETUP
+-----------------------
+Disable GUI
+    sudo raspi-config
+
+Connect to Wi-Fi
+    sudo chmod 700 /etc/network/interfaces
+
+    
+    sudo iwconfig wlan0 essid "UCD Wireless"
+    sudo dhclient -v wlan0
+
+Set the correct time
+    sudo /etc/init.d/ntp stop
+    sudo raspi-config ----> change timezone
+    sudo chmod 700 /etc/npt.conf
+    sudo vim /etc/npt.conf
+
+    sudo apt-get install time
+
+Install Conda
+    wget http://repo.continuum.io/miniconda/Miniconda3-latest-Linux-armv7l.sh
+    bash Anaconda3-4.1.1-Linux-x86.sh
+Set Conda as the Python environment in .bashrc
+    export PATH="home/pi/miniconda3/bin:$PATH"
+
+OpenCV 3.0 for Python
+    Can be installed with conda install -c https://conda.binstar.org/menpo opencv3
+    Otherwise, it may need to be built from source, e.g., http://docs.opencv.org/3.0-beta/doc/tutorials/introduction/linux_install/linux_install.html
+
+Configuring the default webcam
+    sudo apt-get install fswebcam
+
+Configuring the wlan0 interface
+    check with ifconfig wlan0
+
+Configuring the audio interface 
+    sudo chmod 700 /usr/share/alsa/alsa.conf
+    sudo vim /usr/share/alsa/alsa.conf
+        defaults.ctl.card 1
+        defaults.pcm.card 1
+        
+arecord
+    sudo apt-get install lame
+
+sox 
+    sudo apt-get install sox 
+
+
