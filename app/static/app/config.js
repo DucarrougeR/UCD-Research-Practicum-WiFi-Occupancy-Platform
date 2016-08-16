@@ -56,6 +56,7 @@ occupancyApp.config(['$locationProvider' ,'$routeProvider', '$logProvider', 'Cha
         controller: 'DashboardController',
 
       }).
+
       when('/rooms', {
         templateUrl: '/static/app/templates/rooms.html',
         resolve:{
@@ -76,6 +77,73 @@ occupancyApp.config(['$locationProvider' ,'$routeProvider', '$logProvider', 'Cha
           }
         },
         controller: 'RoomsController',
+
+      }).
+      when('/rooms/:room', {
+        templateUrl: '/static/app/templates/rooms.html',
+        resolve:{
+          "check":function(Permissions,Session, Authentication, $location){   //function to be resolved, accessFac and $location Injected
+            if (!Session.user) {
+              Authentication.getLoggedInUser().then(function(data) {
+                if (data) {
+                  return true;
+                } else {
+                  $location.path("/login");
+                }
+
+              });
+            } else {
+              return true;
+            }
+            
+          }
+        },
+        controller: 'RoomsController',
+
+      }).
+      when('/modules', {
+        templateUrl: '/static/app/templates/modules.html',
+        resolve:{
+          "check":function(Permissions,Session, Authentication, $location){   //function to be resolved, accessFac and $location Injected
+            if (!Session.user) {
+              Authentication.getLoggedInUser().then(function(data) {
+                if (data) {
+                  return true;
+                } else {
+                  $location.path("/login");
+                }
+
+              });
+            } else {
+              return true;
+            }
+            
+          }
+        },
+        controller: 'ModulesController',
+
+      }).
+
+      when('/modules/:module', {
+        templateUrl: '/static/app/templates/modules.html',
+        resolve:{
+          "check":function(Permissions,Session, Authentication, $location){   //function to be resolved, accessFac and $location Injected
+            if (!Session.user) {
+              Authentication.getLoggedInUser().then(function(data) {
+                if (data) {
+                  return true;
+                } else {
+                  $location.path("/login");
+                }
+
+              });
+            } else {
+              return true;
+            }
+            
+          }
+        },
+        controller: 'ModulesController',
 
       }).
       when('/login', {

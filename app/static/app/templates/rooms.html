@@ -6,7 +6,7 @@
         <li><a ng-href="#/add/user" ng-show="hasPermission('add-user')">Add a user</a></li>
     </ul>
 </nav>
-<div class="column column-mid-10 column-mid-offset-2 main-content">
+<div class="column column-mid-10 column-mid-offset-2 main-content animated-container">
     <div class="container content-container row">
         <form class="form-inline text-left" ng-submit="submit()">
             <div>
@@ -26,7 +26,7 @@
                 <span >Select a date </span><br>
                 <input pikaday="example.myPickerObject" format="DD/MM/YYYY" ng-model="formData.date" >
             </div>
-            <input type="submit" class="submit-button" value = "Get Data >">
+            <input type="submit" class="submit-button u-pull-right" value = "Get Data >">
         </form>
     </div>
     <div class="container content-container row" ng-show="!results">
@@ -45,6 +45,17 @@
         </div>
         <div class="column column-mid-8">
         <canvas id="line" class="chart chart-line" chart-data="data" chart-labels="labels" chart-legend="true" chart-series="series" chart-click="onClick" style="margin:auto;height:200px"></canvas>
+        </div>
+    </div>
+    <div class="container" ng-show="modules">
+        <h2>Modules using this room</h2>
+        <div class="room-list container u-text-center">
+            <div class="room-list__item u-text-center" ng-repeat="module in modules">
+                <h3><a ng-href="#/modules/{{module.counts_module_code}}">{{ module.counts_module_code }}</a></h3>
+                at {{ module.counts_time.hour }}:00 on {{ module.counts_time.day }}
+                
+            </div>
+            
         </div>
     </div>
 

@@ -1,0 +1,54 @@
+<nav class="column column-12 column-mid-2 full-height-mid sidebar sidebar--fixed">
+    <button class="navigation-toggle" ng-click="toggleNavigation()">Menu</button>
+    <ul id="main-nav" class="nav-list nav-list--main closed">
+        <li><a ng-href="#/dashboard">Dashboard</a></li>
+        <li><a ng-href="#/upload" ng-show="hasPermission('add-class') || hasPermission('add-truth') || hasPermission('add-logs')">Upload Data</a></li>
+        <li><a ng-href="#/add/user" ng-show="hasPermission('add-user')">Add a user</a></li>
+    </ul>
+</nav>
+<div class="column column-mid-10 column-mid-offset-2 main-content animated-container">
+    <div class="container content-container row">
+        <div class="column-mid-6 column module-form">
+            <form class="form-inline text-left" ng-submit="submit()">
+                
+                <label >
+                    <span >Type module code</span><br>
+                    <input ng-model="formData.moduleSearch" type="text">
+                </label>
+                <br>
+                <br>
+                <input type="submit" class="submit-button u-pull-right" value = "Get Data >">
+            </form>
+        </div>
+        <div class="column-mid-6 column">
+            Select from List:
+            <hr>
+            <div class="modules-list">
+                <div class="modules-list__item text-left" ng-repeat="module in modules | filter:formData.moduleSearch">
+                    <a ng-href="#/modules/{{module}}">{{module}}</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container content-container row" ng-show="!results">
+        {{ message }}
+    </div>
+    <div class="chart container content-container row" ng-show="results">
+        <h2 class="u-text-center">Showing rooms used by {{ formData.moduleSearch }}</h2>
+        <div class="room-list">
+            <div class="room-list__item u-text-center" ng-repeat="result in results">
+                <h3><a ng-href="#/rooms/{{result.counts_room}}">{{ result.counts_room }}</a></h3>
+                at {{ result.counts_time.hour }}:00 on {{ result.counts_time.day }}
+                <hr>
+                Fills room: <br>
+                <span class="u-text-emphasised u-text-accent">{{ result.room_allocation_score }}%</span>
+                <br>
+                
+            </div>
+            
+        </div>
+        <small>Scores are based on what percentage the class fills the room</small>
+        
+    </div>
+
+</div>

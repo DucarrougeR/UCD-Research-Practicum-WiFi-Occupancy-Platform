@@ -229,3 +229,89 @@ def get_rooms():
         rooms_list.append(room.get_result())
 
     return jsonify(rooms_list)
+
+@mod_api.route('/module/list', methods=['GET'])
+def get_modules():
+    modules = Allocation_Score.select(Allocation_Score.counts_module_code).distinct() \
+        .order_by(Allocation_Score.counts_module_code.asc())
+    module_list = []
+    for module in modules:
+        result = module.get_result()
+        regex = re.match("(.+) & (.+)", result["counts_module_code"])
+        regex2 = re.match("(.+) \(.+\)", result["counts_module_code"])
+
+        # if 2 modules listed in 1
+        if regex:
+            res = result
+            code = regex.groups()[0]
+            module_list.append(code)
+            code = regex.groups()[1]
+            module_list.append(code)
+        elif regex2:
+            # has lecture and practicals
+            code = regex2.groups()[0]
+            module_list.append(code)
+        else:
+            module_list.append(result["counts_module_code"])
+
+    return jsonify(list(set(module_list)))
+
+@mod_api.route('/module/rooms-used/<module>', methods=['GET'])
+def get_module_info(module):
+    query = "%" + module + "%"
+    results = Allocation_Score.select(Allocation_Score).distinct(Allocation_Score.counts_room)\
+        .where(Allocation_Score.counts_module_code ** query)
+
+    result_list = []
+    times = []
+    for result in results:
+
+        result = result.get_result()
+        regex = re.match("([A-Za-z)]{3}) [A-Za-z]{3} \d{2} (\d{2})", result["counts_time"])
+        groups = regex.groups()
+        day_time = groups[0] + " " + groups[1]
+        if day_time not in times:
+
+            regex = re.match("([A-Za-z)]{3}) [A-Za-z]{3} \d{2} (\d{2})", result["counts_time"])
+
+            time = {
+                "day": groups[0],
+                "hour": groups[1]
+            }
+
+            result["counts_time"] = time
+            times.append(day_time)
+            result_list.append(result)
+
+    return jsonify({"results": result_list})
+
+@mod_api.route('/module/room/<room>', methods=['GET'])
+def get_module_info_by_room(room):
+
+    results = Allocation_Score.select(Allocation_Score.counts_time, Allocation_Score.counts_module_code, Allocation_Score.counts_room)\
+        .where(Allocation_Score.counts_room == room)
+
+    result_list = []
+    times = []
+    for result in results:
+
+        result = result.get_result()
+        regex = re.match("([A-Za-z)]{3}) [A-Za-z]{3} \d{2} (\d{2})", result["counts_time"])
+        groups = regex.groups()
+        day_time = groups[0] + " " + groups[1]
+        if day_time not in times:
+
+            regex = re.match("([A-Za-z)]{3}) [A-Za-z]{3} \d{2} (\d{2})", result["counts_time"])
+
+            time = {
+                "day": groups[0],
+                "hour": groups[1]
+            }
+
+            result["counts_time"] = time
+            times.append(day_time)
+            result_list.append(result)
+
+    print(result_list)
+    return jsonify({"results": result_list})
+

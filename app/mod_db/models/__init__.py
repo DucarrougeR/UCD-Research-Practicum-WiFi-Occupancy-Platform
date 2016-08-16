@@ -6,4 +6,5 @@ from .Counts import Counts
 from .Rooms import Rooms
 from .User import User
 from .Permissions import Permissions
+from .Allocation_Score import Allocation_Score
 
