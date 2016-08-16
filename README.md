@@ -1,4 +1,5 @@
 # Ouranos
+[![Build Status](https://travis-ci.com/lukekearney/research-practicum.svg?token=9AQVD3a9aH85bqC19gfz&branch=master)](https://travis-ci.com/lukekearney/research-practicum)
 
 Ouranos is a Flask web application enabling predictive analytics of room occupancy on the University College Dublin Belfield campus.
 
