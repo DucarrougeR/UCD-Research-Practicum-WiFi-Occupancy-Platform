@@ -826,6 +826,35 @@ progress[value]::-moz-progress-bar {
   display: block;
   text-indent: -9999px; }
 
+.modules-list {
+  max-height: 15em;
+  overflow: scroll; }
+  .modules-list__item {
+    padding: 1em;
+    border-bottom: 1px solid rgba(60, 62, 59, 0.25); }
+
+.room-list {
+  flex-wrap: wrap;
+  display: -webkit-flex;
+  /* Safari */
+  -webkit-align-items: center;
+  /* Safari 7.0+ */
+  display: flex;
+  align-items: center;
+  padding-bottom: 1em; }
+  .room-list__item {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 1em;
+    padding-top: 0;
+    border: 1px solid rgba(60, 62, 59, 0.25); }
+    @media screen and (min-width: 50em) {
+      .room-list__item {
+        width: 33%; } }
+    .room-list__item hr {
+      border-color: rgba(60, 62, 59, 0.25);
+      max-width: 25%; }
+
 /*
  * WTF, forms?
  * Released under MIT and copyright 2014 Mark Otto.
@@ -1170,6 +1199,12 @@ progress[value]::-moz-progress-bar {
 .u-pull-right {
   float: right; }
 
+.u-text-emphasised {
+  font-size: 1.6em; }
+
+.u-text-accent {
+  color: #199C7B; }
+
 /* http://stackoverflow.com/questions/8554043/what-is-clearfix */
 .u-clearfix:after {
   content: "";
@@ -1226,6 +1261,9 @@ input[type=text], input[type=password], input[type=email] {
     outline: none; }
   input[type=text]:focus + .text__underline, input[type=password]:focus + .text__underline, input[type=email]:focus + .text__underline {
     width: 100%; }
+
+.module-form {
+  padding-bottom: 4em; }
 
 /*!
  * Pikaday

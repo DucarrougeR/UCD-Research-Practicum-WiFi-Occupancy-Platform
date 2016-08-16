@@ -89,7 +89,7 @@ occupancyApp.controller('DashboardController', ['$scope', '$http', 'Authenticati
 }]);
 
 
-occupancyApp.controller('RoomsController', ['$scope', '$http', 'Authentication', 'Session', 'DataManagement', 'Permissions', 'RoomOccupancy', function($scope, $http, Authentication, Session, DataManagement, Permissions, RoomOccupancy) {
+occupancyApp.controller('RoomsController', ['$scope', '$http', '$routeParams', 'Modules', 'Authentication', 'Session', 'DataManagement', 'Permissions', 'RoomOccupancy', function($scope, $http, $routeParams, Modules, Authentication, Session, DataManagement, Permissions, RoomOccupancy) {
 
     // check if there is a user defined
     if (!Session.user) {
@@ -108,6 +108,11 @@ occupancyApp.controller('RoomsController', ['$scope', '$http', 'Authentication',
     RoomOccupancy.getRooms().then(function(resp){
       $scope.rooms = resp;
     });
+
+    $scope.formData = {};
+    if ($routeParams.room) {
+        $scope.formData.room = $routeParams.room;
+    }
 
     $scope.submit = function() {
         if ($scope.formData.room && $scope.formData.date && $scope.formData.type) {
@@ -154,6 +159,15 @@ occupancyApp.controller('RoomsController', ['$scope', '$http', 'Authentication',
                     $scope.type = $scope.formData.type;
 
 
+                    Modules.getModulesByRoom($scope.formData.room).then(function(modules) {
+                        if (modules.results.length > 0) {
+
+                            $scope.modules = modules.results;
+                        }
+                        
+                    });
+
+
                 } else {
                   $scope.results = false;
                   $scope.message = "No data available for " + $scope.formData.room + " on " + $scope.formData.date;
@@ -167,6 +181,60 @@ occupancyApp.controller('RoomsController', ['$scope', '$http', 'Authentication',
                 // or server returns response with an error status.
             });
         }
+    }
+}]);
+
+occupancyApp.controller('ModulesController', ['$scope', '$http', '$routeParams', 'Authentication', 'Session', 'DataManagement', 'Permissions', 'Modules', function($scope, $http, $routeParams, Authentication, Session, DataManagement, Permissions, Modules) {
+
+    // check if there is a user defined
+    if (!Session.user) {
+        Authentication.getLoggedInUser().then(function(data) {
+
+            Session.user = data;
+            // make the hasPermission function available to templates
+            $scope.hasPermission = Permissions.hasPermission;
+
+        });
+    } else {
+        $scope.hasPermission = Permissions.hasPermission;
+    }
+
+    Modules.getModulesList().then(function(data) {
+        
+        $scope.modules = data;
+    });
+    
+    $scope.formData = {};
+
+    $scope.submit = function() {
+        if ($scope.formData.moduleSearch) {
+            // formatting the URL
+            var url = "/api/module/rooms-used/" + $scope.formData.moduleSearch;
+            
+            $http.get(url).then(function successCallback(response) {
+
+                if (response.data.results.length > 0) {
+
+                    $scope.results = response.data.results;
+
+                } else {
+                  $scope.results = false;
+                  $scope.message = "No data available for " + $scope.formData.moduleSearch;
+                }
+
+                
+
+
+            }, function errorCallback(response) {
+                // called asynchronously if an error occurs
+                // or server returns response with an error status.
+            });
+        }
+    }
+
+    if ($routeParams.module) {
+        $scope.formData.moduleSearch = $routeParams.module;
+        $scope.submit();
     }
 }]);
 
