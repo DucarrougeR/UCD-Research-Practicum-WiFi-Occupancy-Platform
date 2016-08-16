@@ -76,6 +76,7 @@ Web App:				    Flask, flask_login, flask_wtf, peewee, flask_peewee, flask_mail
 
 Testing:                    werkzeug, unittest, tempfile
 
+Additional libraries [here]
 
 ### Development
 
@@ -106,3 +107,4 @@ MIT
    [AngularJS]: <http://angularjs.org>
    [node-sass]: <https://github.com/sass/node-sass>
    [SQLite]: <https://www.sqlite.org/>
+   [here]: <https://github.com/lukekearney/research-practicum/blob/master/app/static/package.json>
