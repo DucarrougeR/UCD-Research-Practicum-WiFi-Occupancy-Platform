@@ -217,11 +217,15 @@ Sensors_DB = Sensors_DB.drop_duplicates(subset='checks_time', keep='first')		# k
 
 con = sqlite3.connect(config.DATABASE['name'])
 cur = con.cursor()
+try:
+	Rooms_DB.to_sql('rooms', con, flavor='sqlite', if_exists='replace', index=False, chunksize=None)
+	Counts_DB.to_sql('counts', con, flavor='sqlite', if_exists='replace', index=False, chunksize=None)
+	Classes_DB.to_sql('classes', con, flavor='sqlite', if_exists='replace', index=False, chunksize=None)
+	Sensors_DB.to_sql('sensors', con, flavor='sqlite', if_exists='replace', index=False, chunksize=None)
+except:
+    print("Unexpected error writing table(s) to the Database")
+    raise
 
-Rooms_DB.to_sql('rooms', con, flavor='sqlite', if_exists='replace', index=False, chunksize=None)
-Counts_DB.to_sql('counts', con, flavor='sqlite', if_exists='replace', index=False, chunksize=None)
-Classes_DB.to_sql('classes', con, flavor='sqlite', if_exists='replace', index=False, chunksize=None)
-Sensors_DB.to_sql('sensors', con, flavor='sqlite', if_exists='replace', index=False, chunksize=None)
-
+	
 print('Tables created')
 

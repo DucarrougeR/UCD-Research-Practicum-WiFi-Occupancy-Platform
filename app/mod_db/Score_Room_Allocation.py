@@ -16,6 +16,7 @@ df = pd.read_sql_query("SELECT * from Max_table", con1)
 df['room_allocation_score'] = np.nan
 df['room_allocation_score'] = (df['counts_size']/df['counts_capacity'])*100
 
+
 # Removing all rows without score
 df = df.dropna(subset=['room_allocation_score'])
 
@@ -26,8 +27,6 @@ df2 = df
 df2 = df2.groupby([df2['counts_room']]).mean()
 
 print(df2.room_allocation_score)
-
-
 
 # Connect to Database.db to save the table
 con = sqlite3.connect(config.DATABASE['name'])

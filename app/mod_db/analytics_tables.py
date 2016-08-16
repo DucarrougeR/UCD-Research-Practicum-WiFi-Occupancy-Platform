@@ -95,9 +95,13 @@ XP_Min.index.names = ['counts_date','counts_hour', 'counts_room']
 XP_Min.columns = ['counts_time', 'counts_capacity', 'counts_truth_percent',
 		'counts_truth','counts_module_code', 'counts_size','counts_associated',
 		'counts_authenticated']
-XP_Min.to_sql('Min_table', connect, flavor='sqlite', if_exists='replace',
+		
+try:		
+	XP_Min.to_sql('Min_table', connect, flavor='sqlite', if_exists='replace',
               index=True, chunksize=None)
-# XP_Min.head()
+except:
+    print("Unexpected error writing Min_table")
+    raise
 
 
 XP_Max = Fixed_DF.groupby([Fixed_DF['date'], Fixed_DF['hour'], Fixed_DF['room']])
@@ -107,9 +111,13 @@ XP_Max.index.names = ['counts_date','counts_hour', 'counts_room']
 XP_Max.columns = ['counts_time', 'counts_capacity', 'counts_truth_percent',
 		'counts_truth','counts_module_code', 'counts_size','counts_associated',
 		'counts_authenticated']
-XP_Max.to_sql('Max_table', connect, flavor='sqlite', if_exists='replace',
+		
+try:	
+	XP_Max.to_sql('Max_table', connect, flavor='sqlite', if_exists='replace',
               index=True, index_label=None, chunksize=None)
-#XP_Max.head()
+except:
+    print("Unexpected error writing Max_table")
+    raise
 
 
 XP_Mean = Fixed_DF
@@ -125,9 +133,12 @@ XP_Mean['counts_truth_percent'] = XP_Mean['counts_truth_percent'].astype(str)
 XP_Mean['counts_truth_percent'] = XP_Mean['counts_truth_percent'].map(lambda x: x.replace('.0','%'))
 XP_Mean['counts_truth_percent'] = XP_Mean['counts_truth_percent'].replace('nan',np.nan)
 
-XP_Mean.to_sql('Mean_table', connect, flavor='sqlite', if_exists='replace',
+try:
+	XP_Mean.to_sql('Mean_table', connect, flavor='sqlite', if_exists='replace',
                index=True, chunksize=None)
-#XP_Mean.head()
+except:
+    print("Unexpected error writing Mean_table")
+    raise
 
 
 XP_Med = Fixed_DF
@@ -142,9 +153,12 @@ XP_Med['counts_truth_percent'] = XP_Med['counts_truth_percent'].astype(str)
 XP_Med['counts_truth_percent'] = XP_Med['counts_truth_percent'].map(lambda x: x.replace('.0','%'))
 XP_Med['counts_truth_percent'] = XP_Med['counts_truth_percent'].replace('nan',np.nan)
 
-XP_Med.to_sql('Med_table', connect, flavor='sqlite', if_exists='replace',
+try:
+	XP_Med.to_sql('Med_table', connect, flavor='sqlite', if_exists='replace',
               index=True, chunksize=None)
-#XP_Med.head()
+except:
+    print("Unexpected error writing Med_table")
+    raise
 
 
 '''
@@ -169,9 +183,12 @@ XP_Med.to_sql('Med_table', connect, flavor='sqlite', if_exists='replace',
 # XP_Mode = XP_Mode.groupby([XP_Mode['date'], XP_Mode['hour'], XP_Mode['room']]).apply(f)
 # XP_Mode = XP_Mode.sort(columns='count', axis=1, ascending=False)
 # XP_Mode.iloc[XP_Mode.groupby([XP_Mode['date'], XP_Mode['room']]).apply(lambda x: x['count'].idxmax())]
-# XP_Mode.to_sql('Mode_table', connect, flavor='sqlite', if_exists='replace',
+# try:
+# 	XP_Mode.to_sql('Mode_table', connect, flavor='sqlite', if_exists='replace',
 #               index=False, chunksize=None)
-# XP_Mode.head()
+# except:
+#    print("Unexpected error writing Med_table")
+#    raise
 '''
 print("Finished")
 
