@@ -27,7 +27,7 @@ and estimate room occupancy based on wifi log data.
 ### Tech Stack
 
 WiSpy uses a number of open source projects to work properly:
-* [Python 3.5.x] -
+* [Python 3.5.x] - 
 * [AngularJS] - HTML enhanced for web apps!
 * [Flask] - Mico-web server for Python web apps
 * [node.js] - evented I/O for the backend. WiSpy uses this to install front-end dependencies via NPM
