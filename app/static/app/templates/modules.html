@@ -38,11 +38,11 @@
         <h2 class="u-text-center">Showing rooms used by {{ formData.moduleSearch }}</h2>
         <div class="room-list">
             <div class="room-list__item u-text-center" ng-repeat="result in results">
-                <h3><a ng-href="#/rooms/{{result.counts_room}}">{{ result.counts_room }}</a></h3>
-                at {{ result.counts_time.hour }}:00 on {{ result.counts_time.day }}
+                <h3><a ng-href="#/rooms/{{result.counts_room}}">{{ result.classes_room_number }}</a></h3>
+                at {{ result.classes_time.hour }}:00 on {{ result.classes_time.day }}
                 <hr>
                 Fills room: <br>
-                <span class="u-text-emphasised u-text-accent">{{ result.room_allocation_score }}%</span>
+                <span class="u-text-emphasised u-text-accent">{{ result.classes_attendance_score | round2decimals }}%</span>
                 <br>
                 
             </div>

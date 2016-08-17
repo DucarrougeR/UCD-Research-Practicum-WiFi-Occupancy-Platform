@@ -323,7 +323,13 @@ occupancyApp.controller("UploadController", ['$scope', 'Upload', '$timeout', 'Pe
                                     ', Response: ' + JSON.stringify(resp.data) +
                                     '\n' + $scope.log;
                             });
-                        }, null, function(evt) {
+
+                            $scope.type = "success";
+                        }, function(resp){
+                            console.log("error");
+                            $scope.type = "error";
+                            $scope.error = "Invalid file type";
+                        }, function(evt) {
                             var progressPercentage = parseInt(100.0 *
                                 evt.loaded / evt.total);
                             $scope.log = 'progress: ' + progressPercentage +
@@ -334,7 +340,8 @@ occupancyApp.controller("UploadController", ['$scope', 'Upload', '$timeout', 'Pe
 
                     } else {
                         $scope.type = "error";
-                        $scope.message = "Please Select an appropriate upload type";
+                        
+                        $scope.error = "Please Select an appropriate upload type";
                     }
                 }
             }
@@ -405,3 +412,9 @@ occupancyApp.controller('LogoutController', ['$scope', '$location', 'Authenticat
     });
 
 }]);
+
+occupancyApp.filter('round2decimals', function() {
+  return function(input) {
+    return Math.round(input * 100) / 100;
+  };
+})

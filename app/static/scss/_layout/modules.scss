@@ -202,19 +202,26 @@ progress[value]::-moz-progress-bar {
 
 
 .progress-bar {
-    background-color: whiteSmoke;
+    background-color: $color-background-secondary;
     border-radius: 2px;
     box-shadow: 0 2px 3px rgba(0, 0, 0, 0.25) inset;
-    width: 250px;
-    height: 20px;
+    width: 100%;
+    
     position: relative;
     display: block;
 }
 .progress-bar > span {
-    background-color: blue;
+    background-color: $color-text-accent;
     border-radius: 2px;
     display: block;
     text-indent: -9999px;
+    &.error {
+        background-color:$color-error;
+    }
+
+    &.success{
+        background-color:$color-success;
+    }
 }
 
 .modules-list {

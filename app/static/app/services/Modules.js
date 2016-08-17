@@ -19,7 +19,6 @@ occupancyApp.service('Modules', ['$http', 'Session', 'Authentication', function(
         },
 
         getModulesByRoom: function(room) {
-            console.log(room);
             return $http({
                 method: 'GET',
                 url: '/api/module/room/' + room

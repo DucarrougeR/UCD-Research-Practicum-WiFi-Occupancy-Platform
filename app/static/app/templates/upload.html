@@ -13,6 +13,7 @@
     </div>
     <div ng-controller="UploadController">
         <form>
+            <div class="banner error" ng-show="error">{{ error }}</div>
             <div>
                 <label class="label-inline" ng-show="hasPermission('add-logs')">
                     <input type="radio" ng-model="filetype" value="wifi" > WiFi Logs
@@ -31,11 +32,11 @@
     	        <ul>
     	            <li ng-repeat="f in files" style="font:smaller">{{f.name}} {{f.$error}} {{f.$errorParam}}</li>
     	        </ul>
-    	        <progress max="100" value="{{ progress }}">
+    	        <!-- <progress max="100" class="{{ type }}" value="{{ progress }}"> -->
                     <div class="progress-bar">
-                        <span style="width: {{ progress }}%;"></span>
+                        <span class="{{ type }}" style="width: {{ progress }}%;">{{progress}}%</span>
                     </div>
-                </progress>
+                <!-- </progress> -->
             </div>
         </form>
         

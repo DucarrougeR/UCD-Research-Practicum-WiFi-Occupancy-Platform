@@ -13,3 +13,32 @@
 	}
 }
 
+.progress{
+	&.error {
+		background-color:$color-error;
+	}
+
+	&.success {
+		background-color:$color-success;
+		color:$color-text;
+	}
+}
+
+progress.error[value]::-webkit-progress-value {
+
+    background-color:$color-text-accent;
+	border-radius: 2px;
+	background-size: 35px 20px,
+	100% 100%,
+	100% 100%;
+
+}
+
+progress[value]::-moz-progress-bar {
+	background-color:$color-text-accent;
+	border-radius: 2px;
+	background-size: 35px 20px,
+	100% 100%,
+	100% 100%;
+}
+
