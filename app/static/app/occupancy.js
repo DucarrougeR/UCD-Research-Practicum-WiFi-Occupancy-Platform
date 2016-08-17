@@ -139,6 +139,7 @@ occupancyApp.controller('RoomsController', ['$scope', '$http', '$routeParams', '
                     $scope.data = [resultsPercent];
                    
                     $scope.series = ['% occupied'];
+                    console.log(results["hours"][0][0]);
                     $scope.score = DataManagement.convertToPercent(results["hours"][0][0]["room_occupancy_score"]);
 
                     // build the labels
@@ -163,6 +164,7 @@ occupancyApp.controller('RoomsController', ['$scope', '$http', '$routeParams', '
                         if (modules.results.length > 0) {
 
                             $scope.modules = modules.results;
+                            console.log(modules.results.length);
                         }
                         
                     });

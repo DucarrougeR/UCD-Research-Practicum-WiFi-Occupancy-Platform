@@ -51,7 +51,7 @@ def occupancy_data(room, time=None, type=None):
         results = Rooms.select(Rooms, Counts).join(Counts, on=join_cond).where(
             (Rooms.room_number == room)).naive()
 
-    print(results)
+
     results_list = []
     if results:
         for result in results:
@@ -298,13 +298,14 @@ def get_module_info(module):
 def get_module_info_by_room(room):
 
     results = Classes.select(Classes.classes_time, Classes.classes_module_code, Classes.classes_room_number)\
-        .where(Classes.classes_room_number == room)
+        .where((Classes.classes_room_number == room) & (Classes.classes_module_code != None))
 
     result_list = []
     times = []
     for result in results:
 
         result = result.get_result()
+
         # Mon
         # Nov
         # 02
@@ -312,19 +313,21 @@ def get_module_info_by_room(room):
         regex = re.match("([A-Za-z)]{3}) [A-Za-z]{3} \d{2} (\d{2}):.", result["classes_time"])
         groups = regex.groups()
         day_time = groups[0] + " " + groups[1]
-        if day_time not in times:
 
-            #regex = re.match("([A-Za-z)]{3}) [A-Za-z]{3} \d{2} (\d{2})", result["classes_time"])
+        if re.match("[A-Za-z]+\d+.*", result["classes_module_code"]):
+            if day_time not in times:
 
-            time = {
-                "day": groups[0],
-                "hour": groups[1]
-            }
+                #regex = re.match("([A-Za-z)]{3}) [A-Za-z]{3} \d{2} (\d{2})", result["classes_time"])
 
-            result["classes_time"] = time
-            times.append(day_time)
-            result_list.append(result)
+                time = {
+                    "day": groups[0],
+                    "hour": groups[1]
+                }
 
-    print(result_list)
+                result["classes_time"] = time
+                times.append(day_time)
+                result_list.append(result)
+
+    print(len(result_list))
     return jsonify({"results": result_list})
 

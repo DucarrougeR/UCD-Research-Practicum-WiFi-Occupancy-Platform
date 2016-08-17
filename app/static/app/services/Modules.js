@@ -25,7 +25,7 @@ occupancyApp.service('Modules', ['$http', 'Session', 'Authentication', function(
             }).then(function successCallback(response) {
                 // this callback will be called asynchronously
                 // when the response is available
-
+                console.log(response);
                 return response.data;
                 // user = response.data;
                 // return JSON.parse(response);

@@ -36,7 +36,7 @@ occupancyApp.service('DataManagement', [function() {
                         return (total || i.counts_predicted_is_occupied);
                         
                     } else {
-                        console.log(item);
+                        
                         return (total + (i.counts_predicted / i.room_capacity/ 1));
                     }
                     
@@ -60,7 +60,7 @@ occupancyApp.service('DataManagement', [function() {
               "data": reducedData,
               "hours": hours
             };
-            console.log(returnResults);
+            
             return returnResults;
         },
 
