@@ -168,18 +168,35 @@ occupancyApp.controller('RoomsController', ['$scope', '$http', '$routeParams', '
                     });
 
 
+
                 } else {
                   $scope.results = false;
                   $scope.message = "No data available for " + $scope.formData.room + " on " + $scope.formData.date;
                 }
 
-                
+                $scope.bannerType = "hidden";
 
 
             }, function errorCallback(response) {
                 // called asynchronously if an error occurs
                 // or server returns response with an error status.
             });
+        } else {
+            var errorMessage = "Please ensure these fields have been filled: ";
+            if (!$scope.formData.type) {
+                errorMessage += "type (binary or continuous) ,";
+            }
+
+            if (!$scope.formData.room) {
+                errorMessage += "room ,";
+            }
+
+            if (!$scope.formData.date) {
+                errorMessage += "a valid date ";
+            }
+
+            $scope.bannerType = "error";
+            $scope.error = errorMessage;
         }
     }
 }]);
@@ -374,6 +391,9 @@ occupancyApp.controller('RegisterController', ['$scope', 'Authentication', 'Perm
                 $scope.type = "error";
                 $scope.message = data.data.error;
             }
+        }, function(error) {
+            $scope.type = "error";
+            $scope.message = data.data.error;
         });
     }
 }]);

@@ -8,6 +8,7 @@
 </nav>
 <div class="column column-mid-10 column-mid-offset-2 main-content animated-container">
     <div class="container content-container row">
+        <div class="banner {{ bannerType }}" ng-show="error">{{ error }}</div>
         <form class="form-inline text-left" ng-submit="submit()">
             <div>
                 <label class="label-inline"><input type="radio" ng-model="formData.type" value="binary">Binary</label>

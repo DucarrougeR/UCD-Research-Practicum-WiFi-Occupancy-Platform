@@ -653,6 +653,16 @@ a {
     .navigation-toggle {
       display: none; } }
 
+.banner {
+  padding: 0.5em;
+  margin: 0.5em;
+  color: #ddd; }
+  .banner.error {
+    background-color: #CF4762; }
+  .banner.success {
+    background-color: #86C6AF;
+    color: #3C3E3B; }
+
 .sidebar {
   border-bottom: 1px solid rgba(60, 62, 59, 0.25);
   padding-top: 0.5em;

@@ -141,6 +141,10 @@ def log_in_user():
     if request.method == 'POST':
         # convert from JSON string to python
         data = json.loads(request.data.decode())
+
+        if "email" not in data.keys() or "password" not in data.keys():
+            return jsonify({"error": strings.ERROR_LOGIN}), 403
+
         email = data['email']
         password = data['password']
 
@@ -157,15 +161,18 @@ def log_in_user():
 
             return jsonify(User.cleaned(user))
         else:
-            return jsonify({"error": strings.ERROR_LOGIN}), 404
+            return jsonify({"error": strings.ERROR_LOGIN}), 403
 
 @mod_api.route('/auth/register', methods=['POST'])
 def register_user():
     if request.method == 'POST':
         data = json.loads(request.data.decode())
+        if "email" not in data.keys():
+            return jsonify({"error": strings.ERROR_REGISTER_USER}), 500
+
         email = data['email']
         password = User.generate_password()
-        if data['permission']:
+        if "permission" in data.keys():
             permission = data['permission']
         else:
             permission = Permissions.default_permission
