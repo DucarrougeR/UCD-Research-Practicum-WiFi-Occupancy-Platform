@@ -1,4 +1,4 @@
-# WiSpy
+![WiSpy Logo](/app/static/WiSpyBanner.png?raw=true "WiSpy Logo")
 
 [![Build Status](https://travis-ci.com/lukekearney/research-practicum.svg?token=9AQVD3a9aH85bqC19gfz&branch=master)](https://travis-ci.com/lukekearney/research-practicum)
 
