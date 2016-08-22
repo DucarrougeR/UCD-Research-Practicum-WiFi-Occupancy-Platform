@@ -84,6 +84,7 @@ def upload_file(filetype):
             # check if the filetype was defined
             print(request.data.decode())
             # #data = json.loads(request.data.decode())
+
             if filetype and (filetype == "wifi" or filetype == "truth" or filetype == "timetable"):
                 if Permissions.permissions_for_filetype(current_user, filetype):
                     # check if the post request has the file part
@@ -98,37 +99,15 @@ def upload_file(filetype):
                         return redirect(request.url)
                     if file and allowed_file(file.filename):
                         filename = secure_filename(file.filename)
-                        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+
+                        print(config.UPLOAD_FOLDER + filename)
+                        file.save(os.path.join(config.UPLOAD_FOLDER, filename))
                         # return redirect(url_for('uploaded_file',
                         #                         filename=filename))
+                        resp = api_upload_file(file.filename, filetype)
+                        if "error" in resp.keys():
+                            return jsonify(resp), 500
 
-                        # If new file is a single CSV:
-                        if file.filename.endswith(".csv"):
-                            # Generates predictions for the file.
-                            print(file.filename)
-                            df = predict.predict(file.filename)
-
-                            # Writes dataframe with predictions to database.
-                            df.columns = ["counts_room_number", "counts_time", "counts_associated", "counts_authenticated", "counts_predicted", "counts_predicted_is_occupied"]
-                            con = sqlite3.connect(config.DATABASE["name"])
-                            df.to_sql("counts", con, flavor="sqlite", if_exists="append", index=False, chunksize=None)
-                        # Else new file is a .zip filled with CSVs.
-                        elif file.filename.endswith(".zip"):
-                            # Unzips all of the zips.
-                            data_clean.unzip(app.config["UPLOAD_FOLDER"])
-
-                            # Loops through every CSV file in every folder in the directory.
-                            for root, dirs, files in os.walk(app.config["UPLOAD_FOLDER"]):
-                                for f in files:
-                                    # Generates predictions for the file.
-                                    df = predict.predict(f)
-                                    if df:
-                                        # Writes dataframe with predictions to database.
-                                        df.columns = ["counts_room_number", "counts_time", "counts_associated", "counts_authenticated", "counts_predicted", "counts_predicted_is_occupied"]
-                                        con = sqlite3.connect(config.DATABASE["name"])
-                                        df.to_sql("counts", con, flavor="sqlite", if_exists="append", index=False, chunksize=None)
-                                    else:
-                                        return jsonify({"error": strings.ERROR_BAD_FILE}), 500
                         return jsonify({"success": strings.SUCCESS_FILE_UPLOAD})
 
                 else:
