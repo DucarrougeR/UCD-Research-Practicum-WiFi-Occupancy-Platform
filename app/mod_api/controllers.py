@@ -15,6 +15,7 @@ from app.mod_stat import *
 import sqlite3
 from app.values import strings
 from app.mod_db import data_clean
+from app.values import mail_config
 
 mod_api = Blueprint('mod_api', __name__, url_prefix='/api')
 
@@ -100,7 +101,7 @@ def upload_file(filetype):
                     if file and allowed_file(file.filename):
                         filename = secure_filename(file.filename)
 
-                        print(config.UPLOAD_FOLDER + filename)
+
                         file.save(os.path.join(config.UPLOAD_FOLDER, filename))
                         # return redirect(url_for('uploaded_file',
                         #                         filename=filename))
@@ -158,14 +159,14 @@ def register_user():
         if Permissions.user_has_permission(current_user, 'add-user'):
             if User.create_new(email, password, permission):
                 # notify the new user
-                try:
-                    msg = Message("Hello",
-                                  sender=config.DEFAULT_MAIL_SENDER,
-                                  recipients=[email])
-                    msg.html = "<h1>Hello, you've been signed up for our app</h1>Your password is: " + password
-                    mail.send(msg)
-                except Exception:
-                    print("error sending email")
+
+
+                msg = Message(strings.EMAIL_HEADING_REGISTER,
+                              sender="wispyapp@gmail.com",
+                              recipients=[email])
+                msg.html = gen_email(email, password)
+                mail.send(msg)
+
 
                 return jsonify({"success": strings.SUCCESS_REGISTER_USER}), 200
             else:

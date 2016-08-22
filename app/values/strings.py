@@ -12,3 +12,6 @@ ERROR_LOGOUT = "We had some trouble logging you out. Oops"
 SUCCESS_REGISTER_USER = "New user registered successfully"
 SUCCESS_FILE_UPLOAD = "File(s) uploaded successfully"
 SUCCESS_LOGOUT = "User logged out successfully"
+
+# EMAIL
+EMAIL_HEADING_REGISTER = "You've been registered"

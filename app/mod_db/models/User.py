@@ -28,8 +28,12 @@ class User(BaseModel):
 
     @staticmethod
     def create_new(email, password, group="user"):
-        if User.create(email=email, password=generate_password_hash(password), group=group):
-            return True
+        try:
+            if User.create(email=email, password=generate_password_hash(password), group=group):
+                return True
+        except Exception:
+            print("not unique when creating")
+            return False
         return False
 
     @staticmethod

@@ -15,4 +15,3 @@ DATABASE = {
 }
 UPLOAD_FOLDER = BASE_DIR + '/app/static/uploads'
 ALLOWED_EXTENSIONS = set(['zip', 'csv'])
-DEFAULT_MAIL_SENDER = "hello@shittyapp.com"

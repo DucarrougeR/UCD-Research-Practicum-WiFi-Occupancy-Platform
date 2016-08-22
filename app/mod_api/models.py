@@ -224,3 +224,8 @@ def api_upload_file(filename, filetype):
                     return {"error": strings.ERROR_BAD_FILE}
 
     return {"success": strings.SUCCESS_FILE_UPLOAD}
+
+def gen_email(email, password):
+    string = "<p>Hello, you've been registered for the WiSpy platform. Your login credentials are: <br> Email:" + email + \
+             "<br>Password: " + password
+    return string

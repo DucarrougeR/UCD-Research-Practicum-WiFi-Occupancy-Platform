@@ -33,4 +33,6 @@ app.db
 # uploaded file
 app/static/uploads/*
 
+# hidden configs
+app/values/mail_config.py
 
