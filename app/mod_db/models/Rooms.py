@@ -23,6 +23,8 @@ class Rooms(BaseModel):
     room_campus = CharField(null=False)
     room_capacity = IntegerField(null=False)
     room_occupancy_score = FloatField(null=False)
+    room_rssi_baseline = FloatField(null=False)
+    room_audio_baseline = FloatField(null=False)
 
     def __init__(self, **kwargs):
         super(BaseModel, self).__init__(**kwargs)

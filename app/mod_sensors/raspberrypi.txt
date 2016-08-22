@@ -1,11 +1,22 @@
 SETUP
 -----------------------
+ssh into pi
+    on Pi:
+        sudo raspi-config ->> advanced options --> enable SSH    
+        hostname -I to get [ip]
+        reboot
+    on client:
+        ssh pi@[ip]
+        ssh pi@137.43.71.229
+
 Disable GUI
     sudo raspi-config
 
+Expand FS
+    sudo raspi-config 
+
 Connect to Wi-Fi
     sudo chmod 700 /etc/network/interfaces
-
     
     sudo iwconfig wlan0 essid "UCD Wireless"
     sudo dhclient -v wlan0
@@ -16,8 +27,6 @@ Set the correct time
     sudo chmod 700 /etc/npt.conf
     sudo vim /etc/npt.conf
 
-    sudo apt-get install time
-
 Install Conda
     wget http://repo.continuum.io/miniconda/Miniconda3-latest-Linux-armv7l.sh
     bash Anaconda3-4.1.1-Linux-x86.sh
@@ -25,11 +34,48 @@ Set Conda as the Python environment in .bashrc
     export PATH="home/pi/miniconda3/bin:$PATH"
 
 OpenCV 3.0 for Python
-    Can be installed with conda install -c https://conda.binstar.org/menpo opencv3
-    Otherwise, it may need to be built from source, e.g., http://docs.opencv.org/3.0-beta/doc/tutorials/introduction/linux_install/linux_install.html
-
-Configuring the default webcam
-    sudo apt-get install fswebcam
+    Delete Wolfram Engine to free up space
+        sudo apt-get purge wolfram-engine
+    Install dependencies
+        sudo apt-get update
+        sudo apt-get upgrade
+        sudo apt-get install build-essential cmake pkg-config
+        sudo apt-get install libjpeg-dev libtiff5-dev libjasper-dev libpng12-dev
+        sudo apt-get install libavcodec-dev libavformat-dev libswscale-dev libv4l-dev
+        sudo apt-get install libxvidcore-dev libx264-dev
+        sudo apt-get install libatlas-base-dev gfortran
+        sudo apt-get install python2.7-dev python3-dev
+        sudo pip3 install numpy
+    Download source code
+        wget -O opencv.zip https://github.com/Itseez/opencv/archive/3.1.0.zip
+        unzip opencv.zip
+        wget -O opencv_contrib.zip https://github.com/Itseez/opencv_contrib/archive/3.1.0.
+        unzip opencv_contrib.zip
+    Rename Python 2.7 so cmake finds the right path:
+        sudo mv /usr/bin/python2.7 /usr/bin/python2.7x
+    Build
+        cd ~/opencv-3.1.0/
+        mkdir build
+        cd build
+        cmake -D CMAKE_BUILD_TYPE=RELEASE \
+            -D CMAKE_INSTALL_PREFIX=/usr/\
+            -D INSTALL_PYTHON_EXAMPLES=ON \
+            -DPYTHON_EXECUTABLE:FILEPATH=/home/pi/miniconda3/bin/python \
+            -DPYTHON_PACKAGES_PATH=/home/pi/miniconda3/lib/python3.4/site-packages \
+            -DPYTHON_LIBRARY='/home/pi/miniconda3/lib/libpython3.4m.so.1.0' \
+            -DPYTHON_INCLUDE_DIR='/home/pi/miniconda3/include/python3.4m' \
+            -D OPENCV_EXTRA_MODULES_PATH=~/opencv_contrib-3.1.0/modules \
+            -D BUILD_EXAMPLES=ON ..
+        (Examine cmake's output to ensure that the Python 3 paths are valid)
+        make -j4 
+        ### Will take over an hour. If an error occurs, it may be due to race conditions
+        ### on the 4 cores. Try again on one core:
+        #   make clean
+        #   make
+    Install
+        sudo make install
+        sudo ldconfig
+    In site-packages/, rename cv2.cpython-34m.so to cv2.cpython.so
 
 Configuring the wlan0 interface
     check with ifconfig wlan0
@@ -39,11 +85,16 @@ Configuring the audio interface
     sudo vim /usr/share/alsa/alsa.conf
         defaults.ctl.card 1
         defaults.pcm.card 1
+    run arecord with sudo
         
 arecord
-    sudo apt-get install lame
-
+    arecord 1.0.28-1 has issues with USB interfaces. Need to install older version: 
+    sudo apt-get install libasound-dev
+    sudo apt-get install --no-install-recommends libncurses5-dev libncursesw5-dev xmlto
+    wget ftp://ftp.alsa-project.org/pub/utils/alsa-utils-1.0.27.2.tar.bz2
+    tar jxf ftp://ftp.alsa-project.org/pub/utils/alsa-utils-1.0.27.2.tar.bz2
+    ./configure --disable-alsaconf --disable-xmlto && make
+    make install
+    
 sox 
     sudo apt-get install sox 
-
-
