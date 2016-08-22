@@ -8,8 +8,6 @@ var occupancyApp = angular.module('occupancyApp', [
 ]);
 
 occupancyApp.controller('TopbarController', ['$scope', 'Authentication', 'Session', function($scope, Authentication, Session) {
-    
-    
 
     // console.log("checking");
     if (!Session.user) {
@@ -327,10 +325,11 @@ occupancyApp.controller("UploadController", ['$scope', 'Upload', '$timeout', 'Pe
                             });
 
                             $scope.type = "success";
+                            $scope.message = "File upload successful";
                         }, function(resp){
                             console.log("error");
                             $scope.type = "error";
-                            $scope.error = "Invalid file type";
+                            $scope.message = "Invalid file type";
                         }, function(evt) {
                             var progressPercentage = parseInt(100.0 *
                                 evt.loaded / evt.total);

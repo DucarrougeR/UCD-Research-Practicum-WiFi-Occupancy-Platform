@@ -13,7 +13,7 @@
     </div>
     <div ng-controller="UploadController">
         <form>
-            <div class="banner error" ng-show="error">{{ error }}</div>
+            <div class="banner {{ type }}" ng-show="message">{{ message }}</div>
             <div>
                 <label class="label-inline" ng-show="hasPermission('add-logs')">
                     <input type="radio" ng-model="filetype" value="wifi" > WiFi Logs
