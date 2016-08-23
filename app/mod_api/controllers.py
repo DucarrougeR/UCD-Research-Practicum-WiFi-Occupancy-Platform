@@ -311,3 +311,29 @@ def get_module_info_by_room(room):
     print(len(result_list))
     return jsonify({"results": result_list})
 
+@mod_api.route('/rooms/usage/most', methods=['GET'])
+def get_most_used_rooms():
+    # fetches rooms which have the most classes
+    # SELECT COUNT(classes_room_number), classes_room_number FROM classes  WHERE classes_module_code IS NOT null GROUP BY classes_room_number
+    #results = Classes.select(Classes.classes_room_number).group_by(Classes.classes_room_number).count()
+    results = db.execute_sql('SELECT COUNT(classes_room_number) as cnt, classes_room_number FROM classes WHERE classes_module_code IS NOT null GROUP BY classes_room_number ORDER BY cnt DESC LIMIT 5')
+    results = results.fetchall()
+    result_list = []
+    for result in results:
+        result_dict = {"room": result[1],
+                       "count": result[0]}
+        result_list.append(result_dict)
+    return jsonify(result_list)
+
+@mod_api.route('/rooms/usage/least', methods=['GET'])
+def get_least_used_rooms():
+    results = db.execute_sql(
+        'SELECT COUNT(classes_room_number) as cnt, classes_room_number FROM classes WHERE classes_module_code IS NOT null GROUP BY classes_room_number ORDER BY cnt ASC LIMIT 5')
+    results = results.fetchall()
+    result_list = []
+    for result in results:
+        result_dict = {"room": result[1],
+                       "count": result[0]}
+        result_list.append(result_dict)
+    return jsonify(result_list)
+

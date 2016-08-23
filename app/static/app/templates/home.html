@@ -21,4 +21,28 @@
             
         </div>
     </div>
+    <div class="options-list">
+        <div class="column-12 column-mid-6 u-text-center usage-list">
+            <div class="title-container">
+                <h1>Most used rooms</h1>
+                <hr>
+            </div>
+            {{ message }}
+            <ul class="nav-list">
+                <li ng-repeat="room in mostUsed"><a class="u-text-center" href="#/rooms/{{ room.room }}">{{room.room}}</a></li>
+            </ul>
+        </div>
+
+        <div class="column-12 column-mid-6 u-text-center usage-list">
+            <div class="title-container">
+                <h1>Least used rooms</h1>
+                <hr>
+            </div>
+            {{ message }}
+            <ul class="nav-list">
+                <li ng-repeat="room in leastUsed"><a class="u-text-center" href="#/rooms/{{ room.room }}">{{room.room}}</a></li>
+            </ul>
+        </div>
+        
+    </div>
 </div>

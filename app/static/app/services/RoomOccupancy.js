@@ -16,6 +16,39 @@ occupancyApp.service('RoomOccupancy', ['$http', function($http, Session){
 				// or server returns response with an error status.
 				return response.data;
 			});
+		},
+		getLeastUsed: function() {
+			return $http({
+				method: 'GET',
+				url: '/api/rooms/usage/least'
+			}).then(function successCallback(response) {
+				// this callback will be called asynchronously
+				// when the response is available
+				return response.data;
+				// user = response.data;
+				// return JSON.parse(response);
+			}, function errorCallback(response) {
+				// called asynchronously if an error occurs
+				// or server returns response with an error status.
+				return response.data;
+			});
+		},
+		getMostUsed: function() {
+			return $http({
+				method: 'GET',
+				url: '/api/rooms/usage/most'
+			}).then(function successCallback(response) {
+				// this callback will be called asynchronously
+				// when the response is available
+				
+				return response.data;
+				// user = response.data;
+				// return JSON.parse(response);
+			}, function errorCallback(response) {
+				// called asynchronously if an error occurs
+				// or server returns response with an error status.
+				return response.data;
+			});
 		}
 		
 	}

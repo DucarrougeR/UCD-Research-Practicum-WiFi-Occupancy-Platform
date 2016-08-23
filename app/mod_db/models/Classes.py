@@ -26,5 +26,5 @@ class Classes(BaseModel):
 
 
     class Meta:
-        primary_key = CompositeKey('classes_module_code', 'classes_time')
+        primary_key = CompositeKey('classes_room_number', 'classes_time')
 

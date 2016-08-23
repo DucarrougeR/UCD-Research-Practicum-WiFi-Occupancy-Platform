@@ -149,6 +149,9 @@ def api_upload_file(filename, filetype):
                     row["time"] = None
                 if row["size"] == "None":
                     row["size"] = None
+
+                row["room"] = row["room"].replace(".", "")
+
                 try:
                     classes = Classes.select(Classes).where((Classes.classes_room_number == row["room"]) &
                                                             (Classes.classes_time == row["time"])).get()

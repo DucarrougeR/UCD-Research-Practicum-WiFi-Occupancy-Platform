@@ -25,7 +25,7 @@ occupancyApp.controller('TopbarController', ['$scope', 'Authentication', 'Sessio
     
 }]);
 
-occupancyApp.controller('DashboardController', ['$scope', '$http', 'Authentication', 'Session', 'DataManagement', 'Permissions', function($scope, $http, Authentication, Session, DataManagement, Permissions) {
+occupancyApp.controller('DashboardController', ['$scope', '$http', 'Authentication', 'Session', 'RoomOccupancy', 'Permissions', function($scope, $http, Authentication, Session, RoomOccupancy, Permissions) {
 
     // check if there is a user defined
     if (!Session.user) {
@@ -41,49 +41,22 @@ occupancyApp.controller('DashboardController', ['$scope', '$http', 'Authenticati
     }
 
 
-    $scope.submit = function() {
-        if ($scope.formData.room && $scope.formData.date) {
-            // formatting the URL
-            var url = "/api/room/occupancy/" + $scope.formData.room + "/" + $scope.formData.date.split(" ").join("%20");
-            console.log("making request to " + url);
-            $http.get(url).then(function successCallback(response) {
-                console.log(response);
-
-                if (response.data.results.length > 0) {
-
-
-                    var results = DataManagement.organiseData(response.data.results);
-
-                    // bind the values
-                    $scope.maxValue = results["max"];
-                    $scope.minValue = results["min"];
-                    $scope.avgValue = Math.round(results["avg"] * 1000) / 1000;
-                    $scope.totalValue = results["hours"][0][0].room_capacity;
-
-                    // set the chart data
-                    $scope.data = [results["data"]];
-                    $scope.series = ['% occupied'];
-
-                    // build the labels
-                    $scope.labels = results["data"].map(function(item, index) {
-                        return "Hour " + index;
-                    });
-                }
-
-                $scope.options = {
-                    responsive: true
-                }
-                $scope.onClick = function(points, evt) {
-                    console.log(points, evt);
-                };
-
-
-            }, function errorCallback(response) {
-                // called asynchronously if an error occurs
-                // or server returns response with an error status.
-            });
+    RoomOccupancy.getLeastUsed().then(function(data){
+        if (data.length) {
+            $scope.leastUsed = data;
+        } else {
+            $scope.message = "There are no rooms to display";
         }
-    }
+    });
+
+    RoomOccupancy.getMostUsed().then(function(data){
+        if (data.length) {
+            $scope.mostUsed = data;
+        } else {
+            $scope.message = "There are no rooms to display";
+        }
+    });
+    
 }]);
 
 

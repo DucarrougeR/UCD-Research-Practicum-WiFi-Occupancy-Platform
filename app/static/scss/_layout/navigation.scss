@@ -6,7 +6,10 @@
 	
 	width:100%;
 	li {
-
+		border-bottom:1px solid $color-border;
+		&:last-of-type {
+			border-bottom:none;
+		}
 		//border-top:1px solid rgba($color-text, 0.25);
 		a {
 			color:$color-text;
@@ -15,6 +18,7 @@
 			text-align:right;
 			font-family: $text-heading;
 			text-transform: uppercase;
+			padding: 0.5em 0;
 			&:hover {
 				background-color:rgba(0,0,0,0.05);
 			}
