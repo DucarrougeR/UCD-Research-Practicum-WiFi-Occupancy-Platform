@@ -33,6 +33,8 @@ def module_data(module):
 @mod_api.route('/room/occupancy/<room>/<time>/<type>')
 def occupancy_data(room, time=None, type=None):
     results = None
+    results_room_data = Rooms.select(Rooms.room_capacity, Rooms.room_occupancy_score).where(
+        Rooms.room_number == room).get()
     if time:
         time = " ".join(time.split("%20"))
 
@@ -46,7 +48,6 @@ def occupancy_data(room, time=None, type=None):
             date_cond = "%" + date[1] + " " + date[2] + "%"
             results = Counts.select(Counts).where(
                  (Counts.counts_room_number == room) & (Counts.counts_time ** date_cond)).naive()
-            results_room_data = Rooms.select(Rooms.room_capacity, Rooms.room_occupancy_score).where(Rooms.room_number == room).get()
             # results = Counts.select(Counts).where((Counts.counts_room_number == room)
     else:
         join_cond = (Rooms.room_number == Counts.counts_room_number)
