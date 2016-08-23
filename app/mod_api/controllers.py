@@ -44,8 +44,9 @@ def occupancy_data(room, time=None, type=None):
             # print("%"+ " ".join((date[0], date[1], date[2])) +"%")
             join_cond = (Rooms.room_number == Counts.counts_room_number)
             date_cond = "%" + date[1] + " " + date[2] + "%"
-            results = Rooms.select(Rooms, Counts).join(Counts, on=join_cond).where(
-                 (Rooms.room_number == room) & (Counts.counts_time ** date_cond)).naive()
+            results = Counts.select(Counts).where(
+                 (Counts.counts_room_number == room) & (Counts.counts_time ** date_cond)).naive()
+            results_room_data = Rooms.select(Rooms.room_capacity, Rooms.room_occupancy_score).where(Rooms.room_number == room).get()
             # results = Counts.select(Counts).where((Counts.counts_room_number == room)
     else:
         join_cond = (Rooms.room_number == Counts.counts_room_number)
@@ -54,12 +55,14 @@ def occupancy_data(room, time=None, type=None):
 
 
     results_list = []
+    room_data =results_room_data.get_result()
     if results:
         for result in results:
+
             # gets the fields of the result set
             # fields = Counts._meta.sorted_field_names + Rooms._meta.sorted_field_names
             fields = ["counts_room_number", "counts_time", "counts_module_code",
-                      "counts_predicted", "counts_predicted_is_occupied", "room_capacity", "room_occupancy_score"]
+                      "counts_predicted", "counts_predicted_is_occupied"]
             results_dict = {}
 
             for field in fields:
@@ -69,6 +72,8 @@ def occupancy_data(room, time=None, type=None):
                 if type == "binary":
                     # if binary data, transform to 1 or 0
                     pass
+            results_dict["room_capacity"] = room_data["room_capacity"]
+            results_dict["room_occupancy_score"] = room_data["room_occupancy_score"]
             results_list.append(results_dict)
 
 
@@ -223,7 +228,7 @@ def get_modules():
         .order_by(Classes.classes_module_code.asc())
     module_list = []
     for module in modules:
-        print(module)
+
         result = module.get_result()
 
         regex = re.match("(.+) & (.+)", result["classes_module_code"])
@@ -254,7 +259,7 @@ def get_module_info(module):
     result_list = []
     times = []
     for result in results:
-        print(result)
+
         result = result.get_result()
         regex = re.match("([A-Za-z)]{3}) [A-Za-z]{3} \d{2} (\d{2}):.", result["classes_time"])
         groups = regex.groups()
@@ -308,7 +313,7 @@ def get_module_info_by_room(room):
                 times.append(day_time)
                 result_list.append(result)
 
-    print(len(result_list))
+
     return jsonify({"results": result_list})
 
 @mod_api.route('/rooms/usage/most', methods=['GET'])

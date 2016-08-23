@@ -108,18 +108,19 @@ def get_module_results(module):
         average = 0
         minimum = 1000
         maximum = 0
-        print(counts_results)
+
         for result in counts_results:
 
             result_dict = result.get_result()
 
             if result_dict["counts_predicted"] is not None:
                 try:
-                    print(type(int(result_dict["counts_predicted"])))
+
                     average = (average + int(result_dict["counts_predicted"])) / 2
                     maximum = max(maximum, int(result_dict["counts_predicted"]))
                     minimum = min(minimum, int(result_dict["counts_predicted"]))
                 except Exception:
+                    print("Exception")
                     print(result_dict)
 
         return {"day": results_by_day, "rooms_used": rooms_dict}

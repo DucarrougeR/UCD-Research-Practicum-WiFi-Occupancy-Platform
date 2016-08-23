@@ -2,11 +2,12 @@ from app import app
 from peewee import *
 import config
 # creates a SQLAlchemy instance using the app config (see app/__init__.py)
-from app import app
+from app import app, DATABASE
 from flask_peewee.auth import Auth
 from flask_peewee.db import Database
 
-db = SqliteDatabase(config.DATABASE['name'])
+print(DATABASE)
+db = SqliteDatabase(DATABASE["name"])
 auth_db = Database(app)
 # imports the models
 from .models import *
