@@ -22,8 +22,7 @@ var gulp = require('gulp'),
 // <script src="{{ url_for('static', filename='node_modules/ng-file-upload/dist/ng-file-upload.js') }}"></script>
 
 gulp.task('angular-concat', function(){
-    return gulp.src(['app/bower_components/angular/angular.js', 
-    	'app/bower_components/angular-route/angular-route.js', 
+    return gulp.src([ 
     	'node_modules/chart.js/dist/Chart.min.js',
     	'node_modules/angular-chart.js/dist/angular-chart.min.js',
     	'node_modules/pikaday/pikaday.js',
@@ -54,9 +53,12 @@ gulp.task('app-concat', function(){
 });
 
 gulp.task('minify-css', function() {
-	gulp.src('css/main.css')
+	gulp.src(['css/main.css', 'node_modules/angular-datepicker/dist/index.css'])
+	.pipe(gp_concat('main-concat.css'))
+	.pipe(gulp.dest('css'))
    .pipe(css_minify())
-   .pipe(gulp.dest('css/main.min.css'));
+  	.pipe(gp_rename('main.min.css'))
+   .pipe(gulp.dest('css'));
 });
 
 gulp.task('default', ['angular-concat', 'app-concat', 'minify-css'], function(){});

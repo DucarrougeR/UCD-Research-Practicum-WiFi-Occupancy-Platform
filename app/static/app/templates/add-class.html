@@ -1,10 +1,9 @@
-<nav class="column column-mid-2 full-height sidebar sidebar--fixed">
-    <ul class="nav-list nav-list--main">
-        <li><a ng-href="/dashboard">Dashboard</a></li>
-        <li><a href="/upload">Upload logs</a></li>
-        <li><a href="/add/user" ng-show="permission.addUser == true">Add a user</a></li>
-        <li><a href="/add/class" ng-show="permission.addClass == true">Add a class</a></li>
-        <li><a href="/add/ground-truth" ng-show="permission.addTruth == true">Add ground truth</a></li>
+<nav class="column column-12 column-mid-2 full-height-mid sidebar sidebar--fixed">
+    <button class="navigation-toggle" ng-click="toggleNavigation()">Menu</button>
+    <ul id="main-nav" class="nav-list nav-list--main {{navigationStatus}}">
+        <li><a ng-href="#/dashboard">Dashboard</a></li>
+        <li><a ng-href="#/upload" ng-show="hasPermission('add-class') || hasPermission('add-truth') || hasPermission('add-logs')">Upload Data</a></li>
+        <li><a ng-href="#/add/user" ng-show="hasPermission('add-user')">Add a user</a></li>
     </ul>
 </nav>
 <div class="column column-mid-10 column-mid-offset-2 main-content">

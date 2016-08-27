@@ -261,8 +261,24 @@ occupancyApp.config(['$locationProvider' ,'$routeProvider', '$logProvider', 'Cha
   }
   ]).run(function($rootScope, $location, Session, Authentication) {
     // this runs before any routing
+
     $rootScope.$on( "$routeChangeStart", function(event, next, current) {
-      
+      $rootScope.toggleNavigation = function() {
+        if ($rootScope.navigationStatus) {
+          if ($rootScope.navigationStatus == "open") {
+            $rootScope.navigationStatus = "closed";
+          } else {
+            $rootScope.navigationStatus = "open";
+          }
+        } else {
+          $rootScope.navigationStatus = "closed";
+        }
+      }
+
+      if (!$rootScope.navigationStatus) {
+        $rootScope.navigationStatus = "closed";
+      }
+
       if (!Session.user) {
         
         Authentication.getLoggedInUser().then(function(user) {
@@ -276,4 +292,6 @@ occupancyApp.config(['$locationProvider' ,'$routeProvider', '$logProvider', 'Cha
         $rootScope.user = Session.user;
       }
     });
+    
+    
   });

@@ -1,6 +1,6 @@
 <nav class="column column-12 column-mid-2 full-height-mid sidebar sidebar--fixed">
-    <button class="navigation-toggle" ng-click="toggleNavigation()">Menu</button>
-    <ul id="main-nav" class="nav-list nav-list--main closed">
+    <button class="navigation-toggle" ng-click="$root.toggleNavigation()">Menu</button>
+    <ul id="main-nav" class="nav-list nav-list--main {{$root.navigationStatus}}">
         <li><a ng-href="#/dashboard">Dashboard</a></li>
         <li><a ng-href="#/upload" ng-show="hasPermission('add-class') || hasPermission('add-truth') || hasPermission('add-logs')">Upload Data</a></li>
         <li><a ng-href="#/add/user" ng-show="hasPermission('add-user')">Add a user</a></li>

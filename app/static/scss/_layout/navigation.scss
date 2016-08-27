@@ -32,6 +32,7 @@
 	
 }
 
+
 .nav-list--horizontal {
 	li {
 		display:inline-block;
@@ -54,6 +55,13 @@
 
 .open {
 	display:block;
+	@media screen and (max-width:$breakpoint-mid) {
+		padding-top:3em;
+		text-align:center;
+		li a {
+			text-align:center;
+		}
+	}
 }
 
 .closed {
@@ -64,11 +72,14 @@
 	
 }
 
+
 .navigation-toggle {
 	float:right;
+	//margin-bottom: 1em;
 	margin-right:1em;
 	@media screen and (min-width:$breakpoint-mid) {
 		display:none;
+
 	}
 }
 
