@@ -4,6 +4,8 @@
 
 WiSpy is a Flask web application predicting room occupancy across the University College Dublin campus based on historical Wi-Fi log data. It also employs RSSI and audio data alongside face detection methods in rooms with a leaking Wi-Fi signal.  
 
+WiSpy is has a [live version](http://csi420-01-vm5.ucd.ie)
+
 Users can:
   - View predicted occupancy (both occupancy sensing and a continuous headcount) for any room and period for which we have data. 
   - Compare the occupancy of different rooms and classes.
