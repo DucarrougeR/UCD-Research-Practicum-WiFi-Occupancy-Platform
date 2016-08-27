@@ -42,6 +42,14 @@ Python dependencies are installed via:
 pip install -r requirements.txt
 ```
 
+If assets are not compiled or installed, switch directory to app/static and run:
+
+```npm install``` to install additional assets and third party libraries
+
+```npm run build-css``` to compile SCSS to CSS
+
+```gulp``` to create minified versions of the relevant assets
+
 License
 ----
 
